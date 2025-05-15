@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 
 import "bootstrap/dist/css/bootstrap.css"
-import "./css/App.css"
+import "./css/styles.css"
 
 import DisplayAllCars from "./components/DisplayAllCars"
 
