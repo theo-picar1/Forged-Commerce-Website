@@ -1,0 +1,372 @@
+// ----- Colors -----
+$website-blue: #2C3A57;
+$website-white: #FFFFFF;
+$website-light-gray: #D9D9D9;
+$website-gray: #808080;
+$website-red: #FE0404;
+$website-black: #000000;
+$invisible: #00000000;
+$placeholder-color: #311d1d;
+$main-content-color: #F3F3F3;
+$translucent: #00000085;
+
+// ----- Padding -----
+$mobile-padding: 35px 10px;
+
+@mixin flex-direction($direction, $justify, $align, $gap) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+    gap: $gap;
+}
+
+@mixin default-icon-size() {
+    width: 28px;
+    height: auto;
+}
+
+@mixin default-text-input() {
+    appearance: none;
+    outline: none;
+    border: none;
+    background-color: $invisible;
+    width: 100%;
+    height: 35px;
+    padding: 15px 8px;
+
+    &::placeholder {
+        color: $placeholder-color;
+    }
+}
+
+// CSS for a div with an image that is slightly blackened with text in the center
+@mixin picture-with-text() {
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+
+    div {
+        width: 100%;
+        height: 100%;
+        background-color: $translucent;
+        color: $website-white;
+        font-weight: 800;
+        text-align: center;
+        @include flex-direction(unset, center, center, 0);
+    }
+}
+
+@media screen AND (min-width: 0px) {
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0; // Because margin-bottom is set to 1rem for some reason
+    }
+
+    html,
+    body {
+        background-color: $website-blue;
+    }
+
+    .website-header {
+        width: 100%;
+        background-color: $website-blue;
+        padding: $mobile-padding;
+        padding-bottom: 5px;
+        color: $website-white;
+
+        .row {
+            padding: 5px 0;
+        }
+
+        .top {
+            @include flex-direction(row, space-between, center, 0);
+            margin: auto;
+
+            .left {
+                @include flex-direction(row, unset, center, 10px);
+
+                .menu-icon {
+                    @include default-icon-size();
+                }
+
+                .website-title {
+                    @include flex-direction(row, unset, center, 8px);
+
+                    p {
+                        font-weight: bold;
+                        font-size: 24px;
+                    }
+
+                    img {
+                        width: 44px;
+                        height: auto;
+                    }
+                }
+            }
+
+            .right {
+                @include flex-direction(row, unset, center, 10px);
+
+                .shopping-cart {
+                    position: relative;
+                    @include flex-direction(row, top, flex-end, 0);
+                    @include default-icon-size();
+
+                    div {
+                        background-color: $website-red;
+                        width: 16px;
+                        height: 16px;
+                        @include flex-direction(unset, center, center, 0);
+                        border-radius: 50%;
+                        position: absolute;
+                        bottom: 15px;
+                        left: 12px;
+
+                        p {
+                            font-size: 12px;
+                            font-weight: bold;
+                        }
+                    }
+                }
+            }
+        }
+
+        .middle {
+            margin: auto;
+
+            .searchbar-container {
+                width: 100%;
+                background-color: $website-white;
+                @include flex-direction(row, space-between, unset, 0);
+                height: auto;
+                border-radius: 12px;
+
+                input {
+                    @include default-text-input();
+                }
+
+                div {
+                    background-color: $website-red;
+                    @include flex-direction(unset, center, center, 0);
+                    border-radius: 0 12px 12px 0;
+                    width: 50px;
+                }
+            }
+        }
+
+        .bottom-wrapper {
+            position: relative;
+            overflow: hidden;
+            width: inherit;
+            margin: auto;
+
+            // This is the actual blur
+            &::before,
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 20px; // slightly smaller for subtle effect
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            &::before {
+                left: 0;
+                background: linear-gradient(to right, $website-blue 40%, transparent);
+                opacity: 1;
+                transition: opacity 0.3s;
+            }
+
+            &::after {
+                right: 0;
+                background: linear-gradient(to left, $website-blue 40%, transparent);
+                opacity: 1;
+                transition: opacity 0.3s;
+            }
+
+            &.at-start::before {
+                opacity: 0;
+            }
+
+            &.at-end::after {
+                opacity: 0;
+            }
+
+            .bottom {
+                overflow-x: auto;
+                display: flex;
+                gap: 15px;
+                flex-wrap: nowrap;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+
+                p {
+                    white-space: nowrap;
+                }
+            }
+        }
+    }
+
+    .home-products-container {
+        background-color: $main-content-color;
+        padding: 20px 10px;
+        padding-bottom: 0px;
+        @include flex-direction(column, unset, unset, 30px);
+
+        .product-section {
+
+            h4 {
+                font-weight: 800;
+            }
+
+            .horizontal-product-scroll {
+                @include flex-direction(row, unset, unset, 10px);
+                width: 100%;
+                overflow-x: scroll;
+                scrollbar-width: none;
+                margin-top: 5px;
+
+                .product {
+
+                    .product-image-container {
+                        background-color: $website-light-gray;
+                        width: 125px;
+                        height: 125px;
+                        @include flex-direction(unset, center, center, 0);
+                        border-radius: 5px;
+
+                        img {
+                            width: 75px;
+                            height: 75px;
+                        }
+                    }
+
+                    .product-details {
+                        margin-top: 5px;
+
+                        .product-name-container {
+                            height: 30px;
+
+                            .product-name {
+                                font-size: 14px;
+                                color: $website-black;
+                                line-height: 0.95;
+                            }
+                        }
+
+                        .discounted-price-container {
+                            @include flex-direction(row, unset, flex-end, 10px);
+                        }
+
+                        .product-price {
+                            color: $website-red;
+                            font-weight: bold;
+                        }
+
+                        .original-price {
+                            font-size: 12px;
+                            color: $website-gray;
+                            text-decoration: line-through;
+                        }
+                    }
+                }
+            }
+
+            .see-more {
+                color: $website-red;
+                margin-top: 5px;
+                text-decoration: underline;
+            }
+        }
+
+        .hr-ad-banner {
+            @include picture-with-text();
+            width: 100%;
+            height: 250px;
+            font-size: 32px;
+        }
+
+        .categories-section {
+
+            .categories-grid-container {
+                margin-top: 5px;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+
+                .category {
+                    @include picture-with-text();
+                    border-radius: 10px;
+                    aspect-ratio: 145 / 105;
+
+                    div {
+                        font-size: 20px;
+                        border-radius: 10px;
+                    }
+                }
+            }
+
+            .see-more {
+                text-decoration: underline;
+                color: $website-red;
+                margin-top: 5px;
+            }
+        }
+
+        .no-more-to-see-section {
+            margin: auto;
+            text-align: center;
+
+            img {
+                border-radius: 50%;
+                border: 2px solid $website-red;
+                padding: 2px;
+            }
+        }
+    }
+
+    #mobile-footer-content {
+        padding: 20px 10px;
+        padding-bottom: 5px;
+
+        .link-grid-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+
+            .link {
+                text-decoration: none;
+                color: $website-white;
+                text-align: center;
+            }
+        }
+
+        .copyright-notice {
+            color: $website-white;
+            font-size: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    }
+    
+    #laptop-footer-content {
+        display: none;
+    }
+}

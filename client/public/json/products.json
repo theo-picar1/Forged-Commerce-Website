@@ -1,0 +1,482 @@
+[
+  {
+    "product_id": 1,
+    "product_name": "Adjustable Dumbbell Set",
+    "product_rating": 4.2,
+    "category": ["dumbbells", "strength"],
+    "product_reviews": [
+      {
+        "name": "User1",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Adjustable Dumbbell Set - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 5,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 24.24,
+    "stock_quantity": 13,
+    "sold": 109
+  },
+  {
+    "product_id": 2,
+    "product_name": "Yoga Mat - Non Slip",
+    "product_rating": 4.6,
+    "category": ["yoga", "equipment"],
+    "product_reviews": [
+      {
+        "name": "User2",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Yoga Mat - Non Slip - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 10,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 28.49,
+    "stock_quantity": 16,
+    "sold": 101
+  },
+  {
+    "product_id": 3,
+    "product_name": "Weighted Jump Rope",
+    "product_rating": 3.8,
+    "category": ["equipment", "cardio", "skipping"],
+    "product_reviews": [
+      {
+        "name": "User3",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Weighted Jump Rope - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 15,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 32.74,
+    "stock_quantity": 19,
+    "sold": 14
+  },
+  {
+    "product_id": 4,
+    "product_name": "Men\u2019s Compression Shirt",
+    "product_rating": 4.2,
+    "category": ["clothing", "shirts"],
+    "product_reviews": [
+      {
+        "name": "User4",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Men\u2019s Compression shirts - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 0,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 36.99,
+    "stock_quantity": 22,
+    "sold": 191
+  },
+  {
+    "product_id": 5,
+    "product_name": "Resistance Bands Set",
+    "category": ["equipment", "strength", "bands"],
+    "product_rating": 4.6,
+    "product_reviews": [
+      {
+        "name": "User5",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Resistance Bands Set - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 5,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 41.24,
+    "stock_quantity": 25,
+    "sold": 9
+  },
+  {
+    "product_id": 6,
+    "product_name": "Adjustable Bench",
+    "product_rating": 3.8,
+    "category": ["bench", "equipment", "strength"],
+    "product_reviews": [
+      {
+        "name": "User6",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Adjustable Bench - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 10,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 45.49,
+    "stock_quantity": 28,
+    "sold": 253
+  },
+  {
+    "product_id": 7,
+    "product_name": "Kettlebell - 12kg",
+    "product_rating": 4.2,
+    "category": ["kettlebells", "strength"],
+    "product_reviews": [
+      {
+        "name": "User7",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Kettlebell - 12kg - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 15,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 49.74,
+    "stock_quantity": 31,
+    "sold": 100
+  },
+  {
+    "product_id": 8,
+    "product_name": "Foam Roller",
+    "product_rating": 4.6,
+    "category": ["stretching", "yoga", "equipment", "rollers"],
+    "product_reviews": [
+      {
+        "name": "User8",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Foam Roller - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 0,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 53.99,
+    "stock_quantity": 34,
+    "sold": 1091
+  },
+  {
+    "product_id": 9,
+    "product_name": "Pull-Up Bar (Door Frame)",
+    "product_rating": 3.8,
+    "category": ["calisthenics", "strength", "pullup bars", "bodyweight"],
+    "product_reviews": [
+      {
+        "name": "User9",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Pull-Up Bar (Door Frame) - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 5,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 58.24,
+    "stock_quantity": 37,
+    "sold": 1090
+  },
+  {
+    "product_id": 10,
+    "product_name": "Weightlifting Belt",
+    "product_rating": 4.2,
+    "category": ["strength", "belts", "equipment"],
+    "product_reviews": [
+      {
+        "name": "User10",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Weightlifting Belt - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 10,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 62.49,
+    "stock_quantity": 40,
+    "sold": 541
+  },
+  {
+    "product_id": 11,
+    "product_name": "Treadmill - Compact Foldable",
+    "product_rating": 4.6,
+    "category": ["cardio", "equipment", "machines", "treadmills"],
+    "product_reviews": [
+      {
+        "name": "User11",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Treadmill - Compact Foldable - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 15,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 66.74,
+    "stock_quantity": 43,
+    "sold": 71
+  },
+  {
+    "product_id": 12,
+    "product_name": "Gym Gloves",
+    "product_rating": 3.8,
+    "category": ["equipment", "gloves"],
+    "product_reviews": [
+      {
+        "name": "User12",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Gym Gloves - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 0,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 70.99,
+    "stock_quantity": 46,
+    "sold": 711
+  },
+  {
+    "product_id": 13,
+    "product_name": "Ankle Weights",
+    "product_rating": 4.2,
+    "category": ["strength", "equipment"],
+    "product_reviews": [
+      {
+        "name": "User13",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Ankle Weights - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 5,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 75.24,
+    "stock_quantity": 49,
+    "sold": 701
+  },
+  {
+    "product_id": 14,
+    "product_name": "Medicine Ball - 6kg",
+    "product_rating": 4.6,
+    "category": ["strength", "yoga"],
+    "product_reviews": [
+      {
+        "name": "User14",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Medicine Ball - 6kg - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 10,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 79.49,
+    "stock_quantity": 52,
+    "sold": 431
+  },
+  {
+    "product_id": 15,
+    "product_name": "Powerlifting Wrist Wraps",
+    "product_rating": 3.8,
+    "category": ["powerlifting", "strength", "equipment", "gloves"],
+    "product_reviews": [
+      {
+        "name": "User15",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Powerlifting Wrist Wraps - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 15,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 83.74,
+    "stock_quantity": 55,
+    "sold": 971
+  },
+  {
+    "product_id": 16,
+    "product_name": "Gym Duffle Bag",
+    "product_rating": 4.2,
+    "category": ["equipment", "bags", "clothing"],
+    "product_reviews": [
+      {
+        "name": "User16",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Gym Duffle Bag - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 0,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 87.99,
+    "stock_quantity": 58,
+    "sold": 123
+  },
+  {
+    "product_id": 17,
+    "product_name": "Pre-Workout Powder",
+    "product_rating": 4.6,
+    "category": ["supplements", "equipment"],
+    "product_reviews": [
+      {
+        "name": "User17",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Pre-Workout Powder - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 5,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 92.24,
+    "stock_quantity": 61,
+    "sold": 291
+  },
+  {
+    "product_id": 18,
+    "product_name": "Protein Shaker Bottle",
+    "product_rating": 3.8,
+    "category": ["shakers", "bottles", "equipment"],
+    "product_reviews": [
+      {
+        "name": "User18",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Protein Shaker Bottle - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 10,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 96.49,
+    "stock_quantity": 64,
+    "sold": 901
+  },
+  {
+    "product_id": 19,
+    "product_name": "Squat Rack",
+    "product_rating": 4.2,
+    "category": ["strength", "racks", "equipment", "machines"],
+    "product_reviews": [
+      {
+        "name": "User19",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 5
+      }
+    ],
+    "description": "Squat Rack - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 15,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 100.74,
+    "stock_quantity": 67,
+    "sold": 652
+  },
+  {
+    "product_id": 20,
+    "product_name": "Kettlebell - 20kg",
+    "product_rating": 4.6,
+    "category": ["strength", "kettlebells", "equipment"],
+    "product_reviews": [
+      {
+        "name": "User20",
+        "content": "Great product! Very useful and reliable.",
+        "rating": 4
+      }
+    ],
+    "description": "Kettlebell - High quality and suitable for gym and home workouts.",
+    "brand_new": true,
+    "discount": 0,
+    "product_images": [
+      "/images/app-logo.png",
+      "/images/app-logo.png",
+      "/images/app-logo.png"
+    ],
+    "price": 104.99,
+    "stock_quantity": 70,
+    "sold": 342
+  }
+]
