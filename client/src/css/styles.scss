@@ -6,13 +6,19 @@ $website-gray: #808080;
 $website-red: #FE0404;
 $website-black: #000000;
 $invisible: #00000000;
-$placeholder-color: #311d1d;
+$placeholder-color: #bbbbbb;
 $main-content-color: #F3F3F3;
 $translucent: #00000085;
 
+// ----- Z-indexes -----
+$slide-in-modal: 100;
+$website-header-z: 5;
+
 // ----- Padding -----
 $mobile-padding: 35px 10px;
+$mobile-container-padding: 20px 10px;
 
+// ----- Helper Functions -----
 @mixin flex-direction($direction, $justify, $align, $gap) {
     display: flex;
     flex-direction: $direction;
@@ -33,7 +39,7 @@ $mobile-padding: 35px 10px;
     background-color: $invisible;
     width: 100%;
     height: 35px;
-    padding: 15px 8px;
+    padding: 15px 12px;
 
     &::placeholder {
         color: $placeholder-color;
@@ -56,6 +62,20 @@ $mobile-padding: 35px 10px;
     }
 }
 
+// ----------------------------
+
+// ----- Modal Transitions -----
+@mixin slide-in-transition() {
+    position: fixed;
+    background-color: $translucent;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    z-index: $slide-in-modal;
+}
+
+// -----------------------------
+
 @media screen AND (min-width: 0px) {
     * {
         margin: 0;
@@ -73,9 +93,68 @@ $mobile-padding: 35px 10px;
         margin: 0; // Because margin-bottom is set to 1rem for some reason
     }
 
+    .link {
+        text-decoration: none;
+        color: $website-white;
+
+        &:hover {
+            text-decoration: none;
+            color: $website-white;
+        }
+    }
+
     html,
     body {
         background-color: $website-blue;
+    }
+
+    .slide-in-modal {
+        top: 0;
+
+        .slide-in-modal-content {
+            background-color: $website-white;
+            height: 100%;
+            width: 75%;
+        }
+    }
+
+    #menu-modal {
+        @include slide-in-transition();
+        transform: translateX(-100%);
+
+        &.active {
+            transform: translateX(0);
+        }
+
+        #menu-modal-content {
+            overflow-y: scroll;
+            scrollbar-width: none;
+
+            header {
+                background-color: $website-blue;
+                color: $website-white;
+                @include flex-direction(row, space-between, center, 0);
+                padding: $mobile-container-padding;
+            }
+
+            main {
+                padding: $mobile-container-padding;
+                @include flex-direction(column, unset, unset, 5px);
+
+                .section {
+                    @include flex-direction(column, unset, unset, 3px);
+
+                    .title {
+                        border-bottom: thin solid $website-black;
+                        padding: 6px 0;
+                    }
+
+                    div {
+                        padding: 5px 0;
+                    }
+                }
+            }
+        }
     }
 
     .website-header {
@@ -84,6 +163,10 @@ $mobile-padding: 35px 10px;
         padding: $mobile-padding;
         padding-bottom: 5px;
         color: $website-white;
+        box-shadow: 0 0 10px 5px $translucent;
+        z-index: $website-header-z;
+        position: sticky;
+        top: 0;
 
         .row {
             padding: 5px 0;
@@ -166,10 +249,17 @@ $mobile-padding: 35px 10px;
         }
 
         .bottom-wrapper {
-            position: relative;
             overflow: hidden;
-            width: inherit;
+            width: 100%;
             margin: auto;
+            transition: all 0.3s ease;
+
+            &.hide {
+                transform: translateY(-100%);
+                opacity: 0;
+                pointer-events: none;
+                height: 0;
+            }
 
             // This is the actual blur
             &::before,
@@ -211,7 +301,8 @@ $mobile-padding: 35px 10px;
                 gap: 15px;
                 flex-wrap: nowrap;
                 scrollbar-width: none;
-                -ms-overflow-style: none;
+                width: 100%;
+                margin: auto;
 
                 &::-webkit-scrollbar {
                     display: none;
@@ -226,7 +317,7 @@ $mobile-padding: 35px 10px;
 
     .home-products-container {
         background-color: $main-content-color;
-        padding: 20px 10px;
+        padding: $mobile-container-padding;
         padding-bottom: 0px;
         @include flex-direction(column, unset, unset, 30px);
 
@@ -343,7 +434,7 @@ $mobile-padding: 35px 10px;
     }
 
     #mobile-footer-content {
-        padding: 20px 10px;
+        padding: $mobile-container-padding;
         padding-bottom: 5px;
 
         .link-grid-section {
@@ -365,7 +456,7 @@ $mobile-padding: 35px 10px;
             text-align: center;
         }
     }
-    
+
     #laptop-footer-content {
         display: none;
     }

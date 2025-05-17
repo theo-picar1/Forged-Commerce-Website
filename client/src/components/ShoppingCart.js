@@ -1,9 +1,9 @@
 import React, { Component } from "react"
 
-export default class Products extends Component {
+export default class ShoppingCart extends Component {
     render() {
         return (
-            <p>Products page</p>
+            <p>Shopping Cart</p>
         )
     }
 }

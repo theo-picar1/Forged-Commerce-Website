@@ -121,7 +121,9 @@ export default class HomeProducts extends Component {
                 </div>
 
                 <div className="no-more-to-see-section">
-                    <img src="/images/red-up-arrow.png" alt="" />
+                    <a href="#top">
+                        <img src="/images/red-up-arrow.png" alt="" />
+                    </a>
 
                     <p>No more products to see!</p>
                 </div>
