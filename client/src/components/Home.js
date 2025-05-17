@@ -56,6 +56,50 @@ export default class Home extends Component {
 
         modal.classList.remove("active")
     }
+
+    showAutocompleteModal = (e, modalToShow) => {
+        let modal = document.getElementById(modalToShow)
+
+        if(e.target.value !== "" && e.target.value.length > 0) {
+            modal.style.display = "block"
+        }
+        else {
+            modal.style.display = "none"
+        }
+    }
+
+    displayAutocompleteSuggestions = (e) => {
+        let suggestionsString = ""
+        let modal = document.getElementById("product-autocomplete-modal")
+
+        if (e.target.value !== "" && e.target.value.length > 0) {
+            this.state.products.forEach(product => {
+                let match = true
+
+                // For loop of the user's input so that only products that matches the first 'x' characters of the input are shown
+                for (let i = 0; i < e.target.value.length; i++) {
+                    // Immediately skip the product if the current char does not match
+                    if (product["product_name"].toLowerCase().charAt(i) !== e.target.value.toLowerCase().charAt(i)) {
+                        match = false
+
+                        break
+                    }
+                }
+
+                if (match) {
+                    suggestionsString += `
+                        <div>
+                            <img src="/images/search-icon.png" />
+
+                            <p>${product["product_name"]}</p>
+                        </div>
+                    `
+                }
+            })
+        }
+
+        modal.innerHTML = suggestionsString
+    }
     // -----------------------------------------------
 
     // --------------- Helper Functions --------------- 
@@ -87,6 +131,8 @@ export default class Home extends Component {
                     categories={this.state.categories}
                     capitiliseString={this.capitiliseString}
                     openSlideInModal={this.openSlideInModal}
+                    showAutocompleteModal={this.showAutocompleteModal}
+                    displayAutocompleteSuggestions={this.displayAutocompleteSuggestions}
                 />
 
                 <Switch>

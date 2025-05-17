@@ -10,9 +10,13 @@ $placeholder-color: #bbbbbb;
 $main-content-color: #F3F3F3;
 $translucent: #00000085;
 
+// ----- Filters -----
+$website-white-to-black: brightness(0);
+
 // ----- Z-indexes -----
 $slide-in-modal: 100;
 $website-header-z: 5;
+$auto-complete-modal-z: 10;
 
 // ----- Padding -----
 $mobile-padding: 35px 10px;
@@ -164,7 +168,6 @@ $mobile-container-padding: 20px 10px;
         padding-bottom: 5px;
         color: $website-white;
         box-shadow: 0 0 10px 5px $translucent;
-        z-index: $website-header-z;
         position: sticky;
         top: 0;
 
@@ -227,6 +230,8 @@ $mobile-container-padding: 20px 10px;
 
         .middle {
             margin: auto;
+            position: relative;
+            width: inherit;
 
             .searchbar-container {
                 width: 100%;
@@ -246,9 +251,37 @@ $mobile-container-padding: 20px 10px;
                     width: 50px;
                 }
             }
+
+            #product-autocomplete-modal {
+                position: absolute; // Fixed position won't take the parent's padding into account
+                background-color: $website-white;
+                width: inherit;
+                color: $website-black;
+                height: auto;
+                margin-top: 40px;
+                z-index: $auto-complete-modal-z;
+                border-radius: 10px;
+                box-shadow: 0 0 15px 4px $translucent;
+                overflow: hidden;
+
+                div {
+                    @include flex-direction(row, unset, center, 15px);
+                    padding: 6px 10px;
+
+                    &:hover {
+                        cursor: pointer;
+                        background-color: $website-light-gray;
+                    }
+
+                    img {
+                        filter: $website-white-to-black;
+                    }
+                }
+            }
         }
 
         .bottom-wrapper {
+            position: relative;
             overflow: hidden;
             width: 100%;
             margin: auto;
