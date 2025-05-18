@@ -15,19 +15,21 @@ export default class Home extends Component {
         this.state = {
             products: [],
             categories: [],
-            bestSellerCount: 0
+            bestSellerCount: 0,
+            nameToFilterBy: "",
+            cateogryToFilterBy: ""
         }
     }
 
     componentDidMount() {
         let url = "/json/products.json"
-        let initCategories = []
+        let initCategories = [] // Array that just acts as a placeholder until we get all the unique cateogries from it
         let bestSellerCounter = 0
 
         fetch(url).then(response => response.json()).then(data => {
             data.forEach(product => {
                 if (product["category"] && product["category"].length > 0) {
-                    initCategories.push(...product["category"])
+                    initCategories.push(...product["category"]) // Push every single category to the placeholder array
                 }
 
                 if (product["sold"] > 250) {
@@ -38,7 +40,7 @@ export default class Home extends Component {
             this.setState({
                 products: data,
                 categories: [...new Set(initCategories)],
-                bestSellerCount: bestSellerCounter
+                bestSellerCount: bestSellerCounter // Don't remember why I even have this
             })
         })
     }
@@ -56,7 +58,62 @@ export default class Home extends Component {
 
         modal.classList.remove("active")
     }
+
+    showAutocompleteModal = (e, modalToShow) => {
+        let modal = document.getElementById(modalToShow)
+
+        if(e.target.value !== "" && e.target.value.length > 0) {
+            modal.style.display = "block"
+        }
+        else {
+            modal.style.display = "none"
+        }
+    }
     // -----------------------------------------------
+
+    // --------------- Filter Functions ---------------
+    displayAutocompleteSuggestions = (e) => {
+        let suggestionsString = ""
+        let modal = document.getElementById("product-autocomplete-modal")
+        let found = false // To avoid unnecessary box shadow if there are no matching results
+
+        if (e.target.value !== "" && e.target.value.length > 0) {
+            this.state.products.forEach(product => {
+                let match = true
+
+                // For loop of the user's input so that only products that matches the first 'x' characters of the input are shown
+                for (let i = 0; i < e.target.value.length; i++) {
+                    // Immediately skip the product if the current char does not match
+                    if (product["product_name"].toLowerCase().charAt(i) !== e.target.value.toLowerCase().charAt(i)) {
+                        match = false
+
+                        break
+                    }
+                }
+
+                if (match) {
+                    found = true 
+                    modal.style.boxShadow = "0 2px 5px 4px rgba(0, 0, 0, 0.5)"
+
+                    suggestionsString += `
+                        <div>
+                            <img src="/images/search-icon.png" />
+
+                            <p>${product["product_name"]}</p>
+                        </div>
+                    `
+                }
+            })
+        }
+
+        // Don't add box shadow if there was nothing
+        if(!found) {
+            modal.style.boxShadow = "none"
+        }
+
+        modal.innerHTML = suggestionsString
+    }
+    // ------------------------------------------------
 
     // --------------- Helper Functions --------------- 
     capitiliseString(string) {
@@ -87,6 +144,8 @@ export default class Home extends Component {
                     categories={this.state.categories}
                     capitiliseString={this.capitiliseString}
                     openSlideInModal={this.openSlideInModal}
+                    showAutocompleteModal={this.showAutocompleteModal}
+                    displayAutocompleteSuggestions={this.displayAutocompleteSuggestions}
                 />
 
                 <Switch>
@@ -107,7 +166,9 @@ export default class Home extends Component {
                     </Route>
 
                     <Route exact path="/products">
-                        <Products />
+                        <Products 
+                            products={this.state.products}
+                        />
                     </Route>
                 </Switch>
 
