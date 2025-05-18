@@ -9,6 +9,7 @@ $invisible: #00000000;
 $placeholder-color: #bbbbbb;
 $main-content-color: #F3F3F3;
 $translucent: #00000085;
+$link-color: #2163A2;
 
 // ----- Filters -----
 $website-white-to-black: brightness(0);
@@ -116,7 +117,7 @@ $mobile-container-padding: 20px 10px;
         top: 0;
 
         .slide-in-modal-content {
-            background-color: $website-white;
+            background-color: $main-content-color;
             height: 100%;
             width: 75%;
         }
@@ -178,6 +179,14 @@ $mobile-container-padding: 20px 10px;
         .top {
             @include flex-direction(row, space-between, center, 0);
             margin: auto;
+            transition: all 0.3s ease;
+
+            &.hide {
+                transform: translateY(-100%);
+                opacity: 0;
+                pointer-events: none;
+                height: 0;
+            }
 
             .left {
                 @include flex-direction(row, unset, center, 10px);
@@ -254,15 +263,15 @@ $mobile-container-padding: 20px 10px;
 
             #product-autocomplete-modal {
                 position: absolute; // Fixed position won't take the parent's padding into account
-                background-color: $website-white;
+                background-color: $main-content-color;
                 width: inherit;
                 color: $website-black;
                 height: auto;
                 margin-top: 40px;
                 z-index: $auto-complete-modal-z;
                 border-radius: 10px;
-                box-shadow: 0 0 15px 4px $translucent;
                 overflow: hidden;
+                display: none;
 
                 div {
                     @include flex-direction(row, unset, center, 15px);
@@ -462,6 +471,122 @@ $mobile-container-padding: 20px 10px;
                 border-radius: 50%;
                 border: 2px solid $website-red;
                 padding: 2px;
+            }
+        }
+    }
+
+    .products-page-container {
+        background-color: $main-content-color;
+        padding: $mobile-container-padding;
+        @include flex-direction(column, unset, unset, 15px);
+
+        .filter-tools {
+            @include flex-direction(row, space-between, center, 0);
+
+            .left {
+
+                .filter-button {
+                    @include flex-direction(row, unset, center, 5px);
+                    background-color: $website-red;
+                    padding: 5px 10px;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: bold;
+
+                    img {
+                        width: 18px;
+                        height: auto;
+                    }
+                }
+            }
+
+            .right {
+                @include flex-direction(row, space-between, center, 8px);
+
+                select {
+                    outline: none;
+                    padding: 5px;
+                }
+
+                img {
+                    width: 32px;
+                    height: auto;
+                }
+            }
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+
+            .product {
+                width: 100%;
+
+                .product-image-container {
+                    aspect-ratio: 145/150;
+                    @include flex-direction(unset, center, center, 0);
+                    background-color: $website-light-gray;
+                    border-radius: 10px;
+
+                    img {
+                        width: 75px;
+                        height: auto;
+                    }
+                }
+
+                .product-details {
+                    @include flex-direction(column, unset, unset, 5px);
+                    width: 100%;
+                    
+                    .product-name {
+                        margin-top: 5px;
+                        line-height: 0.95;
+                        font-size: 14px;
+                        color: $link-color;
+                    }
+
+                    .product-rating {
+                        @include flex-direction(row, unset, center, 3px);
+
+                        img {
+                            width: 12px;
+                            height: auto;
+                        }
+
+                        p {
+                            font-size: 12px;
+                            color: $website-gray;
+                        }
+                    }
+
+                    .stock-notice {
+                        font-size: 12px;
+                        color: $website-red;
+                    }
+
+                    .product-bottom-section {
+                        @include flex-direction(row, space-between, flex-start, 0);
+
+                        p {
+                            color: $website-red;
+                            font-weight: bold;
+                        }
+
+                        .add-to-shopping-cart-button {
+                            width: 50px;
+                            padding: 5px 0;
+                            border-radius: 5px;
+                            background-color: $website-blue;
+                            @include flex-direction(unset, center, center, 0);
+
+                            img {
+                                width: 18px;
+                                height: auto;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

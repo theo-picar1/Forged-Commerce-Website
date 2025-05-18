@@ -16,17 +16,20 @@ export default class Header extends Component {
         this.bottomRef.current.addEventListener("scroll", this.updateScrollShadows)
         window.addEventListener("resize", this.updateScrollShadows)
 
-        let bottomWrapper = document.querySelector('.bottom-wrapper')
+        let bottomSection = document.querySelector('.bottom-wrapper')
+        let topSection = document.querySelector('.top')
 
         // If the scrollY position is 10px down, hide the categories section in the header to minimise content
         window.addEventListener('scroll', () => {
             let scrollY = window.scrollY
 
             if (scrollY > 10) {
-                bottomWrapper.classList.add('hide')
+                bottomSection.classList.add('hide')
+                topSection.classList.add('hide')
             }
             else {
-                bottomWrapper.classList.remove('hide')
+                bottomSection.classList.remove('hide')
+                topSection.classList.remove('hide')
             }
         })
     }

@@ -15,19 +15,21 @@ export default class Home extends Component {
         this.state = {
             products: [],
             categories: [],
-            bestSellerCount: 0
+            bestSellerCount: 0,
+            nameToFilterBy: "",
+            cateogryToFilterBy: ""
         }
     }
 
     componentDidMount() {
         let url = "/json/products.json"
-        let initCategories = []
+        let initCategories = [] // Array that just acts as a placeholder until we get all the unique cateogries from it
         let bestSellerCounter = 0
 
         fetch(url).then(response => response.json()).then(data => {
             data.forEach(product => {
                 if (product["category"] && product["category"].length > 0) {
-                    initCategories.push(...product["category"])
+                    initCategories.push(...product["category"]) // Push every single category to the placeholder array
                 }
 
                 if (product["sold"] > 250) {
@@ -38,7 +40,7 @@ export default class Home extends Component {
             this.setState({
                 products: data,
                 categories: [...new Set(initCategories)],
-                bestSellerCount: bestSellerCounter
+                bestSellerCount: bestSellerCounter // Don't remember why I even have this
             })
         })
     }
@@ -67,10 +69,13 @@ export default class Home extends Component {
             modal.style.display = "none"
         }
     }
+    // -----------------------------------------------
 
+    // --------------- Filter Functions ---------------
     displayAutocompleteSuggestions = (e) => {
         let suggestionsString = ""
         let modal = document.getElementById("product-autocomplete-modal")
+        let found = false // To avoid unnecessary box shadow if there are no matching results
 
         if (e.target.value !== "" && e.target.value.length > 0) {
             this.state.products.forEach(product => {
@@ -87,6 +92,9 @@ export default class Home extends Component {
                 }
 
                 if (match) {
+                    found = true 
+                    modal.style.boxShadow = "0 2px 5px 4px rgba(0, 0, 0, 0.5)"
+
                     suggestionsString += `
                         <div>
                             <img src="/images/search-icon.png" />
@@ -98,9 +106,14 @@ export default class Home extends Component {
             })
         }
 
+        // Don't add box shadow if there was nothing
+        if(!found) {
+            modal.style.boxShadow = "none"
+        }
+
         modal.innerHTML = suggestionsString
     }
-    // -----------------------------------------------
+    // ------------------------------------------------
 
     // --------------- Helper Functions --------------- 
     capitiliseString(string) {
@@ -153,7 +166,9 @@ export default class Home extends Component {
                     </Route>
 
                     <Route exact path="/products">
-                        <Products />
+                        <Products 
+                            products={this.state.products}
+                        />
                     </Route>
                 </Switch>
 
