@@ -38,8 +38,9 @@ export default class Products extends Component {
 
             Array.from(imageContainers).map(container => {
                 container.style.borderRadius = "0"
-                container.style.width = "85px"
-                container.style.height = "100px"
+                container.style.width = "150px"
+                container.style.height = "inherit"
+                container.style.aspectRatio = null
 
                 let image = container.querySelector("img")
 
