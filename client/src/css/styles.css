@@ -215,7 +215,7 @@
   }
   .website-header .middle #product-autocomplete-modal {
     position: absolute;
-    background-color: #F3F3F3;
+    background-color: #FFFFFF;
     width: inherit;
     color: #000000;
     height: auto;
@@ -301,6 +301,9 @@
     -webkit-appearance: none;
        -moz-appearance: none;
             appearance: none;
+  }
+  .website-header .bottom-wrapper .bottom .category-radio input:checked + p {
+    color: #FE0404;
   }
   .website-header .bottom-wrapper .bottom .category-radio p {
     white-space: nowrap;

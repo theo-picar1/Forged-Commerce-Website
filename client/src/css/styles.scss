@@ -263,7 +263,7 @@ $mobile-container-padding: 20px 10px;
 
             #product-autocomplete-modal {
                 position: absolute; // Fixed position won't take the parent's padding into account
-                background-color: $main-content-color;
+                background-color: $website-white;
                 width: inherit;
                 color: $website-black;
                 height: auto;
@@ -357,6 +357,10 @@ $mobile-container-padding: 20px 10px;
                     input {
                         position: fixed;
                         appearance: none;
+
+                        &:checked + p {
+                            color: $website-red;
+                        }
                     }
                     
                     p {

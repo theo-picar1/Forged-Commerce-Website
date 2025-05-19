@@ -119,9 +119,10 @@ class Header extends Component {
                         <div className="bottom" ref={this.bottomRef}>
                             <label className="category-radio">
                                 <input 
-                                    type="checkbox" 
+                                    type="radio" 
                                     className="header-category" 
                                     value="" 
+                                    name="header-category"
                                     onClick={ (e) => filterProductsByHeaderCategory(e)}/>
 
                                 <p>All</p>
@@ -130,8 +131,9 @@ class Header extends Component {
                             {categories.map(category =>
                                 <label className="category-radio" key={category}> 
                                     <input 
-                                        type="checkbox" 
+                                        type="radio" 
                                         className="header-category" 
+                                        name="header-category"
                                         value={category} 
                                         onClick={ (e) => filterProductsByHeaderCategory(e)}/>
 
