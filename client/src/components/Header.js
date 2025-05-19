@@ -5,6 +5,7 @@ export default class Header extends Component {
     constructor(props) {
         super(props)
         this.bottomRef = createRef()
+
         this.state = {
             atStart: true,
             atEnd: false
@@ -53,7 +54,8 @@ export default class Header extends Component {
     }
 
     render() {
-        const { categories, capitiliseString, openSlideInModal, showAutocompleteModal, displayAutocompleteSuggestions } = this.props
+        // To stop saying this.props and this.state EVERY SINGLE TIME
+        const { categories, capitiliseString, openSlideInModal, displayAutocompleteSuggestions, productSearchValue, suggestions, completeAutocomplete, filterProductsBySearchValue } = this.props
         const { atStart, atEnd } = this.state
 
         return (
@@ -83,17 +85,27 @@ export default class Header extends Component {
 
                     <div className="middle row">
                         <div className="searchbar-container">
-                            <input type="text" placeholder="Search for products" autoComplete="off" onChange={e => { 
-                                showAutocompleteModal(e, "product-autocomplete-modal") 
-                                displayAutocompleteSuggestions(e) 
-                            }} />
+                            <input id="product-searchbar" type="text" placeholder="Search for products" autoComplete="off" value={productSearchValue} 
+                                onChange={e => displayAutocompleteSuggestions(e) }
+                                onKeyDown={e => filterProductsBySearchValue(e)}
+                            />
 
                             <div>
                                 <img src="/images/search-icon.png" alt="Search icon" />
                             </div>
                         </div>
 
-                        <div id="product-autocomplete-modal"></div>
+                        { suggestions.length > 0 && (
+                            <div id="product-autocomplete-modal">
+                                { suggestions.map(product => 
+                                    <div key={product["product_id"]} onClick={() => completeAutocomplete(product["product_name"])}>
+                                        <img src="/images/search-icon.png" />
+
+                                        <p>{product["product_name"]}</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className={`bottom-wrapper row ${atStart ? "at-start" : ""} ${atEnd ? "at-end" : ""}`}>

@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Switch, Route } from "react-router-dom"
+import { Switch, Route, withRouter } from "react-router-dom"
 
 import Header from './Header'
 import Footer from "./Footer"
@@ -8,16 +8,19 @@ import Menu from "./Menu"
 import ShoppingCart from "./ShoppingCart"
 import Products from "./Products"
 
-export default class Home extends Component {
+class Home extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
             products: [],
+            filteredProducts: [],
             categories: [],
             bestSellerCount: 0,
             nameToFilterBy: "",
-            cateogryToFilterBy: ""
+            cateogryToFilterBy: "",
+            autocompleteSuggestions: [],
+            productSearchValue: ""
         }
     }
 
@@ -39,6 +42,7 @@ export default class Home extends Component {
 
             this.setState({
                 products: data,
+                filteredProducts: data,
                 categories: [...new Set(initCategories)],
                 bestSellerCount: bestSellerCounter // Don't remember why I even have this
             })
@@ -59,59 +63,49 @@ export default class Home extends Component {
         modal.classList.remove("active")
     }
 
-    showAutocompleteModal = (e, modalToShow) => {
-        let modal = document.getElementById(modalToShow)
-
-        if(e.target.value !== "" && e.target.value.length > 0) {
-            modal.style.display = "block"
-        }
-        else {
-            modal.style.display = "none"
-        }
+    // This fills out the searchbar with the value of the suggestion the user clicked on
+    completeAutocomplete = (value) => {
+        this.setState({
+            productSearchValue: value,
+            autocompleteSuggestions: [] // Initialise back to empty array so that autocomplete modal hides after clicking on one of the suggestions
+        })
     }
     // -----------------------------------------------
 
     // --------------- Filter Functions ---------------
     displayAutocompleteSuggestions = (e) => {
-        let suggestionsString = ""
-        let modal = document.getElementById("product-autocomplete-modal")
-        let found = false // To avoid unnecessary box shadow if there are no matching results
+        let suggestions = []
 
         if (e.target.value !== "" && e.target.value.length > 0) {
             this.state.products.forEach(product => {
-                let match = true
-
-                // For loop of the user's input so that only products that matches the first 'x' characters of the input are shown
-                for (let i = 0; i < e.target.value.length; i++) {
-                    // Immediately skip the product if the current char does not match
-                    if (product["product_name"].toLowerCase().charAt(i) !== e.target.value.toLowerCase().charAt(i)) {
-                        match = false
-
-                        break
-                    }
-                }
-
-                if (match) {
-                    found = true 
-                    modal.style.boxShadow = "0 2px 5px 4px rgba(0, 0, 0, 0.5)"
-
-                    suggestionsString += `
-                        <div>
-                            <img src="/images/search-icon.png" />
-
-                            <p>${product["product_name"]}</p>
-                        </div>
-                    `
+                // Skip the product if the first few chars of product does not start with current user input
+                if (product["product_name"].toLowerCase().startsWith(e.target.value.toLowerCase())) {
+                    suggestions.push(product)
                 }
             })
         }
 
-        // Don't add box shadow if there was nothing
-        if(!found) {
-            modal.style.boxShadow = "none"
-        }
+        this.setState({
+            autocompleteSuggestions: suggestions,
+            productSearchValue: e.target.value
+        })
+    }
 
-        modal.innerHTML = suggestionsString
+    filterProductsBySearchValue = e => {
+        if (e.key === 'Enter') {
+            let matched = []
+
+            this.state.products.map(product => {
+                if (product["product_name"].startsWith(this.state.productSearchValue)) {
+                    matched.push(product)
+                }
+            })
+
+            // After the user presses enter, it will redirect them to the page where the filtered products will be shown
+            this.setState({ filteredProducts: matched }, () => {
+                this.props.history.push('/products') 
+            })
+        }
     }
     // ------------------------------------------------
 
@@ -146,8 +140,13 @@ export default class Home extends Component {
                     openSlideInModal={this.openSlideInModal}
                     showAutocompleteModal={this.showAutocompleteModal}
                     displayAutocompleteSuggestions={this.displayAutocompleteSuggestions}
+                    suggestions={this.state.autocompleteSuggestions}
+                    productSearchValue={this.state.productSearchValue}
+                    completeAutocomplete={this.completeAutocomplete}
+                    filterProductsBySearchValue={this.filterProductsBySearchValue}
                 />
 
+                {/* This is so that I can switch between different components while still keeping the header and footer components */}
                 <Switch>
                     <Route exact path="/">
                         <HomeProducts
@@ -166,8 +165,8 @@ export default class Home extends Component {
                     </Route>
 
                     <Route exact path="/products">
-                        <Products 
-                            products={this.state.products}
+                        <Products
+                            filteredProducts={this.state.filteredProducts}
                         />
                     </Route>
                 </Switch>
@@ -177,3 +176,5 @@ export default class Home extends Component {
         )
     }
 }
+
+export default withRouter(Home) // For redirecting purposes. e.g. when user presses 'Enter' in searchbar, it redirects them to the actual products page

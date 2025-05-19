@@ -271,7 +271,7 @@ $mobile-container-padding: 20px 10px;
                 z-index: $auto-complete-modal-z;
                 border-radius: 10px;
                 overflow: hidden;
-                display: none;
+                box-shadow: 0 3px 10px 2px $translucent;
 
                 div {
                     @include flex-direction(row, unset, center, 15px);
@@ -480,6 +480,10 @@ $mobile-container-padding: 20px 10px;
         padding: $mobile-container-padding;
         @include flex-direction(column, unset, unset, 15px);
 
+        #search-results-text {
+            display: none;
+        }
+
         .filter-tools {
             @include flex-direction(row, space-between, center, 0);
 
@@ -515,7 +519,7 @@ $mobile-container-padding: 20px 10px;
             }
         }
 
-        main {
+        #products-section {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
@@ -588,6 +592,11 @@ $mobile-container-padding: 20px 10px;
                     }
                 }
             }
+        }
+
+        .no-matching-products {
+            text-align: center;
+            margin: 75px 0;
         }
     }
 

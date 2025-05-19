@@ -26,7 +26,7 @@ export default class Products extends Component {
         if (view === "list") {
             products.style.display = "flex"
             products.style.flexDirection = "column"
-            products.style.gap = "10px" 
+            products.style.gap = "10px"
 
             Array.from(cards).map(card => {
                 card.style.display = "flex"
@@ -91,14 +91,47 @@ export default class Products extends Component {
             <img key={i} src="/images/filled-star-icon.png" alt="" />
         ))
     }
+
+    createProductCard(product) {
+        return (
+            <div className="product" key={product["product_id"]}>
+                {this.createStarsForProduct(product)}
+                <div className="product-image-container">
+                    <img src={product["product_images"][0]} />
+                </div>
+
+                <div className="product-details">
+                    <p className="product-name">{product["product_name"]}</p>
+
+                    <div className="product-rating">
+                        {this.createStarsForProduct(product["product_rating"])}
+
+                        <p>{product["no_of_ratings"]}</p>
+                    </div>
+
+                    {product["stock_quantity"] < 15 ? (
+                        <p className="stock-notice">Only {product["stock_quantity"]} left!</p>
+                    ) : null
+                    }
+
+                    <div className="product-bottom-section">
+                        <p>€{product["price"]}</p>
+
+                        <div className="add-to-shopping-cart-button">
+                            <img src="/images/shopping-cart.png" alt="Add to shopping cart button" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     render() {
-        const { products } = this.props
+        const { filteredProducts } = this.props
         const { gridView } = this.state
 
         return (
             <div className="products-page-container">
-                <h6>Search results for ""</h6>
-
                 <div className="filter-tools">
                     <div className="left">
                         <div className="filter-button">
@@ -123,39 +156,13 @@ export default class Products extends Component {
                     </div>
                 </div>
 
-                <main id="products-section">
-                    {products.map(product =>
-                        <div className="product" key={product["product_id"]}>
-                            {this.createStarsForProduct(product)}
-                            <div className="product-image-container">
-                                <img src={product["product_images"][0]} />
-                            </div>
-
-                            <div className="product-details">
-                                <p className="product-name">{product["product_name"]}</p>
-
-                                <div className="product-rating">
-                                    {this.createStarsForProduct(product["product_rating"])}
-
-                                    <p>{product["no_of_ratings"]}</p>
-                                </div>
-
-                                {product["stock_quantity"] < 15 ? (
-                                    <p className="stock-notice">Only {product["stock_quantity"]} left!</p>
-                                ) : null
-                                }
-
-                                <div className="product-bottom-section">
-                                    <p>€{product["price"]}</p>
-
-                                    <div className="add-to-shopping-cart-button">
-                                        <img src="/images/shopping-cart.png" alt="Add to shopping cart button" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </main>
+                {filteredProducts.length > 0 ? (
+                    <main id="products-section">
+                        { filteredProducts.map(product => this.createProductCard(product)) }
+                    </main>
+                ) : (
+                    <h3 className="no-matching-products">No matching products found!</h3>
+                )}
             </div>
         )
     }

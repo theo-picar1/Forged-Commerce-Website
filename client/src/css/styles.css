@@ -223,7 +223,7 @@
     z-index: 10;
     border-radius: 10px;
     overflow: hidden;
-    display: none;
+    box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.5215686275);
   }
   .website-header .middle #product-autocomplete-modal div {
     display: flex;
@@ -438,6 +438,9 @@
     align-items: unset;
     gap: 15px;
   }
+  .products-page-container #search-results-text {
+    display: none;
+  }
   .products-page-container .filter-tools {
     display: flex;
     flex-direction: row;
@@ -476,15 +479,15 @@
     width: 32px;
     height: auto;
   }
-  .products-page-container main {
+  .products-page-container #products-section {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
   }
-  .products-page-container main .product {
+  .products-page-container #products-section .product {
     width: 100%;
   }
-  .products-page-container main .product .product-image-container {
+  .products-page-container #products-section .product .product-image-container {
     aspect-ratio: 145/150;
     display: flex;
     flex-direction: unset;
@@ -494,11 +497,11 @@
     background-color: #D9D9D9;
     border-radius: 10px;
   }
-  .products-page-container main .product .product-image-container img {
+  .products-page-container #products-section .product .product-image-container img {
     width: 75px;
     height: auto;
   }
-  .products-page-container main .product .product-details {
+  .products-page-container #products-section .product .product-details {
     display: flex;
     flex-direction: column;
     justify-content: unset;
@@ -506,43 +509,43 @@
     gap: 5px;
     width: 100%;
   }
-  .products-page-container main .product .product-details .product-name {
+  .products-page-container #products-section .product .product-details .product-name {
     margin-top: 5px;
     line-height: 0.95;
     font-size: 14px;
     color: #2163A2;
   }
-  .products-page-container main .product .product-details .product-rating {
+  .products-page-container #products-section .product .product-details .product-rating {
     display: flex;
     flex-direction: row;
     justify-content: unset;
     align-items: center;
     gap: 3px;
   }
-  .products-page-container main .product .product-details .product-rating img {
+  .products-page-container #products-section .product .product-details .product-rating img {
     width: 12px;
     height: auto;
   }
-  .products-page-container main .product .product-details .product-rating p {
+  .products-page-container #products-section .product .product-details .product-rating p {
     font-size: 12px;
     color: #808080;
   }
-  .products-page-container main .product .product-details .stock-notice {
+  .products-page-container #products-section .product .product-details .stock-notice {
     font-size: 12px;
     color: #FE0404;
   }
-  .products-page-container main .product .product-details .product-bottom-section {
+  .products-page-container #products-section .product .product-details .product-bottom-section {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
     gap: 0;
   }
-  .products-page-container main .product .product-details .product-bottom-section p {
+  .products-page-container #products-section .product .product-details .product-bottom-section p {
     color: #FE0404;
     font-weight: bold;
   }
-  .products-page-container main .product .product-details .product-bottom-section .add-to-shopping-cart-button {
+  .products-page-container #products-section .product .product-details .product-bottom-section .add-to-shopping-cart-button {
     width: 50px;
     padding: 5px 0;
     border-radius: 5px;
@@ -553,9 +556,13 @@
     align-items: center;
     gap: 0;
   }
-  .products-page-container main .product .product-details .product-bottom-section .add-to-shopping-cart-button img {
+  .products-page-container #products-section .product .product-details .product-bottom-section .add-to-shopping-cart-button img {
     width: 18px;
     height: auto;
+  }
+  .products-page-container .no-matching-products {
+    text-align: center;
+    margin: 75px 0;
   }
   #mobile-footer-content {
     padding: 20px 10px;
