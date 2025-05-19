@@ -132,7 +132,7 @@ class Header extends Component {
                                     <input 
                                         type="checkbox" 
                                         className="header-category" 
-                                        value={category}
+                                        value={category} 
                                         onClick={ (e) => filterProductsByHeaderCategory(e)}/>
 
                                     <p>{capitiliseString(category)}</p>

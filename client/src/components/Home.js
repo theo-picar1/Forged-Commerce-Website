@@ -19,7 +19,8 @@ class Home extends Component {
             bestSellerCount: 0,
             categoryToFilterBy: "",
             autocompleteSuggestions: [],
-            productSearchValue: ""
+            productSearchValue: "",
+            currentView: "grid"
         }
     }
 
@@ -115,6 +116,7 @@ class Home extends Component {
         if (e.target.value === "") {
             this.setState({ filteredProducts: this.state.products }, () => {
                 this.props.history.push("/products")
+                this.switchProductView(this.state.currentView) // This is because scss is not applied to any products that were not sh
             })
         }
         else {
@@ -126,6 +128,7 @@ class Home extends Component {
 
             this.setState({ filteredProducts: matched }, () => {
                 this.props.history.push("/products")
+                this.switchProductView(this.state.currentView)
             })
         }
     }
@@ -146,6 +149,83 @@ class Home extends Component {
     //     })
     // }
     // -------------------------------------------------
+
+    // --------------- Functions mainly for Products.js ---------------
+    switchProductViewImage = (view) => {
+        this.setState({
+            currentView: view
+        }, () => {
+            this.switchProductView(view)
+        })
+    }
+
+    switchProductView(view) {
+        let products = document.getElementById("products-section")
+        let cards = document.getElementsByClassName("product")
+        let imageContainers = document.getElementsByClassName("product-image-container")
+        let addToCartBtn = document.getElementsByClassName("add-to-shopping-cart-button")
+
+        if (view === "list") {
+            products.style.display = "flex"
+            products.style.flexDirection = "column"
+            products.style.gap = "10px"
+
+            Array.from(cards).map(card => {
+                card.style.display = "flex"
+                card.style.flexDirection = "row"
+                card.style.gap = "15px"
+                card.style.backgroundColor = "#ffffff"
+                card.style.padding = "15px"
+            })
+
+            Array.from(imageContainers).map(container => {
+                container.style.borderRadius = "0"
+                container.style.width = "150px"
+                container.style.height = "inherit"
+                container.style.aspectRatio = null
+
+                let image = container.querySelector("img")
+
+                image.style.width = "30px"
+            })
+
+            Array.from(addToCartBtn).map(button => {
+                button.style.borderRadius = "50%"
+                button.style.width = "40px"
+                button.style.height = "40px"
+                button.style.padding = "0"
+            })
+        }
+        else {
+            products.style.display = "grid"
+
+            Array.from(cards).map(card => {
+                card.style.flexDirection = "column"
+                card.style.gap = "5px"
+                card.style.backgroundColor = "#f3f3f3"
+                card.style.padding = "0"
+            })
+
+            Array.from(imageContainers).map(container => {
+                container.style.borderRadius = "10px"
+                container.style.aspectRatio = "145 / 150"
+                container.style.height = "auto"
+                container.style.width = "100%";
+
+                let image = container.querySelector("img")
+
+                image.style.width = "75px"
+            })
+
+            Array.from(addToCartBtn).map(button => {
+                button.style.borderRadius = "5px"
+                button.style.width = "50px"
+                button.style.height = "auto"
+                button.style.padding = "5px 0"
+            })
+        }
+    }
+    // ----------------------------------------------------------------
 
     render() {
         return (
@@ -190,6 +270,9 @@ class Home extends Component {
                     <Route exact path="/products">
                         <Products
                             filteredProducts={this.state.filteredProducts}
+                            switchProductView={this.switchProductView}
+                            switchProductViewImage={this.switchProductViewImage}
+                            currentView={this.state.currentView}
                         />
                     </Route>
                 </Switch>
