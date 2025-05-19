@@ -17,8 +17,7 @@ class Home extends Component {
             filteredProducts: [],
             categories: [],
             bestSellerCount: 0,
-            nameToFilterBy: "",
-            cateogryToFilterBy: "",
+            categoryToFilterBy: "",
             autocompleteSuggestions: [],
             productSearchValue: ""
         }
@@ -103,7 +102,30 @@ class Home extends Component {
 
             // After the user presses enter, it will redirect them to the page where the filtered products will be shown
             this.setState({ filteredProducts: matched }, () => {
-                this.props.history.push('/products') 
+                this.props.history.push('/products')
+            })
+        }
+    }
+
+    // This category filters only allows the user to filter by one category. Multiple categories will be a separate thing with a specialised modal
+    filterProductsByHeaderCategory = e => {
+        let matched = []
+
+        // Just set the filteredProducts to every single product if the user clicks the All option (which has a value of "")
+        if (e.target.value === "") {
+            this.setState({ filteredProducts: this.state.products }, () => {
+                this.props.history.push("/products")
+            })
+        }
+        else {
+            this.state.products.map(product => {
+                if (product["category"].includes(e.target.value)) {
+                    matched.push(product)
+                }
+            })
+
+            this.setState({ filteredProducts: matched }, () => {
+                this.props.history.push("/products")
             })
         }
     }
@@ -144,6 +166,7 @@ class Home extends Component {
                     productSearchValue={this.state.productSearchValue}
                     completeAutocomplete={this.completeAutocomplete}
                     filterProductsBySearchValue={this.filterProductsBySearchValue}
+                    filterProductsByHeaderCategory={this.filterProductsByHeaderCategory}
                 />
 
                 {/* This is so that I can switch between different components while still keeping the header and footer components */}

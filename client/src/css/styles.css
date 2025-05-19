@@ -85,7 +85,7 @@
     width: 100%;
     background-color: #2C3A57;
     padding: 35px 10px;
-    padding-bottom: 5px;
+    padding-bottom: 0px;
     color: #FFFFFF;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5215686275);
     position: sticky;
@@ -288,11 +288,21 @@
     scrollbar-width: none;
     width: 100%;
     margin: auto;
+    position: relative;
   }
   .website-header .bottom-wrapper .bottom::-webkit-scrollbar {
     display: none;
   }
-  .website-header .bottom-wrapper .bottom p {
+  .website-header .bottom-wrapper .bottom .category-radio {
+    position: relative;
+  }
+  .website-header .bottom-wrapper .bottom .category-radio input {
+    position: fixed;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+  }
+  .website-header .bottom-wrapper .bottom .category-radio p {
     white-space: nowrap;
   }
   .home-products-container {
