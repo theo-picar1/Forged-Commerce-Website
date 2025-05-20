@@ -17,6 +17,7 @@ class Header extends Component {
         this.bottomRef.current.addEventListener("scroll", this.updateScrollShadows)
         window.addEventListener("resize", this.updateScrollShadows)
 
+        // JS logic that blurs either side depending on how far the user has scrolled in .bottom-wrapper. Might remove this
         let bottomSection = document.querySelector('.bottom-wrapper')
         let topSection = document.querySelector('.top')
 

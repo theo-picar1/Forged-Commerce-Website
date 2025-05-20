@@ -44,7 +44,7 @@ class Home extends Component {
                 products: data,
                 filteredProducts: data,
                 categories: [...new Set(initCategories)],
-                bestSellerCount: bestSellerCounter // Don't remember why I even have this
+                bestSellerCount: bestSellerCounter, // Don't remember why I even have this
             })
         })
     }
@@ -102,8 +102,11 @@ class Home extends Component {
             })
 
             // After the user presses enter, it will redirect them to the page where the filtered products will be shown
-            this.setState({ filteredProducts: matched }, () => {
+            this.setState({
+                filteredProducts: matched
+            }, () => {
                 this.props.history.push('/products')
+                this.switchProductView(this.state.currentView) 
             })
         }
     }
@@ -114,9 +117,11 @@ class Home extends Component {
 
         // Just set the filteredProducts to every single product if the user clicks the All option (which has a value of "")
         if (e.target.value === "") {
-            this.setState({ filteredProducts: this.state.products }, () => {
+            this.setState({
+                filteredProducts: this.state.products
+            }, () => {
                 this.props.history.push("/products")
-                this.switchProductView(this.state.currentView) // This is because scss is not applied to any products that were not sh
+                this.switchProductView(this.state.currentView) // This is because scss is not applied to any products that were not shown initially during filtering process
             })
         }
         else {
@@ -126,7 +131,9 @@ class Home extends Component {
                 }
             })
 
-            this.setState({ filteredProducts: matched }, () => {
+            this.setState({
+                filteredProducts: matched
+            }, () => {
                 this.props.history.push("/products")
                 this.switchProductView(this.state.currentView)
             })
@@ -154,13 +161,18 @@ class Home extends Component {
     switchProductViewImage = (view) => {
         this.setState({
             currentView: view
-        }, () => {
-            this.switchProductView(view)
-        })
+        }, () => this.switchProductView(view))
     }
 
-    switchProductView(view) {
+    switchProductView = (view) => {
         let products = document.getElementById("products-section")
+
+        // To stop app from breaking because the html stuff in Products has not loaded yet. This is cuased when navigating to Products when in a different component
+        // It works normal when calling switchProductViewImage from inside the Products.js component
+        if(!products) {
+            return
+        }
+
         let cards = document.getElementsByClassName("product")
         let imageContainers = document.getElementsByClassName("product-image-container")
         let addToCartBtn = document.getElementsByClassName("add-to-shopping-cart-button")
@@ -196,7 +208,7 @@ class Home extends Component {
                 button.style.padding = "0"
             })
         }
-        else {
+        else if(view === "grid") {
             products.style.display = "grid"
 
             Array.from(cards).map(card => {
@@ -256,6 +268,7 @@ class Home extends Component {
                             products={this.state.products}
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
+                            currentView={this.state.currentView}
                         />
                     </Route>
 
@@ -270,7 +283,6 @@ class Home extends Component {
                     <Route exact path="/products">
                         <Products
                             filteredProducts={this.state.filteredProducts}
-                            switchProductView={this.switchProductView}
                             switchProductViewImage={this.switchProductViewImage}
                             currentView={this.state.currentView}
                         />
