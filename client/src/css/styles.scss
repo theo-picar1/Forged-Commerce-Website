@@ -67,6 +67,116 @@ $mobile-container-padding: 20px 10px;
     }
 }
 
+// Template by ChatGPt
+@mixin checkbox-switch-css() {
+    @include flex-direction(row, unset, center, 10px);
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0;
+
+    input {
+        display: none;
+    }
+
+    .slider {
+        width: 40px;
+        height: 20px;
+        background-color: $website-light-gray;
+        border-radius: 20px;
+        position: relative;
+        transition: background-color 0.2s;
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: $website-white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+    }
+
+    input:checked+.slider {
+        background-color: $website-blue;
+
+        &::before {
+            transform: translateX(20px);
+        }
+    }
+
+    p {
+        margin: 0;
+    }
+}
+
+// Template by ChatGPT. UNDERSTAND IT
+@mixin double-thumb-slider-css() {
+    width: 100%;
+    position: relative;
+    margin-top: 10px;
+
+    .slider {
+        position: relative;
+        height: 10px;
+        outline: none;
+
+        .thumb {
+            position: absolute;
+            width: 100%;
+            height: 0;
+            pointer-events: none;
+            -webkit-appearance: none;
+            appearance: none;
+            top: 2px;
+            z-index: 5;
+
+            &::-webkit-slider-thumb {
+                pointer-events: all;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background-color: $website-white;
+                border: 2px solid $website-blue;
+                cursor: pointer;
+                -webkit-appearance: none;
+            }
+        }
+
+        .slider-track {
+            position: absolute;
+            height: 5px;
+            width: 100%;
+            top: 0;
+            background: $website-light-gray;
+            border-radius: 3px;
+        }
+
+        .slider-range {
+            position: absolute;
+            height: 5px;
+            top: 0;
+            background: $website-blue;
+            border-radius: 3px;
+        }
+    }
+}
+
+// The look for the checkbox only in the advanced filter modal (I'm just assuming I want different looking checkboxes for other modals or whatever)
+@mixin advanced-filters-checkbox-css() {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    background-color: $website-light-gray;
+
+    &:checked {
+        background-color: $website-red;
+    }
+}
+
 // ----------------------------
 
 // ----- Modal Transitions -----
@@ -358,11 +468,11 @@ $mobile-container-padding: 20px 10px;
                         position: fixed;
                         appearance: none;
 
-                        &:checked + p {
+                        &:checked+p {
                             color: $website-red;
                         }
                     }
-                    
+
                     p {
                         white-space: nowrap;
                     }
@@ -496,6 +606,117 @@ $mobile-container-padding: 20px 10px;
 
         #search-results-text {
             display: none;
+        }
+
+        #advanced-product-filters-modal {
+            @include slide-in-transition();
+            transform: translateY(100%);
+            left: 0;
+
+            .slide-in-modal-content {
+                width: 100%;
+                position: relative;
+                overflow-y: scroll;
+                scrollbar-width: none;
+
+                header {
+                    color: $website-white;
+                    background-color: $website-blue;
+                    @include flex-direction(row, space-between, center, 0);
+                    padding: $mobile-container-padding;
+                }
+
+                main {
+                    @include flex-direction(column, unset, unset, 15px);
+                    padding: $mobile-container-padding;
+                    padding-bottom: 80px;
+
+                    .section {
+
+                        .content {
+                            margin-top: 5px;
+                            @include flex-direction(column, unset, unset, 5px);
+
+                            .checkbox-container {
+                                width: 50%;
+                                @include flex-direction(row, space-between, unset, 0);
+                                height: min-content;
+
+                                label {
+                                    @include flex-direction(row, unset, center, 8px);
+
+                                    .checkbox {
+                                        @include advanced-filters-checkbox-css();
+                                    }
+                                }
+
+                                p {
+                                    font-size: 14px;
+                                }
+                            }
+
+                            .toggle-switch {
+                                @include checkbox-switch-css();
+                            }
+
+                            .slider-container {
+                                @include double-thumb-slider-css();
+                            }
+
+                            .min-max-inputs-container {
+                                @include flex-direction(row, space-between, center, 0);
+
+                                label {
+                                    width: 125px;
+
+                                    input {
+                                        width: inherit;
+                                        appearance: none;
+                                        outline: none;
+                                        border: thin solid $website-black;
+                                        border-radius: 5px;
+                                        text-align: center;
+                                        margin-top: 2px;
+                                    }
+
+                                    p {
+                                        font-size: 14px;
+                                    }
+                                }
+
+                                .dash {
+                                    position: relative;
+                                    top: 5px;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                footer {
+                    @include flex-direction(row, space-between, center, 0);
+                    padding: 10px;
+                    box-shadow: 0 0px 10px $translucent;
+                    position: fixed;
+                    bottom: 0;
+                    width: 100%;
+                    background-color: $main-content-color;
+                    z-index: 10;
+
+                    #apply-filters-button {
+                        background-color: $website-red;
+                        color: $website-white;
+                        font-weight: bold;
+                        font-size: 14px;
+                        padding: 5px 15px;
+                        border-radius: 8px;
+                    }
+                }
+            }
+
+            &.active {
+                transform: translateY(0);
+            }
         }
 
         .filter-tools {

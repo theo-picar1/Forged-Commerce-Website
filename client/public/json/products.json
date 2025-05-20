@@ -63,7 +63,7 @@
       }
     ],
     "description": "Weighted Jump Rope - High quality and suitable for gym and home workouts.",
-    "brand_new": true,
+    "brand_new": false,
     "discount": 15,
     "product_images": [
       "/images/app-logo.png",
@@ -88,7 +88,7 @@
       }
     ],
     "description": "Men\u2019s Compression shirts - High quality and suitable for gym and home workouts.",
-    "brand_new": true,
+    "brand_new": false,
     "discount": 0,
     "product_images": [
       "/images/app-logo.png",
@@ -138,7 +138,7 @@
       }
     ],
     "description": "Adjustable Bench - High quality and suitable for gym and home workouts.",
-    "brand_new": true,
+    "brand_new": false,
     "discount": 10,
     "product_images": [
       "/images/app-logo.png",
@@ -263,7 +263,7 @@
       }
     ],
     "description": "Treadmill - Compact Foldable - High quality and suitable for gym and home workouts.",
-    "brand_new": true,
+    "brand_new": false,
     "discount": 15,
     "product_images": [
       "/images/app-logo.png",
@@ -312,7 +312,7 @@
       }
     ],
     "description": "Ankle Weights - High quality and suitable for gym and home workouts.",
-    "brand_new": true,
+    "brand_new": false,
     "discount": 5,
     "product_images": [
       "/images/app-logo.png",
@@ -387,7 +387,7 @@
       }
     ],
     "description": "Gym Duffle Bag - High quality and suitable for gym and home workouts.",
-    "brand_new": true,
+    "brand_new": false,
     "discount": 0,
     "product_images": [
       "/images/app-logo.png",
@@ -437,7 +437,7 @@
       }
     ],
     "description": "Protein Shaker Bottle - High quality and suitable for gym and home workouts.",
-    "brand_new": true,
+    "brand_new": false,
     "discount": 10,
     "product_images": [
       "/images/app-logo.png",

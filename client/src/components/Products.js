@@ -1,6 +1,30 @@
 import React, { Component } from "react"
 
 export default class Products extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            min: 0,
+            max: 1000,
+            minLimit: 0,
+            maxLimit: 1000,
+        }
+    }
+
+    // ---------- ChatGPT Slide Code Logic ----------
+    // This is so that right thumb can't go any lower than left thumb
+    handleMinChange = (e) => {
+        const newMin = Math.min(+e.target.value, this.state.max - 1)
+        this.setState({ min: newMin })
+    }
+
+    // Same logic as above but for the left thumb to not go above right thumb
+    handleMaxChange = (e) => {
+        const newMax = Math.max(+e.target.value, this.state.min + 1)
+        this.setState({ max: newMax })
+    }
+    // -----------------------------------------------
+
     createStarsForProduct(rating) {
         // Because JSX doesn't allow for-loops, use Array.from that runs 'product_rating rounded down' times to create a star image
         // Condition '_' is there because I'm not accessing a particular element
@@ -14,13 +38,165 @@ export default class Products extends Component {
     }
 
     render() {
-        const { filteredProducts, currentView, switchProductViewImage } = this.props
+        const { filteredProducts, currentView, switchProductViewImage, closeSlideInModal, openSlideInModal, categories, capitiliseString, counterMap } = this.props
+        const { min, max, minLimit, maxLimit } = this.state
 
         return (
             <div className="products-page-container">
+                <div className="slide-in-modal" id="advanced-product-filters-modal">
+                    <div className="slide-in-modal-content" id="advanced-product-filters-modal-content">
+                        <header>
+                            <h5>Filters</h5>
+
+                            <img src="/images/close-icon.png" alt="Close button icon" onClick={() => closeSlideInModal("advanced-product-filters-modal")} />
+                        </header>
+
+                        <main>
+                            <div className="section">
+                                <div className="title">
+                                    <h5>Categories</h5>
+                                </div>
+
+                                <div className="content">
+                                    {categories.map(category =>
+                                        <div className="checkbox-container" key={category}>
+                                            <label key={category}>
+                                                <input type="checkbox" value={category} className="advanced-filter-category-checkbox checkbox" />
+
+                                                <p>{capitiliseString(category)}</p>
+                                            </label>
+
+                                            <p>{counterMap.get(category)}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="section">
+                                <div className="title">
+                                    <h5>Price (€)</h5>
+                                </div>
+
+                                <div className="content">
+                                    <div className="min-max-inputs-container">
+                                        <label className="min">
+                                            <p>Min</p>
+
+                                            <input type="number" id="min-price-value" autoComplete="off" min={minLimit} value={min} onChange={this.handleMinChange}/>
+                                        </label>
+
+                                        <p className="dash">-</p>
+
+                                        <label className="max">
+                                            <p>Max</p>
+
+                                            <input type="number" id="max-price-value" max={maxLimit} autoComplete="on" value={max} onChange={this.handleMaxChange}/>
+                                        </label>
+                                    </div>
+
+                                    {/* Slider with double thumbs made by ChatGPT */}
+                                    <div className="slider-container">
+                                        <div className="slider">
+                                            <input
+                                                type="range"
+                                                min={minLimit}
+                                                max={maxLimit}
+                                                value={min}
+                                                onChange={this.handleMinChange}
+                                                className="thumb thumb-left"
+                                            />
+
+                                            <input
+                                                type="range"
+                                                min={minLimit}
+                                                max={maxLimit}
+                                                value={max}
+                                                onChange={this.handleMaxChange}
+                                                className="thumb thumb-right"
+                                            />
+
+                                            <div className="slider-track" />
+
+                                            <div
+                                                className="slider-range"
+                                                style={{
+                                                    left: `${(min / maxLimit) * 100}%`,
+                                                    width: `${((max - min) / maxLimit) * 100}%`,
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="section">
+                                <div className="title">
+                                    <h5>Rating</h5>
+                                </div>
+
+                                <div className="content">
+                                    <div className="min-max-inputs-container">
+                                        <label className="min">
+                                            <p>Min</p>
+
+                                            <input type="number" id="min-rating-value" autoComplete="off" min="0"/>
+                                        </label>
+
+                                        <p className="dash">-</p>
+
+                                        <label className="max">
+                                            <p>Max</p>
+
+                                            <input type="number" id="max-rating-value" max="5" autoComplete="off"/>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="section">
+                                <div className="title">
+                                    <h5>Condition</h5>
+                                </div>
+
+                                <div className="content">
+                                    <div className="checkbox-container">
+                                        <label>
+                                            <input type="checkbox" className="checkbox" />
+
+                                            <p>New</p>
+                                        </label>
+
+                                        <p>{ counterMap.get("new") }</p>
+                                    </div>
+
+                                    <div className="checkbox-container">
+                                        <label>
+                                            <input type="checkbox" className="checkbox" />
+
+                                            <p>Used</p>
+                                        </label>
+
+                                        <p>{ counterMap.get("used") }</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+
+                        <footer>
+                            <div id="clear-all-filters-button">
+                                <p>Clear All</p>
+                            </div>
+
+                            <div id="apply-filters-button">
+                                <p>Apply Filters</p>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+
                 <div className="filter-tools">
                     <div className="left">
-                        <div className="filter-button">
+                        <div className="filter-button" onClick={() => openSlideInModal("advanced-product-filters-modal")}>
                             <img src="/images/filter-icon.png" alt="Filter icon button" />
 
                             <p>Filters</p>

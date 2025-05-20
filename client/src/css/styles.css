@@ -454,6 +454,223 @@
   .products-page-container #search-results-text {
     display: none;
   }
+  .products-page-container #advanced-product-filters-modal {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.5215686275);
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    z-index: 100;
+    transform: translateY(100%);
+    left: 0;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content {
+    width: 100%;
+    position: relative;
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content header {
+    color: #FFFFFF;
+    background-color: #2C3A57;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    padding: 20px 10px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main {
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+    gap: 15px;
+    padding: 20px 10px;
+    padding-bottom: 80px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+    gap: 5px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .checkbox-container {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: unset;
+    gap: 0;
+    height: -moz-min-content;
+    height: min-content;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .checkbox-container label {
+    display: flex;
+    flex-direction: row;
+    justify-content: unset;
+    align-items: center;
+    gap: 8px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .checkbox-container label .checkbox {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    background-color: #D9D9D9;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .checkbox-container label .checkbox:checked {
+    background-color: #FE0404;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .checkbox-container p {
+    font-size: 14px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .toggle-switch {
+    display: flex;
+    flex-direction: row;
+    justify-content: unset;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none;
+    margin-bottom: 0;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .toggle-switch input {
+    display: none;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .toggle-switch .slider {
+    width: 40px;
+    height: 20px;
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    position: relative;
+    transition: background-color 0.2s;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .toggle-switch .slider::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .toggle-switch input:checked + .slider {
+    background-color: #2C3A57;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .toggle-switch input:checked + .slider::before {
+    transform: translateX(20px);
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .toggle-switch p {
+    margin: 0;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .slider-container {
+    width: 100%;
+    position: relative;
+    margin-top: 10px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .slider-container .slider {
+    position: relative;
+    height: 10px;
+    outline: none;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .slider-container .slider .thumb {
+    position: absolute;
+    width: 100%;
+    height: 0;
+    pointer-events: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+         appearance: none;
+    top: 2px;
+    z-index: 5;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .slider-container .slider .thumb::-webkit-slider-thumb {
+    pointer-events: all;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    border: 2px solid #2C3A57;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .slider-container .slider .slider-track {
+    position: absolute;
+    height: 5px;
+    width: 100%;
+    top: 0;
+    background: #D9D9D9;
+    border-radius: 3px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .slider-container .slider .slider-range {
+    position: absolute;
+    height: 5px;
+    top: 0;
+    background: #2C3A57;
+    border-radius: 3px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .min-max-inputs-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .min-max-inputs-container label {
+    width: 125px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .min-max-inputs-container label input {
+    width: inherit;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    outline: none;
+    border: thin solid #000000;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 2px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .min-max-inputs-container label p {
+    font-size: 14px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content main .section .content .min-max-inputs-container .dash {
+    position: relative;
+    top: 5px;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    padding: 10px;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.5215686275);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #F3F3F3;
+    z-index: 10;
+  }
+  .products-page-container #advanced-product-filters-modal .slide-in-modal-content footer #apply-filters-button {
+    background-color: #FE0404;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px 15px;
+    border-radius: 8px;
+  }
+  .products-page-container #advanced-product-filters-modal.active {
+    transform: translateY(0);
+  }
   .products-page-container .filter-tools {
     display: flex;
     flex-direction: row;
