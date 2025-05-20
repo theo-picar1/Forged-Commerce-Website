@@ -166,7 +166,7 @@ $mobile-container-padding: 20px 10px;
         width: 100%;
         background-color: $website-blue;
         padding: $mobile-padding;
-        padding-bottom: 5px;
+        padding-bottom: 0px;
         color: $website-white;
         box-shadow: 0 0 10px 5px $translucent;
         position: sticky;
@@ -263,7 +263,7 @@ $mobile-container-padding: 20px 10px;
 
             #product-autocomplete-modal {
                 position: absolute; // Fixed position won't take the parent's padding into account
-                background-color: $main-content-color;
+                background-color: $website-white;
                 width: inherit;
                 color: $website-black;
                 height: auto;
@@ -345,13 +345,27 @@ $mobile-container-padding: 20px 10px;
                 scrollbar-width: none;
                 width: 100%;
                 margin: auto;
+                position: relative;
 
                 &::-webkit-scrollbar {
                     display: none;
                 }
 
-                p {
-                    white-space: nowrap;
+                .category-radio {
+                    position: relative;
+
+                    input {
+                        position: fixed;
+                        appearance: none;
+
+                        &:checked + p {
+                            color: $website-red;
+                        }
+                    }
+                    
+                    p {
+                        white-space: nowrap;
+                    }
                 }
             }
         }
@@ -542,7 +556,7 @@ $mobile-container-padding: 20px 10px;
                 .product-details {
                     @include flex-direction(column, unset, unset, 5px);
                     width: 100%;
-                    
+
                     .product-name {
                         margin-top: 5px;
                         line-height: 0.95;

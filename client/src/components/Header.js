@@ -1,7 +1,7 @@
 import React, { Component, createRef } from "react"
-import { Link } from "react-router-dom"
+import { Link, withRouter } from "react-router-dom"
 
-export default class Header extends Component {
+class Header extends Component {
     constructor(props) {
         super(props)
         this.bottomRef = createRef()
@@ -17,6 +17,7 @@ export default class Header extends Component {
         this.bottomRef.current.addEventListener("scroll", this.updateScrollShadows)
         window.addEventListener("resize", this.updateScrollShadows)
 
+        // JS logic that blurs either side depending on how far the user has scrolled in .bottom-wrapper. Might remove this
         let bottomSection = document.querySelector('.bottom-wrapper')
         let topSection = document.querySelector('.top')
 
@@ -55,7 +56,14 @@ export default class Header extends Component {
 
     render() {
         // To stop saying this.props and this.state EVERY SINGLE TIME
-        const { categories, capitiliseString, openSlideInModal, displayAutocompleteSuggestions, productSearchValue, suggestions, completeAutocomplete, filterProductsBySearchValue } = this.props
+        const { categories, 
+                capitiliseString, 
+                openSlideInModal, 
+                displayAutocompleteSuggestions, 
+                productSearchValue, suggestions, 
+                completeAutocomplete, 
+                filterProductsBySearchValue,
+                filterProductsByHeaderCategory } = this.props
         const { atStart, atEnd } = this.state
 
         return (
@@ -110,11 +118,28 @@ export default class Header extends Component {
 
                     <div className={`bottom-wrapper row ${atStart ? "at-start" : ""} ${atEnd ? "at-end" : ""}`}>
                         <div className="bottom" ref={this.bottomRef}>
-                            <p>All</p>
+                            <label className="category-radio">
+                                <input 
+                                    type="radio" 
+                                    className="header-category" 
+                                    value="" 
+                                    name="header-category"
+                                    onClick={ (e) => filterProductsByHeaderCategory(e)}/>
+
+                                <p>All</p>
+                            </label>
+
                             {categories.map(category =>
-                                <Link to="/products" className="link" key={category}>
+                                <label className="category-radio" key={category}> 
+                                    <input 
+                                        type="radio" 
+                                        className="header-category" 
+                                        name="header-category"
+                                        value={category} 
+                                        onClick={ (e) => filterProductsByHeaderCategory(e)}/>
+
                                     <p>{capitiliseString(category)}</p>
-                                </Link>
+                                </label>
                             )}
                         </div>
                     </div>
@@ -123,3 +148,5 @@ export default class Header extends Component {
         )
     }
 }
+
+export default withRouter(Header)
