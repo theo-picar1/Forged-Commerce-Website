@@ -20,7 +20,8 @@ class Home extends Component {
             categoryToFilterBy: "",
             autocompleteSuggestions: [],
             productSearchValue: "",
-            currentView: "grid"
+            currentView: "grid",
+            counterMap: new Map() // To show the amount of a particular category (plus the brand new products) for the user. Also takes into account any new category added
         }
     }
 
@@ -28,14 +29,37 @@ class Home extends Component {
         let url = "/json/products.json"
         let initCategories = [] // Array that just acts as a placeholder until we get all the unique cateogries from it
         let bestSellerCounter = 0
+        let initMap = new Map()
+
+        // For the boolean field 'brand_new'
+        initMap.set("new", 0)
+        initMap.set("used", 0)
 
         fetch(url).then(response => response.json()).then(data => {
             data.forEach(product => {
-                if (product["category"] && product["category"].length > 0) {
+                if ("category" in product && product["category"].length > 0) {
                     initCategories.push(...product["category"]) // Push every single category to the placeholder array
+
+                    // Logic that will have a counter for each category found in the JSON data
+                    product["category"].forEach(category => {
+                        if (initMap.has(category)) {
+                            initMap.set(category, initMap.get(category) + 1)
+                        }
+                        else {
+                            initMap.set(category, 1)
+                        }
+                    })
+
+                    if ("brand_new" in product) {
+                        if (product["brand_new"]) {
+                            initMap.set("new", initMap.get("new") + 1)
+                        } else {
+                            initMap.set("used", initMap.get("used") + 1)
+                        }
+                    }
                 }
 
-                if (product["sold"] > 250) {
+                if ("sold" in product && product["sold"] > 250) {
                     bestSellerCounter++
                 }
             })
@@ -45,6 +69,7 @@ class Home extends Component {
                 filteredProducts: data,
                 categories: [...new Set(initCategories)],
                 bestSellerCount: bestSellerCounter, // Don't remember why I even have this
+                counterMap: initMap
             })
         })
     }
@@ -106,7 +131,7 @@ class Home extends Component {
                 filteredProducts: matched
             }, () => {
                 this.props.history.push('/products')
-                this.switchProductView(this.state.currentView) 
+                this.switchProductView(this.state.currentView)
             })
         }
     }
@@ -169,7 +194,7 @@ class Home extends Component {
 
         // To stop app from breaking because the html stuff in Products has not loaded yet. This is cuased when navigating to Products when in a different component
         // It works normal when calling switchProductViewImage from inside the Products.js component
-        if(!products) {
+        if (!products) {
             return
         }
 
@@ -208,7 +233,7 @@ class Home extends Component {
                 button.style.padding = "0"
             })
         }
-        else if(view === "grid") {
+        else if (view === "grid") {
             products.style.display = "grid"
 
             Array.from(cards).map(card => {
@@ -285,6 +310,11 @@ class Home extends Component {
                             filteredProducts={this.state.filteredProducts}
                             switchProductViewImage={this.switchProductViewImage}
                             currentView={this.state.currentView}
+                            openSlideInModal={this.openSlideInModal}
+                            closeSlideInModal={this.closeSlideInModal}
+                            categories={this.state.categories}
+                            capitiliseString={this.capitiliseString}
+                            counterMap={this.state.counterMap}
                         />
                     </Route>
                 </Switch>
