@@ -139,6 +139,7 @@ class Home extends Component {
     // This category filters only allows the user to filter by one category. Multiple categories will be a separate thing with a specialised modal
     filterProductsByHeaderCategory = e => {
         let matched = []
+        console.log(e.target.value)
 
         // Just set the filteredProducts to every single product if the user clicks the All option (which has a value of "")
         if (e.target.value === "") {
@@ -307,6 +308,7 @@ class Home extends Component {
 
                     <Route exact path="/products">
                         <Products
+                            originalProducts={this.state.products}
                             filteredProducts={this.state.filteredProducts}
                             switchProductViewImage={this.switchProductViewImage}
                             currentView={this.state.currentView}
