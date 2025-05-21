@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
+    "chokidar": "^4.0.3",
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.11",
     "react-dom": "^16.9.0",
@@ -34,7 +35,6 @@
   },
   "description": "Example using React as the client-side of a Node Express App",
   "main": "index.js",
-  "devDependencies": {},
   "author": "Derek O Reilly",
   "license": "ISC"
 }
