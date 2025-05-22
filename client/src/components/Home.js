@@ -7,6 +7,7 @@ import HomeProducts from "./HomeProducts"
 import Menu from "./Menu"
 import ShoppingCart from "./ShoppingCart"
 import Products from "./Products"
+import ViewProduct from "./ViewProduct"
 
 class Home extends Component {
     constructor(props) {
@@ -21,7 +22,8 @@ class Home extends Component {
             autocompleteSuggestions: [],
             productSearchValue: "",
             currentView: "grid",
-            counterMap: new Map() // To show the amount of a particular category (plus the brand new products) for the user. Also takes into account any new category added
+            counterMap: new Map(), // To show the amount of a particular category (plus the brand new products) for the user. Also takes into account any new category added
+            productToView: null // For ViewProduct.js. Will change this to an actual url {id} down the line
         }
     }
 
@@ -224,7 +226,8 @@ class Home extends Component {
 
                 let image = container.querySelector("img")
 
-                image.style.width = "30px"
+                image.style.width = "100%"
+                image.style.maxHeight = "100%"
             })
 
             Array.from(addToCartBtn).map(button => {
@@ -252,7 +255,8 @@ class Home extends Component {
 
                 let image = container.querySelector("img")
 
-                image.style.width = "75px"
+                image.style.width = "100%"
+                image.style.maxHeight = "100%"
             })
 
             Array.from(addToCartBtn).map(button => {
@@ -264,6 +268,14 @@ class Home extends Component {
         }
     }
     // ----------------------------------------------------------------
+
+    // --------------- Functions mainly for ViewProduct.js ---------------
+    setProductToView = (product) => {
+        this.setState({
+            productToView: product
+        }, () => this.props.history.push("/view-product"))
+    }
+    // -------------------------------------------------------------------
 
     render() {
         return (
@@ -295,6 +307,7 @@ class Home extends Component {
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
                             currentView={this.state.currentView}
+                            setProductToView={this.setProductToView}
                         />
                     </Route>
 
@@ -317,6 +330,15 @@ class Home extends Component {
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
                             counterMap={this.state.counterMap}
+                            setProductToView={this.setProductToView}
+                        />
+                    </Route>
+
+                    <Route exact path="/view-product">
+                        <ViewProduct 
+                            productToView={this.state.productToView}
+                            products={this.state.products}
+                            setProductToView={this.setProductToView}
                         />
                     </Route>
                 </Switch>

@@ -164,6 +164,59 @@ $mobile-container-padding: 20px 10px;
     }
 }
 
+@mixin default-product-hr-scroll-css() {
+    @include flex-direction(row, unset, unset, 10px);
+    width: 100%;
+    overflow-x: scroll;
+    scrollbar-width: none;
+    margin-top: 5px;
+
+    .product {
+
+        .product-image-container {
+            background-color: $website-light-gray;
+            width: 125px;
+            height: 125px;
+            @include flex-direction(unset, center, center, 0);
+            border-radius: 5px;
+
+            img {
+                width: 100%;
+                max-height: inherit;
+            }
+        }
+
+        .product-details {
+            margin-top: 5px;
+
+            .product-name-container {
+                height: 30px;
+
+                .product-name {
+                    font-size: 14px;
+                    color: $website-black;
+                    line-height: 0.95;
+                }
+            }
+
+            .discounted-price-container {
+                @include flex-direction(row, unset, flex-end, 10px);
+            }
+
+            .product-price {
+                color: $website-red;
+                font-weight: bold;
+            }
+
+            .original-price {
+                font-size: 12px;
+                color: $website-gray;
+                text-decoration: line-through;
+            }
+        }
+    }
+}
+
 // The look for the checkbox only in the advanced filter modal (I'm just assuming I want different looking checkboxes for other modals or whatever)
 @mixin advanced-filters-checkbox-css() {
     appearance: none;
@@ -494,56 +547,7 @@ $mobile-container-padding: 20px 10px;
             }
 
             .horizontal-product-scroll {
-                @include flex-direction(row, unset, unset, 10px);
-                width: 100%;
-                overflow-x: scroll;
-                scrollbar-width: none;
-                margin-top: 5px;
-
-                .product {
-
-                    .product-image-container {
-                        background-color: $website-light-gray;
-                        width: 125px;
-                        height: 125px;
-                        @include flex-direction(unset, center, center, 0);
-                        border-radius: 5px;
-
-                        img {
-                            width: 75px;
-                            height: 75px;
-                        }
-                    }
-
-                    .product-details {
-                        margin-top: 5px;
-
-                        .product-name-container {
-                            height: 30px;
-
-                            .product-name {
-                                font-size: 14px;
-                                color: $website-black;
-                                line-height: 0.95;
-                            }
-                        }
-
-                        .discounted-price-container {
-                            @include flex-direction(row, unset, flex-end, 10px);
-                        }
-
-                        .product-price {
-                            color: $website-red;
-                            font-weight: bold;
-                        }
-
-                        .original-price {
-                            font-size: 12px;
-                            color: $website-gray;
-                            text-decoration: line-through;
-                        }
-                    }
-                }
+                @include default-product-hr-scroll-css();
             }
 
             .see-more {
@@ -764,13 +768,13 @@ $mobile-container-padding: 20px 10px;
 
                 .product-image-container {
                     aspect-ratio: 145/150;
-                    @include flex-direction(unset, center, center, 0);
                     background-color: $website-light-gray;
+                    @include flex-direction(row, unset, center, 0);
                     border-radius: 10px;
 
-                    img {
-                        width: 75px;
-                        height: auto;
+                    #product-image {
+                        width: 100%;
+                        max-height: 100%;
                     }
                 }
 
@@ -832,6 +836,161 @@ $mobile-container-padding: 20px 10px;
         .no-matching-products {
             text-align: center;
             margin: 75px 0;
+        }
+    }
+
+    .view-product-page-container {
+        background-color: $main-content-color;
+        padding: $mobile-container-padding;
+        @include flex-direction(column, unset, unset, 15px);
+
+        .image-carousel-container {
+            @include flex-direction(column, unset, center, 5px);
+
+            .image-carousel {
+                width: 100%;
+                height: 200px;
+                background-color: $website-light-gray;
+
+                .image-container {
+                    margin: auto;
+                    @include flex-direction(row, unset, unset, 0);
+                    max-width: 250px;
+                    height: inherit;
+                    overflow-x: scroll;
+                    scrollbar-width: none;
+                    scroll-snap-type: x mandatory;
+                    scroll-snap-stop: always;
+                    background-color: $translucent;
+
+                    div {
+                        flex: 0 0 100%;
+                        width: auto;
+                        scroll-snap-align: start;
+                        background-size: 100% 100%;
+                    }
+                }
+            }
+
+            .image-index {
+                @include flex-direction(row, unset, center, 5px);
+
+                .index {
+                    height: 6px;
+                    width: 6px;
+                    border: thin solid $website-black;
+                    border-radius: 50%;
+                }
+            }
+        }
+
+        .product-details {
+            @include flex-direction(column, unset, unset, 15px);
+
+            h4 {
+                font-weight: bold;
+            }
+
+            .price-and-stock {
+                @include flex-direction(row, unset, center, 5px);
+
+                h5 {
+                    font-size: 24px;
+                    font-weight: bold;
+                    color: $website-red;
+                }
+
+                p {
+                    font-size: 14px;
+                }
+            }
+
+            .product-quantity-container {
+
+                input {
+                    appearance: none;
+                    width: 100%;
+                    outline: none;
+                    border: thin solid $website-black;
+                    padding: 2px 15px;
+                }
+            }
+
+            .buttons {
+                @include flex-direction(column, unset, unset, 5px);
+
+                .button {
+                    appearance: none;
+                    width: 100%;
+                    border: thin solid $website-red;
+                    border-radius: 15px;
+                    color: $website-red;
+                    padding: 6px 0;
+                }
+
+                #buy-now {
+                    background-color: $website-red;
+                    color: $website-white;
+                    font-weight: bold;
+                }
+
+                #add-to-favourites {
+                    @include flex-direction(row, center, center, 5px);
+                }
+            }
+
+            .about-this-product {
+                h3 {
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+
+                .about-content {
+                    margin-top: 5px;
+                    @include flex-direction(column, unset, unset, 5px);
+                    width: 75%;
+
+                    .row {
+                        width: 100%;
+                        margin: 0;
+                        @include flex-direction(row, space-between, flex-start, 0);
+
+                        .title {
+                            font-weight: bold;
+                        }
+
+                        .detail {
+                            text-align: right;
+                        }
+
+                        .sold-detail {
+                            color: $website-red;
+                        }
+                    }
+                }
+            }
+
+            .description {
+
+                h3 {
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-top: 5px;
+                }
+            }
+        }
+
+        .similar-products {
+             
+            h3 {
+                font-weight: bold;
+                font-size: 24px;
+                margin-bottom: 5px;
+            }
+
+            .products {
+                @include default-product-hr-scroll-css();
+            }
         }
     }
 

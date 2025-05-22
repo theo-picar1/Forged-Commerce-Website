@@ -131,8 +131,25 @@ export default class Products extends Component {
     }
 
     render() {
-        const { currentView, switchProductViewImage, closeSlideInModal, openSlideInModal, categories, capitiliseString, counterMap } = this.props
-        const { minPrice, maxPrice, minLimit, maxLimit, minRating, maxRating, productsToShow } = this.state
+        const { 
+            currentView, 
+            switchProductViewImage, 
+            closeSlideInModal, 
+            openSlideInModal, 
+            categories, 
+            capitiliseString, 
+            counterMap,
+            setProductToView
+        } = this.props
+        const { 
+            minPrice, 
+            maxPrice, 
+            minLimit, 
+            maxLimit, 
+            minRating, 
+            maxRating, 
+            productsToShow 
+        } = this.state
 
         return (
             <div className="products-page-container">
@@ -321,10 +338,10 @@ export default class Products extends Component {
                 {productsToShow.length > 0 ? (
                     <main id="products-section">
                         {productsToShow.map(product =>
-                            <div className="product" key={product["product_id"]}>
+                            <div className="product" key={product["product_id"]} onClick={() => setProductToView(product)}>
                                 {this.createStarsForProduct(product)}
                                 <div className="product-image-container">
-                                    <img src={product["product_images"][0]} />
+                                    <img id="product-image" src={product["product_images"][0]} />
                                 </div>
 
                                 <div className="product-details">
