@@ -923,7 +923,7 @@
     justify-content: unset;
     align-items: unset;
     gap: 5px;
-    width: 75%;
+    width: 100%;
   }
   .view-product-page-container .product-details .about-this-product .about-content .row {
     width: 100%;

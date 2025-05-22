@@ -108,7 +108,7 @@ export default class ViewProduct extends Component {
                             <div className="row">
                                 <p className="title">No. Of Reviews</p>
 
-                                <p className="detail">{productToView["product_rating"]}</p>
+                                <p className="detail">{productToView["no_of_reviews"]}</p>
                             </div>
                         </div>
                     </div>

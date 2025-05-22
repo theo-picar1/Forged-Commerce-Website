@@ -948,7 +948,7 @@ $mobile-container-padding: 20px 10px;
                 .about-content {
                     margin-top: 5px;
                     @include flex-direction(column, unset, unset, 5px);
-                    width: 75%;
+                    width: 100%;
 
                     .row {
                         width: 100%;
