@@ -17,8 +17,10 @@
     "discount": 5,
     "product_images": [
       "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/24kg-adjusble-large-900x655.jpg",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/24kg_645-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/24kg-2-1500px-blue-filter-Copy-900x1200.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/24KG-4-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/24kg-Adjustable-Dumbbell-base-1500px-900x900.jpg"
     ],
     "price": 24.24,
     "stock_quantity": 13,
@@ -41,9 +43,11 @@
     "brand_new": true,
     "discount": 10,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://liforme.com/cdn/shop/files/Yoga-Mats_0010s_0002_LYM-OLIVE.png?v=1740420557&width=800",
+      "https://liforme.com/cdn/shop/files/0011_09.png?v=1710758613&width=800",
+      "https://liforme.com/cdn/shop/files/Olive_Signature_1.jpg?v=1710758616&width=800",
+      "https://liforme.com/cdn/shop/files/Liforme_Olive_Yoga_Mat_Side-View.png?v=1710758612&width=800",
+      "https://liforme.com/cdn/shop/files/Liforme_Olive_Yoga_Mat_Birdeyes-View.png?v=1710758612&width=800"
     ],
     "price": 28.49,
     "stock_quantity": 16,
@@ -66,9 +70,9 @@
     "brand_new": false,
     "discount": 15,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://www.rathminessports.ie/cdn/shop/files/PhoenixWeightedSkipRope.png?v=1706569149",
+      "https://www.rathminessports.ie/cdn/shop/files/PhoenixWeightedSkipRopec.png?v=1706569148",
+      "https://www.rathminessports.ie/cdn/shop/files/PhoenixWeightedSkipRoped.png?v=1706569149"
     ],
     "price": 32.74,
     "stock_quantity": 19,
@@ -91,9 +95,10 @@
     "brand_new": false,
     "discount": 0,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://img.ltwebstatic.com/images3_spmp/2023/10/27/0e/1698408407dc5d7a4e1169bcb677493ada6856391a_thumbnail_405x.webp",
+      "https://img.ltwebstatic.com/images3_spmp/2023/10/27/51/16984084405e5de91b0d7205e42f7ae0cc3edd300c_thumbnail_560x.webp",
+      "https://img.ltwebstatic.com/images3_spmp/2023/10/27/d9/1698408428875814fc9bc339879f26b95663cdb692_thumbnail_560x.webp",
+      "https://img.ltwebstatic.com/images3_spmp/2023/10/27/4e/169840844405d616ef728575fc4395c2c302fa7dd8_thumbnail_560x.webp"
     ],
     "price": 36.99,
     "stock_quantity": 22,
@@ -116,9 +121,15 @@
     "brand_new": true,
     "discount": 5,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/NEW-Power-Bands-Pull-Up-Set-Main-w-Box-1000px-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/resistance-band-green-900x600.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/10/PUBANDS.ADDITIONAL-5.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/10/PUBANDS.ADDITIONAL-1.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/benefits-pull-up-band-black-2-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/resistance-band-purple-900x600.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/reistance-band-set-900x568.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/10/PUBANDS.ADDITIONAL-5.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2020/12/reistance-band-set.jpg"
     ],
     "price": 41.24,
     "stock_quantity": 25,
@@ -141,9 +152,12 @@
     "brand_new": false,
     "discount": 10,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://ie.homefitnesscode.com/cdn/shop/files/1.jpg?v=1721370183&width=900",
+      "https://ie.homefitnesscode.com/cdn/shop/files/bench_02.jpg?v=1721370184&width=900",
+      "https://ie.homefitnesscode.com/cdn/shop/files/bench_01.jpg?v=1721370183&width=900",
+      "https://ie.homefitnesscode.com/cdn/shop/files/bench_05.jpg?v=1721370184&width=900",
+      "https://ie.homefitnesscode.com/cdn/shop/files/bench_03.jpg?v=1721370183&width=900",
+      "https://ie.homefitnesscode.com/cdn/shop/files/bench_04.jpg?v=1721370183&width=900"
     ],
     "price": 45.49,
     "stock_quantity": 28,
@@ -166,9 +180,7 @@
     "brand_new": true,
     "discount": 15,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_600,h_600/https://gymgear.ie/wp-content/uploads/2023/07/12kg-Kettlebell.png"
     ],
     "price": 49.74,
     "stock_quantity": 31,
@@ -191,9 +203,12 @@
     "brand_new": true,
     "discount": 0,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://www.mcsport.ie/cdn/shop/products/HIT00123___6_800x.jpg?v=1584382190",
+      "https://www.mcsport.ie/cdn/shop/products/HIT00123HITFITNESSFoamRollerPurple3_800x.jpg?v=1605777047",
+      "https://www.mcsport.ie/cdn/shop/products/HIT00123___5_800x.jpg?v=1584382190",
+      "https://www.mcsport.ie/cdn/shop/products/HIT00123___1_800x.jpg?v=1584382190",
+      "https://www.mcsport.ie/cdn/shop/products/HIT-FITNESS-Foam-Roller-Purple_800x.jpg?v=1630574151",
+      "https://www.mcsport.ie/cdn/shop/products/HIT00123HITFITNESSFoamRollerPurple4_800x.jpg?v=1605777044"
     ],
     "price": 53.99,
     "stock_quantity": 34,
@@ -216,9 +231,12 @@
     "brand_new": true,
     "discount": 5,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://m.media-amazon.com/images/I/71Gf362EdrL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/81qsDydA9zL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/71opvqjXdxL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/81x31QTi1vL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/71+ibEz2A4L._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/715fKNLNJXL._AC_SL1500_.jpg"
     ],
     "price": 58.24,
     "stock_quantity": 37,
@@ -241,9 +259,11 @@
     "brand_new": true,
     "discount": 10,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://cdn.commercehq.com/commercehq-store-af4ae24110cf64e4b6c99a43c61f36c2_da39a3ee5e6b4b0d3255bfef95601890afd80709/088a7e631a5749cdb6a2b4a8146eaf42_Lever-Belt-1.png",
+      "https://cdn.commercehq.com/commercehq-store-af4ae24110cf64e4b6c99a43c61f36c2_da39a3ee5e6b4b0d3255bfef95601890afd80709/4a6c6f1691414f40bee1896a5b479d2c_Lever-Belt-2.png",
+      "https://cdn.commercehq.com/commercehq-store-af4ae24110cf64e4b6c99a43c61f36c2_da39a3ee5e6b4b0d3255bfef95601890afd80709/567822e206034453b1977c9f31964949_Lever-Belt-3.png",
+      "https://cdn.commercehq.com/commercehq-store-af4ae24110cf64e4b6c99a43c61f36c2_da39a3ee5e6b4b0d3255bfef95601890afd80709/887014ab51f14faaa5335818ff7a8333_15.png",
+      "https://cdn.commercehq.com/commercehq-store-af4ae24110cf64e4b6c99a43c61f36c2_da39a3ee5e6b4b0d3255bfef95601890afd80709/1600_d64fca73f17d4dc194ccec1f50a80542_size-chart-gorilla-wear-4-inch-leather-lever-belt_11945013190663.jpg"
     ],
     "price": 62.49,
     "stock_quantity": 40,
@@ -266,9 +286,10 @@
     "brand_new": false,
     "discount": 15,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://ie.homefitnesscode.com/cdn/shop/files/s1tb_13.jpg?v=1725348627&width=900",
+      "https://ie.homefitnesscode.com/cdn/shop/files/s1tb_11.jpg?v=1725348627&width=900",
+      "https://ie.homefitnesscode.com/cdn/shop/files/s1tb_4.jpg?v=1725348378&width=900",
+      "https://ie.homefitnesscode.com/cdn/shop/files/s1tb_12_-1.jpg?v=1726043744&width=900"
     ],
     "price": 66.74,
     "stock_quantity": 43,
@@ -291,9 +312,12 @@
     "brand_new": true,
     "discount": 0,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://img.kwcdn.com/product/fancy/eedcdb6d-e4cb-4b89-af02-037c216cb7aa.jpg?imageView2/2/w/1300/q/90/format/webp",
+      "https://img.kwcdn.com/product/fancy/f660d13e-a088-4385-a39e-c88da98fdadd.jpg?imageView2/2/w/800/q/70/format/webp",
+      "https://img.kwcdn.com/product/fancy/8430ba9b-fbd1-4dec-8548-38a189e37773.jpg?imageView2/2/w/800/q/70/format/webp",
+      "https://img.kwcdn.com/product/fancy/8e9a7665-36d3-4a72-a853-113c6e73acf8.jpg?imageView2/2/w/800/q/70/format/webp",
+      "https://img.kwcdn.com/product/fancy/34726df0-4706-43df-b3c0-249595157e1d.jpg?imageView2/2/w/800/q/70/format/webp",
+      "https://img.kwcdn.com/product/fancy/15b0fe1c-ee85-45f8-b44c-d5cdc5b8c8c4.jpg?imageView2/2/w/800/q/70/format/webp"
     ],
     "price": 70.99,
     "stock_quantity": 46,
@@ -316,8 +340,6 @@
     "brand_new": false,
     "discount": 5,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
       "/images/app-logo.png"
     ],
     "price": 75.24,
@@ -341,9 +363,12 @@
     "brand_new": true,
     "discount": 10,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://www.mcsport.ie/cdn/shop/files/HIT00563-Hit-Fitness-Slam-Ball-With-Grips-6kg_800x.jpg?v=1685100574",
+      "https://www.mcsport.ie/cdn/shop/products/HIT00101___5___XL_800x.jpg?v=1685100574",
+      "https://www.mcsport.ie/cdn/shop/files/Slam-Balls_2_800x.jpg?v=1685100593",
+      "https://www.mcsport.ie/cdn/shop/files/Hit-Fitness-Slam-Ball-With-Grips-Lifestyle-02_800x.png?v=1715853691",
+      "https://www.mcsport.ie/cdn/shop/files/Slam-Balls_4_504b3d9d-c46d-4ca7-a7a0-02e8daed2300_800x.jpg?v=1715853832",
+      "https://www.mcsport.ie/cdn/shop/files/Hit-Fitness-Slam-Ball-With-Grips-Lifestyle-03_800x.png?v=1715853716"
     ],
     "price": 79.49,
     "stock_quantity": 52,
@@ -366,9 +391,10 @@
     "brand_new": true,
     "discount": 15,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://sbdireland.com/cdn/shop/files/Wrist-Wraps-01.jpg?v=1724683169&width=1024",
+      "https://sbdireland.com/cdn/shop/files/Wrist-Wraps-03.jpg?v=1724683181&width=1024",
+      "https://sbdireland.com/cdn/shop/files/Wrist-Wraps-02.jpg?v=1724683187&width=1024",
+      "https://sbdireland.com/cdn/shop/files/Wrist-Wraps-04.jpg?v=1724683193&width=1024"
     ],
     "price": 83.74,
     "stock_quantity": 55,
@@ -391,9 +417,7 @@
     "brand_new": false,
     "discount": 0,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://sfycdn.speedsize.com/fbaf6506-81e1-43a2-bcc1-80e18c7b0146/eu.representclo.com/cdn/shop/files/PQX1muOK4-WhY7wbtyD-i5i7Gea9j-6SvkHGrCm9AyE.jpg?v=1741095235&width=992"
     ],
     "price": 87.99,
     "stock_quantity": 58,
@@ -416,9 +440,8 @@
     "brand_new": true,
     "discount": 5,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://www.bulk.com/media/catalog/product/B/B/BBLE_CPCF_OMAN_Main_Image_56ab.jpg?auto=webp&quality=80&crop=false&fit=cover&width=1080&resize-filter=bicubic",
+      "https://www.bulk.com/media/catalog/product/p/a/packaging_transformation_UK_IE_2000x2000_d0cf.png?auto=webp&quality=80&crop=false&fit=cover&width=1080&resize-filter=bicubic"
     ],
     "price": 92.24,
     "stock_quantity": 61,
@@ -441,9 +464,7 @@
     "brand_new": false,
     "discount": 10,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://www.bulk.com/media/catalog/product/i/c/iconic_mini_shaker_bottle_gunmetal_black_bace_isbo_gbla_0750_main_1__d71e.jpg?auto=webp&quality=80&crop=false&fit=cover&width=1080&resize-filter=bicubic"
     ],
     "price": 96.49,
     "stock_quantity": 64,
@@ -466,9 +487,14 @@
     "brand_new": true,
     "discount": 15,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2021/03/Pro-Squat-Rack-Image-900x869.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2021/03/Squat-Stand-Pro-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2021/07/1145845_Editing-Photos-Squat-Rack-Barbell_1500px_6_090321-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2021/03/Squat-Stand-Pro3-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2021/07/1145845_Editing-Photos-Squat-Rack-Barbell_1500px_13_090321-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2021/07/1145845_Editing-Photos-Squat-Rack-Barbell_1500px_8_090321-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2021/03/squat-rack-1500px-900x900.jpg",
+      "https://ie-cdn.rpmpower.com/wp-content/uploads/2021/03/Squat-Stand-Pro1-900x900.jpg"
     ],
     "price": 100.74,
     "stock_quantity": 67,
@@ -491,9 +517,7 @@
     "brand_new": true,
     "discount": 0,
     "product_images": [
-      "/images/app-logo.png",
-      "/images/app-logo.png",
-      "/images/app-logo.png"
+      "https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_600,h_600/https://gymgear.ie/wp-content/uploads/2023/07/20kg-Kettlebell.png"
     ],
     "price": 104.99,
     "stock_quantity": 70,

@@ -862,6 +862,8 @@ $mobile-container-padding: 20px 10px;
                     scroll-snap-type: x mandatory;
                     scroll-snap-stop: always;
                     background-color: $translucent;
+                    border-left: thin solid $website-black;
+                    border-right: thin solid $website-black;
 
                     div {
                         flex: 0 0 100%;

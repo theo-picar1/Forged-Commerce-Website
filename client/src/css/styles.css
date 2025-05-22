@@ -829,6 +829,8 @@
     scroll-snap-type: x mandatory;
     scroll-snap-stop: always;
     background-color: rgba(0, 0, 0, 0.5215686275);
+    border-left: thin solid #000000;
+    border-right: thin solid #000000;
   }
   .view-product-page-container .image-carousel-container .image-carousel .image-container div {
     flex: 0 0 100%;

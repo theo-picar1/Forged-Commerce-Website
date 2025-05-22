@@ -22,7 +22,8 @@ export default class ViewProduct extends Component {
         return (originalPrice - (price * convertedDiscount)).toFixed(2)
     }
 
-    componentDidMount() {
+    findSimilarProducts() {
+        console.log(this.props.productToView)
         let similar = []
 
         this.props.products.map(product => {
@@ -34,6 +35,10 @@ export default class ViewProduct extends Component {
         this.setState({
             similarProducts: similar
         })
+    }
+
+    componentDidMount() {
+        this.findSimilarProducts()
     }
 
     render() {
@@ -126,7 +131,10 @@ export default class ViewProduct extends Component {
                     <div className="products">
                         {similarProducts.length > 0 ? (
                             similarProducts.map(product =>
-                                <div className="product" key={product["product_id"]} onClick={() => this.props.setProductToView(product)}>
+                                <div className="product" key={product["product_id"]} onClick={() => {
+                                        this.props.setProductToView(product)
+                                        this.findSimilarProducts()
+                                }}>
                                     <div className="product-image-container">
                                         <img src={product["product_images"][0]} alt="" />
                                     </div>
