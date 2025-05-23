@@ -1,11 +1,13 @@
 // Server-side global variables
 require(`dotenv`).config({path:`./config/.env`})
-
+require(`./config/db`) // For MongoDB
 
 // Express
 const express = require(`express`)
 const app = express()
 
+// Routers
+app.use(require(`./routes/products`))
 
 app.use(require(`body-parser`).json())
 app.use(require(`cors`)({credentials: true, origin: process.env.LOCAL_HOST}))

@@ -1,6 +1,5 @@
 [
   {
-    "product_id": 1,
     "product_name": "Adjustable Dumbbell Set",
     "product_rating": 4.2,
     "no_of_reviews": 172,
@@ -27,7 +26,6 @@
     "sold": 109
   },
   {
-    "product_id": 2,
     "product_name": "Yoga Mat - Non Slip",
     "product_rating": 4.6,
     "no_of_reviews": 72,
@@ -54,7 +52,6 @@
     "sold": 101
   },
   {
-    "product_id": 3,
     "product_name": "Weighted Jump Rope",
     "product_rating": 3.8,
     "no_of_reviews": 272,
@@ -79,7 +76,6 @@
     "sold": 14
   },
   {
-    "product_id": 4,
     "product_name": "Men\u2019s Compression Shirt",
     "product_rating": 4.2,
     "no_of_reviews": 1892,
@@ -105,7 +101,6 @@
     "sold": 191
   },
   {
-    "product_id": 5,
     "product_name": "Resistance Bands Set",
     "category": ["equipment", "strength", "bands"],
     "product_rating": 4.6,
@@ -136,7 +131,6 @@
     "sold": 9
   },
   {
-    "product_id": 6,
     "product_name": "Adjustable Bench",
     "product_rating": 3.8,
     "no_of_reviews": 1702,
@@ -164,7 +158,6 @@
     "sold": 253
   },
   {
-    "product_id": 7,
     "product_name": "Kettlebell - 12kg",
     "product_rating": 4.2,
     "no_of_reviews": 182,
@@ -187,7 +180,6 @@
     "sold": 100
   },
   {
-    "product_id": 8,
     "product_name": "Foam Roller",
     "product_rating": 4.6,
     "no_of_reviews": 101,
@@ -215,7 +207,6 @@
     "sold": 1091
   },
   {
-    "product_id": 9,
     "product_name": "Pull-Up Bar (Door Frame)",
     "product_rating": 3.8,
     "no_of_reviews": 17,
@@ -243,7 +234,6 @@
     "sold": 1090
   },
   {
-    "product_id": 10,
     "product_name": "Weightlifting Belt",
     "product_rating": 4.2,
     "no_of_reviews": 1,
@@ -270,7 +260,6 @@
     "sold": 541
   },
   {
-    "product_id": 11,
     "product_name": "Treadmill - Compact Foldable",
     "product_rating": 4.6,
     "no_of_reviews": 172,
@@ -296,7 +285,6 @@
     "sold": 71
   },
   {
-    "product_id": 12,
     "product_name": "Gym Gloves",
     "product_rating": 3.8,
     "no_of_reviews": 119,
@@ -324,7 +312,6 @@
     "sold": 711
   },
   {
-    "product_id": 13,
     "product_name": "Ankle Weights",
     "product_rating": 4.2,
     "category": ["strength", "equipment"],
@@ -347,7 +334,6 @@
     "sold": 701
   },
   {
-    "product_id": 14,
     "product_name": "Medicine Ball - 6kg",
     "product_rating": 4.6,
     "no_of_reviews": 591,
@@ -375,7 +361,6 @@
     "sold": 431
   },
   {
-    "product_id": 15,
     "product_name": "Powerlifting Wrist Wraps",
     "product_rating": 3.8,
     "no_of_reviews": 198,
@@ -401,7 +386,6 @@
     "sold": 971
   },
   {
-    "product_id": 16,
     "product_name": "Gym Duffle Bag",
     "product_rating": 4.2,
     "no_of_reviews": 2,
@@ -424,7 +408,6 @@
     "sold": 123
   },
   {
-    "product_id": 17,
     "product_name": "Pre-Workout Powder",
     "product_rating": 4.6,
     "no_of_reviews": 7,
@@ -448,7 +431,6 @@
     "sold": 291
   },
   {
-    "product_id": 18,
     "product_name": "Protein Shaker Bottle",
     "product_rating": 3.8,
     "no_of_reviews": 1091,
@@ -471,7 +453,6 @@
     "sold": 901
   },
   {
-    "product_id": 19,
     "product_name": "Squat Rack",
     "product_rating": 4.2,
     "no_of_reviews": 12,
@@ -501,7 +482,6 @@
     "sold": 652
   },
   {
-    "product_id": 20,
     "product_name": "Kettlebell - 20kg",
     "product_rating": 4.6,
     "no_of_reviews": 14,
