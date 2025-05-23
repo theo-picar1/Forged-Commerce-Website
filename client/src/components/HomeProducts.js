@@ -12,7 +12,7 @@ export default class HomeProducts extends Component {
     // Function that just returns the html format of the product card so that I don't need to copy and paste this chunk of code multiple times
     productCard(product) {
         return (
-            <div className="product" key={product["product_id"]} onClick={() => this.props.setProductToView(product)}>
+            <div className="product" key={product["_id"]} onClick={() => this.props.setProductToView(product)}>
                 <div className="product-image-container">
                     <img src={product["product_images"][0]} alt="" />
                 </div>

@@ -338,7 +338,7 @@ export default class Products extends Component {
                 {productsToShow.length > 0 ? (
                     <main id="products-section">
                         {productsToShow.map(product =>
-                            <div className="product" key={product["product_id"]} onClick={() => setProductToView(product)}>
+                            <div className="product" key={product["_id"]} onClick={() => setProductToView(product)}>
                                 {this.createStarsForProduct(product)}
                                 <div className="product-image-container">
                                     <img id="product-image" src={product["product_images"][0]} />

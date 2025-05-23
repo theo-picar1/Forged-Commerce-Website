@@ -6,19 +6,17 @@ require(`./config/db`) // For MongoDB
 const express = require(`express`)
 const app = express()
 
-// Routers
-app.use(require(`./routes/products`))
-
 app.use(require(`body-parser`).json())
 app.use(require(`cors`)({credentials: true, origin: process.env.LOCAL_HOST}))
 
+// Routers
+app.use(require(`./routes/products`))
 
 // Port
 app.listen(process.env.SERVER_PORT, () => 
 {
     console.log(`Connected to port ` + process.env.SERVER_PORT)
 })
-
 
 // Error 404
 app.use((req, res, next) => {next(createError(404))})

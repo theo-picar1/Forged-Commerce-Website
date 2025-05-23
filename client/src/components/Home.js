@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 import { Switch, Route, withRouter } from "react-router-dom"
+import axios from "axios"
+import { SERVER_HOST } from "../config/global_constants"
 
 import Header from './Header'
 import Footer from "./Footer"
@@ -28,7 +30,6 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        let url = "/json/products.json"
         let initCategories = [] // Array that just acts as a placeholder until we get all the unique cateogries from it
         let bestSellerCounter = 0
         let initMap = new Map()
@@ -37,42 +38,52 @@ class Home extends Component {
         initMap.set("new", 0)
         initMap.set("used", 0)
 
-        fetch(url).then(response => response.json()).then(data => {
-            data.forEach(product => {
-                if ("category" in product && product["category"].length > 0) {
-                    initCategories.push(...product["category"]) // Push every single category to the placeholder array
+        axios.get(`${SERVER_HOST}/products`).then(res => {
+            if (res.data) {
+                if (res.data.errorMessage) {
+                    console.log(res.data.errorMessage)
+                }
+                else {
+                    res.data.forEach(product => {
+                        if ("category" in product && product["category"].length > 0) {
+                            initCategories.push(...product["category"]) // Push every single category to the placeholder array
 
-                    // Logic that will have a counter for each category found in the JSON data
-                    product["category"].forEach(category => {
-                        if (initMap.has(category)) {
-                            initMap.set(category, initMap.get(category) + 1)
+                            // Logic that will have a counter for each category found in the JSON data
+                            product["category"].forEach(category => {
+                                if (initMap.has(category)) {
+                                    initMap.set(category, initMap.get(category) + 1)
+                                }
+                                else {
+                                    initMap.set(category, 1)
+                                }
+                            })
+
+                            if ("brand_new" in product) {
+                                if (product["brand_new"]) {
+                                    initMap.set("new", initMap.get("new") + 1)
+                                } else {
+                                    initMap.set("used", initMap.get("used") + 1)
+                                }
+                            }
                         }
-                        else {
-                            initMap.set(category, 1)
+
+                        if ("sold" in product && product["sold"] > 250) {
+                            bestSellerCounter++
                         }
                     })
 
-                    if ("brand_new" in product) {
-                        if (product["brand_new"]) {
-                            initMap.set("new", initMap.get("new") + 1)
-                        } else {
-                            initMap.set("used", initMap.get("used") + 1)
-                        }
-                    }
+                    this.setState({
+                        products: res.data,
+                        filteredProducts: res.data,
+                        categories: [...new Set(initCategories)],
+                        bestSellerCount: bestSellerCounter, // Don't remember why I even have this
+                        counterMap: initMap
+                    })
                 }
-
-                if ("sold" in product && product["sold"] > 250) {
-                    bestSellerCounter++
-                }
-            })
-
-            this.setState({
-                products: data,
-                filteredProducts: data,
-                categories: [...new Set(initCategories)],
-                bestSellerCount: bestSellerCounter, // Don't remember why I even have this
-                counterMap: initMap
-            })
+            }
+            else {
+                console.log("Record not found")
+            }
         })
     }
     // ----------------------------------------------------
@@ -271,9 +282,21 @@ class Home extends Component {
 
     // --------------- Functions mainly for ViewProduct.js ---------------
     setProductToView = (product) => {
-        this.setState({
-            productToView: product
-        }, () => this.props.history.push("/view-product"))
+        axios.get(`${SERVER_HOST}/products/${product._id}`).then(res => {
+            if (res.data) {
+                if (res.data.errorMessage) {
+                    console.log(res.data.errorMessage)
+                }
+                else {
+                    this.setState({
+                        productToView: product
+                    }, () => this.props.history.push("/view-product"))
+                }
+            }
+            else {
+                console.log("Product with provided ID not found!")
+            }
+        })
     }
     // -------------------------------------------------------------------
 
@@ -335,7 +358,7 @@ class Home extends Component {
                     </Route>
 
                     <Route exact path="/view-product">
-                        <ViewProduct 
+                        <ViewProduct
                             productToView={this.state.productToView}
                             products={this.state.products}
                             setProductToView={this.setProductToView}

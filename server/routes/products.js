@@ -8,7 +8,6 @@ router.get(`/products`, (req, res) => {
     })
 })
 
-
 // Read one record
 router.get(`/products/:id`, (req, res) => {
     productsModel.findById(req.params.id, (error, data) => {
