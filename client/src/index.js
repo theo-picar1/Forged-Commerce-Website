@@ -1,12 +1,14 @@
 import React from "react"
-import ReactDOM from "react-dom"
 import "./css/index.css"
-import App from "./App"
+import App from "./App.tsx"
 //import * as serviceWorker from "./serviceWorker"
 
 
 
-ReactDOM.render(<App/>, document.getElementById(`root`))
+import { createRoot } from 'react-dom/client'
+
+const root = createRoot(document.getElementById('root'))
+root.render(<App />)
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

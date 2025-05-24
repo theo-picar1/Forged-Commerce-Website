@@ -69,7 +69,7 @@ class Header extends Component {
         return (
             <React.Fragment>
                 <header className="website-header" name="top">
-                    <div className="top row">
+                    <div className="top theos-row">
                         <div className="left">
                             <img src="/images/menu-icon.png" alt="Menu button" className="menu-icon" onClick={() => openSlideInModal("menu-modal")} />
 
@@ -91,7 +91,7 @@ class Header extends Component {
                         </div>
                     </div>
 
-                    <div className="middle row">
+                    <div className="middle theos-row">
                         <div className="searchbar-container">
                             <input id="product-searchbar" type="text" placeholder="Search for products" autoComplete="off" value={productSearchValue} 
                                 onChange={e => displayAutocompleteSuggestions(e) }
@@ -116,7 +116,7 @@ class Header extends Component {
                         )}
                     </div>
 
-                    <div className={`bottom-wrapper row ${atStart ? "at-start" : ""} ${atEnd ? "at-end" : ""}`}>
+                    <div className={`bottom-wrapper theos-row ${atStart ? "at-start" : ""} ${atEnd ? "at-end" : ""}`}>
                         <div className="bottom" ref={this.bottomRef}>
                             <label className="category-radio">
                                 <input 

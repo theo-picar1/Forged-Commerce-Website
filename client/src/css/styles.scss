@@ -329,19 +329,22 @@ $mobile-container-padding: 20px 10px;
         width: 100%;
         background-color: $website-blue;
         padding: $mobile-padding;
-        padding-bottom: 0px;
+        padding-bottom: 5px;
         color: $website-white;
         box-shadow: 0 0 10px 5px $translucent;
         position: sticky;
         top: 0;
 
-        .row {
+        // Because bootstrap is messing up my stuff
+        .theos-row {
             padding: 5px 0;
+            margin: 0;
+            flex-wrap: nowrap;
+            max-width: inherit;
         }
 
         .top {
             @include flex-direction(row, space-between, center, 0);
-            margin: auto;
             transition: all 0.3s ease;
 
             &.hide {
@@ -374,7 +377,6 @@ $mobile-container-padding: 20px 10px;
             }
 
             .right {
-                @include flex-direction(row, unset, center, 10px);
 
                 .shopping-cart {
                     position: relative;
@@ -952,7 +954,7 @@ $mobile-container-padding: 20px 10px;
                     @include flex-direction(column, unset, unset, 5px);
                     width: 100%;
 
-                    .row {
+                    .theos-row {
                         width: 100%;
                         margin: 0;
                         @include flex-direction(row, space-between, flex-start, 0);
