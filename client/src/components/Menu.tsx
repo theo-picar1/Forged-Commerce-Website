@@ -1,6 +1,12 @@
 import React, { Component } from "react"
 
-export default class Menu extends Component {
+interface MenuProps {
+    categories: string[]
+    capitiliseString: (input: string) => string
+    closeSlideInModal: (modalToToggle: string) => void
+}
+
+export default class Menu extends Component<MenuProps> {
     render() {
         const { categories, capitiliseString, closeSlideInModal } = this.props
 

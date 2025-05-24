@@ -1,6 +1,6 @@
 import React from "react"
 import "./css/index.css"
-import App from "./App"
+import App from "./App.tsx"
 //import * as serviceWorker from "./serviceWorker"
 
 

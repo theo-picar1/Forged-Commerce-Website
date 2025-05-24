@@ -1,7 +1,19 @@
-import React, { Component } from "react"
+import React, { Component, JSX } from "react"
+import { Product } from "../types/Product"
 
-export default class ViewProduct extends Component {
-    constructor(props) {
+type ViewProductState = {
+    similarProducts: Product[]
+}
+
+interface ViewProductsProps {
+    productToView: Product
+    products: Product[]
+    setProductToView: (product: Product) => void
+}
+
+// Prop has to come first as parameter for some reason
+export default class ViewProduct extends Component<ViewProductsProps, ViewProductState> {
+    constructor(props: ViewProductsProps) {
         super(props)
 
         this.state = {
@@ -9,25 +21,24 @@ export default class ViewProduct extends Component {
         }
     }
 
-    createImageIndexes(noOfImages) {
+    createImageIndexes(noOfImages: number): JSX.Element[] {
         return Array.from({ length: noOfImages }, (_, i) => (
             <div className="index" key={i}></div>
         ))
     }
 
-    discountedPrice(price, discount) {
+    discountedPrice(price: number, discount: number) : number {
         let originalPrice = price
         let convertedDiscount = discount / 100
 
-        return (originalPrice - (price * convertedDiscount)).toFixed(2)
+        return Number((originalPrice - (price * convertedDiscount)).toFixed(2))
     }
 
-    findSimilarProducts() {
-        console.log(this.props.productToView)
-        let similar = []
+    findSimilarProducts() : void {
+        let similar: Product[] = []
 
         this.props.products.map(product => {
-            if (product["category"][0] === this.props.productToView["category"][0] && product["product_id"] !== this.props.productToView["product_id"]) {
+            if (product["category"][0] === this.props.productToView["category"][0] && product["_id"] !== this.props.productToView["_id"]) {
                 similar.push(product)
             }
         })
@@ -89,13 +100,13 @@ export default class ViewProduct extends Component {
                         <h3>About this product</h3>
 
                         <div className="about-content">
-                            <div className="row">
+                            <div className="theos-row">
                                 <p className="title">Condition</p>
 
                                 <p>{productToView["brand_new"] ? "New" : "Used"}</p>
                             </div>
 
-                            <div className="row">
+                            <div className="theos-row">
                                 <p className="title">Quantity</p>
 
                                 <div className="sold-and-stock">
@@ -104,13 +115,13 @@ export default class ViewProduct extends Component {
                                 </div>
                             </div>
 
-                            <div className="row">
+                            <div className="theos-row">
                                 <p className="title">Average Rating</p>
 
                                 <p className="detail">{productToView["product_rating"]} stars</p>
                             </div>
 
-                            <div className="row">
+                            <div className="theos-row">
                                 <p className="title">No. Of Reviews</p>
 
                                 <p className="detail">{productToView["no_of_reviews"]}</p>
@@ -131,9 +142,9 @@ export default class ViewProduct extends Component {
                     <div className="products">
                         {similarProducts.length > 0 ? (
                             similarProducts.map(product =>
-                                <div className="product" key={product["product_id"]} onClick={() => {
-                                        this.props.setProductToView(product)
-                                        this.findSimilarProducts()
+                                <div className="product" key={product["_id"]} onClick={() => {
+                                    this.props.setProductToView(product)
+                                    this.findSimilarProducts()
                                 }}>
                                     <div className="product-image-container">
                                         <img src={product["product_images"][0]} alt="" />
@@ -152,7 +163,7 @@ export default class ViewProduct extends Component {
                                         }
                                     </div>
                                 </div>
-                        )) : <p>No similar products</p>}
+                            )) : <p>No similar products</p>}
                     </div>
                 </div>
             </div>

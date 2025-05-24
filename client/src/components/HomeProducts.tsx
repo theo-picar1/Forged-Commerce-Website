@@ -1,8 +1,18 @@
 import React, { Component } from "react"
 
+import { Product } from "../types/Product"
 
-export default class HomeProducts extends Component {
-    discountedPrice(price, discount) {
+// Interface is mainly for props apparently 
+interface HomeProductsProps {
+    products: Product[]
+    categories: string[]
+    capitiliseString: (input: string) => string
+    currentView: string
+    setProductToView: (product: Product) => void
+}
+
+export default class HomeProducts extends Component<HomeProductsProps> {
+    discountedPrice(price: number, discount: number) {
         let originalPrice = price
         let convertedDiscount = discount / 100
 
@@ -10,7 +20,7 @@ export default class HomeProducts extends Component {
     }
 
     // Function that just returns the html format of the product card so that I don't need to copy and paste this chunk of code multiple times
-    productCard(product) {
+    productCard(product: Product) {
         return (
             <div className="product" key={product["_id"]} onClick={() => this.props.setProductToView(product)}>
                 <div className="product-image-container">
@@ -83,37 +93,37 @@ export default class HomeProducts extends Component {
                         <div className="category" style={{ backgroundImage: `url('/images/barbell-background.jpg')` }}>
                             <div>
                                 <p>Barbells</p>
-                            </div>   
+                            </div>
                         </div>
 
                         <div className="category" style={{ backgroundImage: `url('/images/dumbbell-background.webp')` }}>
-                           <div>
+                            <div>
                                 <p>Dumbbells</p>
-                            </div>  
+                            </div>
                         </div>
 
                         <div className="category" style={{ backgroundImage: `url('/images/kettlebells-background.jpeg')` }}>
                             <div>
                                 <p>Kettlebells</p>
-                            </div>  
+                            </div>
                         </div>
 
                         <div className="category" style={{ backgroundImage: `url('/images/supplements-background.jpeg')` }}>
                             <div>
                                 <p>Supplements</p>
-                            </div>  
+                            </div>
                         </div>
 
                         <div className="category" style={{ backgroundImage: `url('/images/gym-clothing-background.jpeg')` }}>
                             <div>
                                 <p>Clothing</p>
-                            </div>  
+                            </div>
                         </div>
 
                         <div className="category" style={{ backgroundImage: `url('/images/equipment-background.jpeg')` }}>
                             <div>
                                 <p>Other</p>
-                            </div>  
+                            </div>
                         </div>
                     </div>
 

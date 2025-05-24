@@ -954,7 +954,7 @@ $mobile-container-padding: 20px 10px;
                     @include flex-direction(column, unset, unset, 5px);
                     width: 100%;
 
-                    .row {
+                    .theos-row {
                         width: 100%;
                         margin: 0;
                         @include flex-direction(row, space-between, flex-start, 0);

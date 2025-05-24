@@ -4,8 +4,8 @@ import { BrowserRouter, Switch, Route } from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.css"
 import "./css/styles.css"
 
-import Home from "./components/Home"
-import NoPageFound from "./components/NoPageFound"
+import Home from "./components/Home.tsx"
+import NoPageFound from "./components/NoPageFound.tsx"
 
 export default class App extends Component 
 {
