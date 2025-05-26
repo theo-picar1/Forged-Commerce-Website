@@ -297,8 +297,9 @@
        -moz-appearance: none;
             appearance: none;
   }
-  .website-header .bottom-wrapper .bottom .category-radio input:checked + p {
+  .website-header .bottom-wrapper .bottom .category-radio input:hover + p {
     color: #FE0404;
+    cursor: pointer;
   }
   .website-header .bottom-wrapper .bottom .category-radio p {
     white-space: nowrap;

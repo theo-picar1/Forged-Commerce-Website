@@ -1,10 +1,30 @@
 import React, { Component, createRef } from "react"
 import { Link, withRouter } from "react-router-dom"
+import { Product } from "../types/Product"
+import { RouteComponentProps } from 'react-router-dom'
 
-class Header extends Component {
-    constructor(props) {
+interface HeaderProps extends RouteComponentProps {
+    categories: string[]
+    capitiliseString: (input: string) => string
+    openSlideInModal: (modalToToggle: string) => void
+    displayAutocompleteSuggestions: (e: React.ChangeEvent<HTMLInputElement>) => void
+    productSearchValue: string
+    suggestions: Product[]
+    completeAutocomplete: (value: string) => void
+    filterProductsBySearchValue: (e: React.KeyboardEvent<HTMLInputElement>) => void
+    filterProductsByHeaderCategory: (value: string) => void
+}
+
+type HeaderState = {
+    atStart: boolean
+    atEnd: boolean
+}
+
+class Header extends Component<HeaderProps, HeaderState> {
+    bottomRef: React.RefObject<HTMLDivElement | null> = createRef()
+
+    constructor(props: HeaderProps) {
         super(props)
-        this.bottomRef = createRef()
 
         this.state = {
             atStart: true,
@@ -14,12 +34,16 @@ class Header extends Component {
 
     componentDidMount() {
         this.updateScrollShadows()
-        this.bottomRef.current.addEventListener("scroll", this.updateScrollShadows)
+
+        if (this.bottomRef.current) {
+            this.bottomRef.current.addEventListener("scroll", this.updateScrollShadows)
+        }
+
         window.addEventListener("resize", this.updateScrollShadows)
 
         // JS logic that blurs either side depending on how far the user has scrolled in .bottom-wrapper. Might remove this
-        let bottomSection = document.querySelector('.bottom-wrapper')
-        let topSection = document.querySelector('.top')
+        let bottomSection = document.querySelector('.bottom-wrapper') as HTMLElement
+        let topSection = document.querySelector('.top') as HTMLElement
 
         // If the scrollY position is 10px down, hide the categories section in the header to minimise content
         window.addEventListener('scroll', () => {
@@ -37,7 +61,10 @@ class Header extends Component {
     }
 
     componentWillUnmount() {
-        this.bottomRef.current.removeEventListener("scroll", this.updateScrollShadows)
+        if (this.bottomRef.current) {
+            this.bottomRef.current.removeEventListener("scroll", this.updateScrollShadows)
+        }
+
         window.removeEventListener("resize", this.updateScrollShadows)
     }
 
@@ -48,27 +75,36 @@ class Header extends Component {
             scrollWidth = the entire width of the scrollable content
         */
         const el = this.bottomRef.current
-        const atStart = el.scrollLeft === 0
-        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth
+        let atStart: boolean
+        let atEnd: boolean
 
-        this.setState({ atStart, atEnd })
+        if (el) {
+            atStart = el.scrollLeft === 0
+            atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth
+
+            this.setState({ atStart, atEnd })
+        }
     }
 
     render() {
         // To stop saying this.props and this.state EVERY SINGLE TIME
-        const { categories, 
-                capitiliseString, 
-                openSlideInModal, 
-                displayAutocompleteSuggestions, 
-                productSearchValue, suggestions, 
-                completeAutocomplete, 
-                filterProductsBySearchValue,
-                filterProductsByHeaderCategory } = this.props
+        const {
+            categories,
+            capitiliseString,
+            openSlideInModal,
+            displayAutocompleteSuggestions,
+            productSearchValue,
+            suggestions,
+            completeAutocomplete,
+            filterProductsBySearchValue,
+            filterProductsByHeaderCategory
+        } = this.props
+
         const { atStart, atEnd } = this.state
 
         return (
             <React.Fragment>
-                <header className="website-header" name="top">
+                <header className="website-header top">
                     <div className="top theos-row">
                         <div className="left">
                             <img src="/images/menu-icon.png" alt="Menu button" className="menu-icon" onClick={() => openSlideInModal("menu-modal")} />
@@ -93,8 +129,8 @@ class Header extends Component {
 
                     <div className="middle theos-row">
                         <div className="searchbar-container">
-                            <input id="product-searchbar" type="text" placeholder="Search for products" autoComplete="off" value={productSearchValue} 
-                                onChange={e => displayAutocompleteSuggestions(e) }
+                            <input id="product-searchbar" type="text" placeholder="Search for products" autoComplete="off" value={productSearchValue}
+                                onChange={e => displayAutocompleteSuggestions(e)}
                                 onKeyDown={e => filterProductsBySearchValue(e)}
                             />
 
@@ -103,10 +139,10 @@ class Header extends Component {
                             </div>
                         </div>
 
-                        { suggestions.length > 0 && (
+                        {suggestions.length > 0 && (
                             <div id="product-autocomplete-modal">
-                                { suggestions.map(product => 
-                                    <div key={product["product_id"]} onClick={() => completeAutocomplete(product["product_name"])}>
+                                {suggestions.map(product =>
+                                    <div key={product["_id"]} onClick={() => completeAutocomplete(product["product_name"])}>
                                         <img src="/images/search-icon.png" />
 
                                         <p>{product["product_name"]}</p>
@@ -119,24 +155,24 @@ class Header extends Component {
                     <div className={`bottom-wrapper theos-row ${atStart ? "at-start" : ""} ${atEnd ? "at-end" : ""}`}>
                         <div className="bottom" ref={this.bottomRef}>
                             <label className="category-radio">
-                                <input 
-                                    type="radio" 
-                                    className="header-category" 
-                                    value="" 
+                                <input
+                                    type="radio"
+                                    className="header-category"
+                                    value=""
                                     name="header-category"
-                                    onClick={ (e) => filterProductsByHeaderCategory(e)}/>
+                                    onClick={() => filterProductsByHeaderCategory("")} />
 
                                 <p>All</p>
                             </label>
 
                             {categories.map(category =>
-                                <label className="category-radio" key={category}> 
-                                    <input 
-                                        type="radio" 
-                                        className="header-category" 
+                                <label className="category-radio" key={category}>
+                                    <input
+                                        type="radio"
+                                        className="header-category"
                                         name="header-category"
-                                        value={category} 
-                                        onClick={ (e) => filterProductsByHeaderCategory(e)}/>
+                                        value={category}
+                                        onClick={() => filterProductsByHeaderCategory(`${category}`)} />
 
                                     <p>{capitiliseString(category)}</p>
                                 </label>

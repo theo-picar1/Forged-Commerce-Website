@@ -172,11 +172,11 @@ class Home extends Component<HomeProps, HomeState> {
     }
 
     // This category filters only allows the user to filter by one category. Multiple categories will be a separate thing with a specialised modal
-    filterProductsByHeaderCategory = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    filterProductsByHeaderCategory = (value: string): void => {
         let matched: Product[] = []
 
         // Just set the filteredProducts to every single product if the user clicks the All option (which has a value of "")
-        if (e.target.value === "") {
+        if (value === "") {
             this.setState({
                 filteredProducts: this.state.products
             }, () => {
@@ -186,7 +186,7 @@ class Home extends Component<HomeProps, HomeState> {
         }
         else {
             this.state.products.map(product => {
-                if (product["category"].includes(e.target.value)) {
+                if (product["category"].includes(value)) {
                     matched.push(product)
                 }
             })
