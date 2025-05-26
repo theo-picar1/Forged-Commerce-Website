@@ -44,7 +44,7 @@ $mobile-container-padding: 20px 10px;
     background-color: $invisible;
     width: 100%;
     height: 35px;
-    padding: 15px 12px;
+    padding: 15px 8px;
 
     &::placeholder {
         color: $placeholder-color;
@@ -109,6 +109,21 @@ $mobile-container-padding: 20px 10px;
 
     p {
         margin: 0;
+    }
+}
+
+@mixin default-button-css() {
+    appearance: none;
+    background-color: $website-red;
+    border-radius: 5px;
+    padding: 5px 0;
+    color: $website-white;
+    font-weight: bold;
+    border: none;
+    outline: none;
+
+    &:hover {
+        cursor: pointer;
     }
 }
 
@@ -315,6 +330,11 @@ $mobile-container-padding: 20px 10px;
                     .title {
                         border-bottom: thin solid $website-black;
                         padding: 6px 0;
+                    }
+
+                    .link {
+                        color: $website-black;
+                        padding: 5px 0;
                     }
 
                     div {
@@ -986,7 +1006,7 @@ $mobile-container-padding: 20px 10px;
         }
 
         .similar-products {
-             
+
             h3 {
                 font-weight: bold;
                 font-size: 24px;
@@ -1025,5 +1045,122 @@ $mobile-container-padding: 20px 10px;
 
     #laptop-footer-content {
         display: none;
+    }
+
+    .authentication-page-container {
+        @include flex-direction(column, unset, center, 15px);
+        padding: $mobile-padding;
+
+        .title {
+            @include flex-direction(row, unset, center, 8px);
+            text-decoration: none;
+
+            img {
+                width: 52px;
+            }
+
+            h1 {
+                color: $website-white;
+                font-weight: bold;
+                font-size: 28px;
+            }
+        }
+
+        .authentication-content {
+            background-color: $main-content-color;
+            padding: $mobile-container-padding;
+            width: 100%;
+            @include flex-direction(column, unset, unset, 15px);
+            border-radius: 6px;
+
+            h3 {
+                font-weight: bold;
+                font-size: 24px;
+            }
+
+            .inputs-container {
+                @include flex-direction(column, unset, unset, 8px);
+
+                .input-row-section {
+                    @include flex-direction(row, space-between, unset, 5px);
+                }
+
+                .input-section {
+
+                    p {
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+
+                    input {
+                        width: 100%;
+                        @include default-text-input();
+                        border: thin solid $website-gray;
+                        height: 30px;
+                        border-radius: 5px;
+                        background-color: $website-white;
+                    }
+
+                    .forgot-password {
+                        @include flex-direction(row, space-between, unset, 0);
+
+                        .prompt {
+                            font-size: 13px;
+                            text-decoration: none;
+                            color: $link-color;
+                        }
+                    }
+                }
+
+                .submit-button {
+                    margin-top: 5px;
+                    @include default-button-css();
+                }
+            }
+
+            .bottom-section {
+                margin-top: 15px;
+                @include flex-direction(column, unset, center, 10px);
+                width: inherit;
+                ;
+
+                .message {
+                    @include flex-direction(row, center, center, 10px);
+                    width: inherit;
+                    overflow: hidden;
+
+                    p {
+                        font-size: 14px;
+                        color: $website-gray;
+                        white-space: nowrap;
+                    }
+
+                    hr {
+                        width: 100px;
+                        margin: 0;
+                        display: flex;
+                        background-color: $website-gray;
+                        height: 1px;
+                        border: none;
+                    }
+                }
+
+                .create-account-button {
+                    @include default-button-css();
+                    background-color: $website-blue;
+                    text-decoration: none;
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+
+            .register-bottom-section {
+                margin: 0;
+            }
+
+            .forgot-password-message {
+                font-size: 12px;
+            }
+        }
     }
 }
