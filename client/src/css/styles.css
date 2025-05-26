@@ -78,6 +78,10 @@
     border-bottom: thin solid #000000;
     padding: 6px 0;
   }
+  #menu-modal #menu-modal-content main .section .link {
+    color: #000000;
+    padding: 5px 0;
+  }
   #menu-modal #menu-modal-content main .section div {
     padding: 5px 0;
   }
@@ -190,7 +194,7 @@
     background-color: rgba(0, 0, 0, 0);
     width: 100%;
     height: 35px;
-    padding: 15px 12px;
+    padding: 15px 8px;
   }
   .website-header .middle .searchbar-container input::-moz-placeholder {
     color: #bbbbbb;
@@ -1026,5 +1030,168 @@
   }
   #laptop-footer-content {
     display: none;
+  }
+  .authentication-page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: center;
+    gap: 15px;
+    padding: 35px 10px;
+  }
+  .authentication-page-container .title {
+    display: flex;
+    flex-direction: row;
+    justify-content: unset;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+  .authentication-page-container .title img {
+    width: 52px;
+  }
+  .authentication-page-container .title h1 {
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 28px;
+  }
+  .authentication-page-container .authentication-content {
+    background-color: #F3F3F3;
+    padding: 20px 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+    gap: 15px;
+    border-radius: 6px;
+  }
+  .authentication-page-container .authentication-content h3 {
+    font-weight: bold;
+    font-size: 24px;
+  }
+  .authentication-page-container .authentication-content .inputs-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+    gap: 8px;
+  }
+  .authentication-page-container .authentication-content .inputs-container .input-row-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: unset;
+    gap: 5px;
+  }
+  .authentication-page-container .authentication-content .inputs-container .input-section p {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .authentication-page-container .authentication-content .inputs-container .input-section input {
+    width: 100%;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    outline: none;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    height: 35px;
+    padding: 15px 8px;
+    border: thin solid #808080;
+    height: 30px;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+  }
+  .authentication-page-container .authentication-content .inputs-container .input-section input::-moz-placeholder {
+    color: #bbbbbb;
+  }
+  .authentication-page-container .authentication-content .inputs-container .input-section input::placeholder {
+    color: #bbbbbb;
+  }
+  .authentication-page-container .authentication-content .inputs-container .input-section .forgot-password {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: unset;
+    gap: 0;
+  }
+  .authentication-page-container .authentication-content .inputs-container .input-section .forgot-password .prompt {
+    font-size: 13px;
+    text-decoration: none;
+    color: #2163A2;
+  }
+  .authentication-page-container .authentication-content .inputs-container .submit-button {
+    margin-top: 5px;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    background-color: #FE0404;
+    border-radius: 5px;
+    padding: 5px 0;
+    color: #FFFFFF;
+    font-weight: bold;
+    border: none;
+    outline: none;
+  }
+  .authentication-page-container .authentication-content .inputs-container .submit-button:hover {
+    cursor: pointer;
+  }
+  .authentication-page-container .authentication-content .bottom-section {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: center;
+    gap: 10px;
+    width: inherit;
+  }
+  .authentication-page-container .authentication-content .bottom-section .message {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: inherit;
+    overflow: hidden;
+  }
+  .authentication-page-container .authentication-content .bottom-section .message p {
+    font-size: 14px;
+    color: #808080;
+    white-space: nowrap;
+  }
+  .authentication-page-container .authentication-content .bottom-section .message hr {
+    width: 100px;
+    margin: 0;
+    display: flex;
+    background-color: #808080;
+    height: 1px;
+    border: none;
+  }
+  .authentication-page-container .authentication-content .bottom-section .create-account-button {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    background-color: #FE0404;
+    border-radius: 5px;
+    padding: 5px 0;
+    color: #FFFFFF;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    background-color: #2C3A57;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+  }
+  .authentication-page-container .authentication-content .bottom-section .create-account-button:hover {
+    cursor: pointer;
+  }
+  .authentication-page-container .authentication-content .register-bottom-section {
+    margin: 0;
+  }
+  .authentication-page-container .authentication-content .forgot-password-message {
+    font-size: 12px;
   }
 }/*# sourceMappingURL=styles.css.map */

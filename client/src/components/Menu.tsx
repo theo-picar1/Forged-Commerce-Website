@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { Link } from "react-router-dom"
 
 interface MenuProps {
     categories: string[]
@@ -25,9 +26,9 @@ export default class Menu extends Component<MenuProps> {
                                 <h5>General</h5>
                             </div>
 
-                            <div>
+                            <Link to={"/login"} className="link">
                                 <p>Edit Account</p>
-                            </div>
+                            </Link>
 
                             <div>
                                 <p>Purchase History</p>
