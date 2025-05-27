@@ -1162,7 +1162,7 @@
     white-space: nowrap;
   }
   .authentication-page-container .authentication-content .bottom-section .message hr {
-    width: 100px;
+    width: 500px;
     margin: 0;
     display: flex;
     background-color: #808080;

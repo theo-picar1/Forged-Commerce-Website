@@ -1,6 +1,8 @@
 import React, { Component, JSX } from "react"
 import { Product } from "../types/Product"
 
+import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
+
 type ViewProductState = {
     similarProducts: Product[]
 }
@@ -9,6 +11,7 @@ interface ViewProductsProps {
     productToView: Product
     products: Product[]
     setProductToView: (product: Product) => void
+    redirectToLogin: () => void
 }
 
 // Prop has to come first as parameter for some reason
@@ -53,7 +56,7 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
     }
 
     render() {
-        const { productToView } = this.props
+        const { productToView, redirectToLogin } = this.props
         const { similarProducts } = this.state
 
         return (
@@ -86,10 +89,11 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
                     </div>
 
                     <div className="buttons">
-                        <button id="buy-now" className="button">Buy now</button>
-                        <button id="add-to-basket" className="button">Add to basket</button>
+                        <button id="buy-now" className="button" onClick={() => redirectToLogin()}>Buy now</button>
 
-                        <div id="add-to-favourites" className="button">
+                        <button id="add-to-basket" className="button" onClick={() => redirectToLogin()}>Add to basket</button>
+
+                        <div id="add-to-favourites" className="button" onClick={() => redirectToLogin()}>
                             <img src="/images/favourite-icon.png" />
 
                             <p>Add to favourites</p>

@@ -3,6 +3,7 @@ import { RouteComponentProps, Switch, Route, withRouter } from "react-router-dom
 import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants.ts"
 import { Product } from "../types/Product.ts"
+import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
 
 import Header from './Header.tsx'
 import Footer from './Footer.tsx'
@@ -320,6 +321,17 @@ class Home extends Component<HomeProps, HomeState> {
     }
     // -------------------------------------------------------------------
 
+    // --------------- Authentication functions ---------------
+    // For anything that involves having to sign in first in order to be able to do it
+    redirectToLogin = () : void => {
+        if(localStorage.accessLevel > ACCESS_LEVEL_GUEST) {
+            return
+        }
+        
+        this.props.history.push("/login")
+    }  
+    // --------------------------------------------------------
+
     render() {
         return (
             <React.Fragment>
@@ -381,6 +393,7 @@ class Home extends Component<HomeProps, HomeState> {
                             productToView={this.state.productToView}
                             products={this.state.products}
                             setProductToView={this.setProductToView}
+                            redirectToLogin={this.redirectToLogin}
                         />
                     </Route>
                 </Switch>
