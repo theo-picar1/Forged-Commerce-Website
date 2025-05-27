@@ -1,7 +1,8 @@
 import React, { Component } from "react"
-import { Link, RouteComponentProps } from "react-router-dom"
+import { Link, RouteComponentProps, Redirect } from "react-router-dom"
 import { SERVER_HOST } from "../config/global_constants.ts"
 import axios from "axios"
+import { ACCESS_LEVEL_GUEST, ACCESS_LEVEL_NORMAL_USER } from "../config/global_constants.ts"
 
 type RegisterProps = RouteComponentProps
 
@@ -18,6 +19,8 @@ type RegisterInputState = {
 
 type RegisterState = RegisterInputState & {
     allFieldsFilled: boolean
+    accessLevel: Number
+    isRegistered: boolean
 }
 
 export default class Register extends Component<RegisterProps, RegisterState> {
@@ -32,10 +35,13 @@ export default class Register extends Component<RegisterProps, RegisterState> {
             houseAddress: "",
             password: "",
             confirmPassword: "",
-            allFieldsFilled: false
+            allFieldsFilled: false,
+            accessLevel: ACCESS_LEVEL_GUEST,
+            isRegistered: false
         }
     }
 
+    // Handles all changes done to the input fields
     handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const key = e.currentTarget.name as keyof RegisterInputState
         const value = e.currentTarget.value // This is why allFieldsFilled field needs to be separate as this always expects a string
@@ -45,27 +51,10 @@ export default class Register extends Component<RegisterProps, RegisterState> {
         }
     }
 
-    highlightInvalidFields = (): void => {
-        const inputs = document.querySelectorAll<HTMLInputElement>(".input-field")
-        let invalid: boolean = false
+    // Submits form with all values of the input saved in this.state
+    submitForm = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
+        e.preventDefault()
 
-        inputs.forEach(input => {
-            // Highlight all the inputs with empty values with a red border
-            if (input.value === "" || input.value === undefined) {
-                input.style.border = "thin solid red"
-                invalid = true
-            }
-            else {
-                input.style.border = "thin solid #808080"
-            }
-        })
-
-        if (!invalid) {
-            this.submitForm()
-        }
-    }
-
-    submitForm = async (): Promise<void> => {
         const inputs = {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
@@ -73,92 +62,103 @@ export default class Register extends Component<RegisterProps, RegisterState> {
             telephoneNo: this.state.telephoneNo,
             houseAddress: this.state.houseAddress,
             password: this.state.password,
-            confirmPassword: this.state.confirmPassword
+            accessLevel: ACCESS_LEVEL_NORMAL_USER
         }
 
         try {
+            // Call the corresponding method to register and hopefully add the new user to the database
             const res = await axios.post(`${SERVER_HOST}/users/register`, inputs)
-            if (res.data?.errorMessage) {
+            if (res.data.errorMessage) {
                 console.log(res.data.errorMessage)
-            } 
+            }
             else if (res.data) {
                 console.log("User registered")
-            } 
+
+                this.setState({
+                    isRegistered: true
+                })
+            }
             else {
                 console.log("Registration failed")
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error during registration:", error)
         }
     }
 
     render() {
+        const { isRegistered } = this.state
         return (
-            <div className="authentication-page-container">
-                <Link to={"/"} className="title">
-                    <img src="/images/app-logo.png" alt="" />
+            isRegistered ? (
+                <Redirect to={"/"} />
+            ) : (
+                <div className="authentication-page-container">
+                    <Link to={"/"} className="title">
+                        <img src="/images/app-logo.png" alt="" />
 
-                    <h1>FORGED</h1>
-                </Link>
+                        <h1>FORGED</h1>
+                    </Link >
 
-                <form className="authentication-content">
-                    <h3>Create account</h3>
+                    <form className="authentication-content">
+                        <h3>Create account</h3>
 
-                    <div className="inputs-container">
-                        <div className="input-row-section">
-                            <div className="input-section">
-                                <p>First name</p>
+                        <div className="inputs-container">
+                            <div className="input-row-section">
+                                <div className="input-section">
+                                    <p>First name</p>
 
-                                <input type="text" onChange={(e) => this.handleInputChange(e)} className="input-field" />
+                                    <input type="text" onChange={(e) => this.handleInputChange(e)} className="input-field" name="firstName" />
+                                </div>
+
+                                <div className="input-section">
+                                    <p>Last name</p>
+
+                                    <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} name="lastName" />
+                                </div>
                             </div>
 
                             <div className="input-section">
-                                <p>Last name</p>
+                                <p>Email</p>
 
-                                <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} />
-                            </div>
-                        </div>
-
-                        <div className="input-section">
-                            <p>Email</p>
-
-                            <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} />
-                        </div>
-
-                        <div className="input-section">
-                            <p>Telephone no.</p>
-
-                            <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} />
-                        </div>
-
-                        <div className="input-section">
-                            <p>House address.</p>
-
-                            <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} />
-                        </div>
-
-                        <div className="input-row-section">
-                            <div className="input-section">
-                                <p>Password</p>
-
-                                <input type="password" className="input-field" onChange={(e) => this.handleInputChange(e)} />
+                                <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} name="email" />
                             </div>
 
                             <div className="input-section">
-                                <p>Confirm password</p>
+                                <p>Telephone no.</p>
 
-                                <input type="password" className="input-field" onChange={(e) => this.handleInputChange(e)} />
+                                <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} name="telephoneNo" />
                             </div>
+
+                            <div className="input-section">
+                                <p>House address.</p>
+
+                                <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} name="houseAddress" />
+                            </div>
+
+                            <div className="input-row-section">
+                                <div className="input-section">
+                                    <p>Password</p>
+
+                                    <input type="password" className="input-field" onChange={(e) => this.handleInputChange(e)} name="password" />
+                                </div>
+
+                                <div className="input-section">
+                                    <p>Confirm password</p>
+
+                                    <input type="password" className="input-field" onChange={(e) => this.handleInputChange(e)} name="confirmPassword" />
+                                </div>
+                            </div>
+
+                            <button className="submit-button" onClick={(e) => this.submitForm(e)}>Create account</button>
                         </div>
 
-                        <button className="submit-button" onClick={() => this.highlightInvalidFields()}>Create account</button>
-                    </div>
-
-                    <div className="bottom-section register-bottom-section">
-                        <p>Already have an account? <Link to={"/login"}>Sign in</Link></p>
-                    </div>
-                </form>
-            </div>
+                        <div className="bottom-section register-bottom-section">
+                            <p>Already have an account? <Link to={"/login"}>Sign in</Link></p>
+                        </div>
+                    </form>
+                </div>
+            )
         )
     }
 }

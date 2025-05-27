@@ -18,7 +18,8 @@ const router = express.Router()
     Await: Wait for something to finish off before moving on. In the older project it is the equivalent of .then
 */
 
-const registerFields: string[] = ['email', 'password', 'firstName', 'lastName', 'telephoneNo', 'address']
+const registerFields: any[] = ['email', 'password', 'firstName', 'lastName', 'telephoneNo', 'houseAddress', 'accessLevel']
+const loginFields: string[] = ['email', 'password']
 
 // Registering a new user i.e. Adding
 router.post('/users/register', validateFields(registerFields), async (req: Request, res: Response) => {
@@ -30,7 +31,8 @@ router.post('/users/register', validateFields(registerFields), async (req: Reque
             email,
             telephoneNo,
             houseAddress,
-            password
+            password,
+            accessLevel
         } = req.body
 
         // Check if email already exists and say so if does
@@ -52,7 +54,8 @@ router.post('/users/register', validateFields(registerFields), async (req: Reque
             email: email,
             telephoneNo: telephoneNo,
             houseAddress: houseAddress,
-            password: hashedPassword
+            password: hashedPassword,
+            accessLevel: accessLevel
         })
         res.status(201).json({ successMessage: 'User successfully registered with ID: ', userId: newUser._id })
 
@@ -64,6 +67,57 @@ router.post('/users/register', validateFields(registerFields), async (req: Reque
 
         return
     }
+})
+
+// Logging in a user
+router.post('/users/login', validateFields(loginFields), async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body
+
+        // Trying to see if the email that user entered even exists in the database
+        const matchedUser = await usersModel.findOne({ email })
+
+        if (matchedUser) {
+
+            // This time, we compare the hash of both the password the user entered and the hashed password of the user with the matching email
+            const correctPassword: boolean = await bcrypt.compare(password, matchedUser.password)
+
+            // If they password matches, 
+            if(correctPassword) {
+                res.json({
+                    matchedUser
+                })
+
+                console.log("User logged in successfully")
+
+                return
+            }
+            // Otherwise tell them that password was wrong
+            else {
+                res.status(401).json({ errorMessage: 'Invalid password!' })
+
+                return
+            }
+        }
+        // If no email was found in the database, then that email is not in use
+        else {
+            res.status(404).json({ errorMessage: 'A user with this email does not exist!' })
+            console.log("User with this email does not exist!")
+
+            return
+        }
+    }
+    catch (error) {
+        console.error(error)
+        res.status(500).json({ errorMessage: 'Internal server error' })
+
+        return
+    }
+})
+
+// For logging out a user. Don't need async because I am not using await inside the method
+router.post(`/users/logout`, (req: Request, res: Response) => {       
+    res.json({  })
 })
 
 export default router
