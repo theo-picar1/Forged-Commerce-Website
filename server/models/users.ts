@@ -1,26 +1,26 @@
 import mongoose, { Document, Schema, Model } from 'mongoose'
 
 export interface IUser extends Document {
-  first_name: string
-  second_name: string
+  firstName: string
+  lastName: string
   email: string
   accessLevel: number
   password: string
   profile_picture: string
-  house_address: string
-  telephone_no: string
+  houseAddress: string
+  telephoneNo: string
 }
 
 const usersSchema: Schema<IUser> = new mongoose.Schema(
   {
-    first_name: { type: String, required: true },
-    second_name: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    accessLevel: { type: Number, required: true },
+    accessLevel: { type: Number, required: false },
     password: { type: String, required: true },
     profile_picture: { type: String, required: false },
-    house_address: { type: String, required: false },
-    telephone_no: { type: String, required: false }
+    houseAddress: { type: String, required: false },
+    telephoneNo: { type: String, required: false }
   },
   {
     collection: 'users'
