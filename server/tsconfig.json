@@ -11,5 +11,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["server.ts", "routes/**/*.ts", "config/**/*.ts"]
+  "include": ["**/*.ts"]
 }

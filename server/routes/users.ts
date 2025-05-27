@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
-import usersModel from '../models/users'
+import usersModel from '../models/users.ts'
 
-import { validateFields } from '../middleware/validations'
+import { validateFields } from '../middleware/validations.ts'
 
 const router = express.Router()
 

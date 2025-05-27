@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 import { Link, RouteComponentProps } from "react-router-dom"
+import { SERVER_HOST } from "../config/global_constants.ts"
+import axios from "axios"
 
 type RegisterProps = RouteComponentProps
 
@@ -49,7 +51,7 @@ export default class Register extends Component<RegisterProps, RegisterState> {
 
         inputs.forEach(input => {
             // Highlight all the inputs with empty values with a red border
-            if(input.value === "" || input.value === undefined) {
+            if (input.value === "" || input.value === undefined) {
                 input.style.border = "thin solid red"
                 invalid = true
             }
@@ -58,13 +60,36 @@ export default class Register extends Component<RegisterProps, RegisterState> {
             }
         })
 
-        if(!invalid) {
+        if (!invalid) {
             this.submitForm()
         }
     }
 
-    submitForm = (): void => {
+    submitForm = async (): Promise<void> => {
+        const inputs = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            email: this.state.email,
+            telephoneNo: this.state.telephoneNo,
+            houseAddress: this.state.houseAddress,
+            password: this.state.password,
+            confirmPassword: this.state.confirmPassword
+        }
 
+        try {
+            const res = await axios.post(`${SERVER_HOST}/users/register`, inputs)
+            if (res.data?.errorMessage) {
+                console.log(res.data.errorMessage)
+            } 
+            else if (res.data) {
+                console.log("User registered")
+            } 
+            else {
+                console.log("Registration failed")
+            }
+        } catch (error) {
+            console.error("Error during registration:", error)
+        }
     }
 
     render() {
@@ -84,7 +109,7 @@ export default class Register extends Component<RegisterProps, RegisterState> {
                             <div className="input-section">
                                 <p>First name</p>
 
-                                <input type="text" onChange={(e) => this.handleInputChange(e)} className="input-field"/>
+                                <input type="text" onChange={(e) => this.handleInputChange(e)} className="input-field" />
                             </div>
 
                             <div className="input-section">

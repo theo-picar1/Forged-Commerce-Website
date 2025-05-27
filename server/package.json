@@ -2,11 +2,11 @@
   "name": "react_app",
   "version": "1.0.0",
   "description": "Forged - Gym E-Commerce Wesbite Self-Project",
-  "main": "server.js",
+  "main": "server.ts",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch 'server/**/*.ts' --exec 'ts-node' server/server.ts"
+    "start": "node --loader ts-node/esm ./server.ts",
+    "dev": "nodemon --watch . --ext ts --exec \"node --loader ts-node/esm ./server.ts\""
   },
   "author": "Theo Picar",
   "license": "ISC",
@@ -29,7 +29,7 @@
     "@types/express": "^5.0.2",
     "@types/http-errors": "^2.0.4",
     "@types/node": "^22.15.21",
-    "nodemon": "^1.19.1",
+    "nodemon": "^1.19.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }

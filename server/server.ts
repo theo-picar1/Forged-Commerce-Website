@@ -1,8 +1,7 @@
 // server.js
-import dotenv from 'dotenv'
-dotenv.config({ path: './config/.env' })
+import './config/loadEnv.ts'
 
-import './config/db.js' // MongoDB connection file; make sure it's ESM or rename to .mjs
+console.log('DB_NAME:', process.env.DB_NAME) // Should show actual value
 
 import express, { Request, Response, NextFunction } from 'express'
 import bodyParser from 'body-parser'
@@ -12,6 +11,8 @@ import createError from 'http-errors'
 // Routes
 import productsRouter from './routes/products.ts'
 import usersRouter from './routes/users.ts'
+
+import './config/db.ts' // MongoDB connection file; make sure it's ESM or rename to .mjs
 
 const app = express()
 
