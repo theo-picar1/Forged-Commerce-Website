@@ -11,7 +11,7 @@ export default class Register extends Component {
                     <h1>FORGED</h1>
                 </Link>
 
-                <div className="authentication-content">
+                <form className="authentication-content">
                     <div className="forgot-password-message">
                         <h3>Forgot password</h3>
                         <p>This will be your new password for signing up</p>
@@ -32,7 +32,7 @@ export default class Register extends Component {
 
                         <button className="submit-button">Save new password</button>
                     </div>
-                </div>
+                </form>
             </div>
         )
     }

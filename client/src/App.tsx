@@ -1,5 +1,6 @@
 import React, {Component} from "react"
 import { BrowserRouter, Switch, Route } from "react-router-dom"
+import { ACCESS_LEVEL_GUEST } from "./config/global_constants.ts"
 
 import "bootstrap/dist/css/bootstrap.css"
 import "./css/styles.css"
@@ -10,6 +11,10 @@ import Login from "./components/Login.tsx"
 import Register from "./components/Register.tsx"
 import ForgotPassword from "./components/ForgotPassword.tsx"
 
+if(typeof localStorage.accessLevel === "undefined" || typeof localStorage.accessLevel === undefined) {
+    localStorage.accessLevel = ACCESS_LEVEL_GUEST
+    localStorage.token = null
+}
 
 export default class App extends Component 
 {

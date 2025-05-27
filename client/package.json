@@ -34,9 +34,9 @@
       "last 1 safari version"
     ]
   },
-  "description": "Example using React as the client-side of a Node Express App",
+  "description": "Forged - Gym E-Commerce Wesbite Self-Project",
   "main": "index.js",
-  "author": "Derek O Reilly",
+  "author": "Theo Picar",
   "license": "ISC",
   "devDependencies": {
     "@types/react": "^19.1.5",

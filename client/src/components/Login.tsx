@@ -11,7 +11,7 @@ export default class Login extends Component {
                     <h1>FORGED</h1>
                 </Link>
 
-                <div className="authentication-content">
+                <form className="authentication-content">
                     <h3>Sign Up</h3>
 
                     <div className="inputs-container">
@@ -45,7 +45,7 @@ export default class Login extends Component {
 
                         <Link to={"/register"} className="create-account-button">Create an account</Link>
                     </div>
-                </div>
+                </form>
             </div>
         )
     }

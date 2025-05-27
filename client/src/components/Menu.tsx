@@ -1,6 +1,8 @@
 import React, { Component } from "react"
 import { Link } from "react-router-dom"
 
+import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
+
 interface MenuProps {
     categories: string[]
     capitiliseString: (input: string) => string
@@ -38,9 +40,15 @@ export default class Menu extends Component<MenuProps> {
                                 <p>Favourites</p>
                             </div>
 
-                            <div>
-                                <p style={{ color: "red" }}>Sign out</p>
-                            </div>
+                            { localStorage.accessLevel > ACCESS_LEVEL_GUEST ? (
+                                <div>
+                                    <p style={{ color: "red" }}>Sign out</p>
+                                </div>
+                            ) : (
+                                <Link className="link" to={"/login"}>
+                                    <p>Sign in</p>
+                                </Link>
+                            ) }
                         </div>
 
                         <div className="section">
