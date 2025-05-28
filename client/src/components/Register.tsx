@@ -6,6 +6,8 @@ import { ACCESS_LEVEL_GUEST, ACCESS_LEVEL_NORMAL_USER } from "../config/global_c
 
 type RegisterProps = RouteComponentProps
 
+// IMPORTANT: houseAddress is actually eircode. I am jusst too lazy to change the variable
+
 // Separating this because handleInputChange complains if a field has a value type that is not a string
 type RegisterInputState = {
     firstName: string
@@ -21,6 +23,16 @@ type RegisterState = RegisterInputState & {
     allFieldsFilled: boolean
     accessLevel: Number
     isRegistered: boolean
+    invalidEmail: boolean
+    invalidPassword: boolean
+    invalidFirst: boolean
+    invalidLast: boolean
+    invalidAddress: boolean
+    invalidPhone: boolean
+    invalidConfirm: boolean
+    firstNameError: string
+    secondNameError: string
+    emailErrorMessage: string
 }
 
 export default class Register extends Component<RegisterProps, RegisterState> {
@@ -37,7 +49,17 @@ export default class Register extends Component<RegisterProps, RegisterState> {
             confirmPassword: "",
             allFieldsFilled: false,
             accessLevel: ACCESS_LEVEL_GUEST,
-            isRegistered: false
+            isRegistered: false,
+            invalidEmail: false,
+            invalidPassword: false,
+            invalidFirst: false,
+            invalidLast: false,
+            invalidAddress: false,
+            invalidPhone: false,
+            invalidConfirm: false,
+            firstNameError: "",
+            secondNameError: "",
+            emailErrorMessage: ""
         }
     }
 
@@ -54,6 +76,10 @@ export default class Register extends Component<RegisterProps, RegisterState> {
     // Submits form with all values of the input saved in this.state
     submitForm = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
         e.preventDefault()
+
+        if (!this.validInputs()) {
+            return
+        }
 
         const inputs = {
             firstName: this.state.firstName,
@@ -82,13 +108,141 @@ export default class Register extends Component<RegisterProps, RegisterState> {
                 console.log("Registration failed")
             }
         }
-        catch (error) {
-            console.error("Error during registration:", error)
+        catch (error: any) {
+            if (error.response.data.errorMessage) {
+                console.log(error.response.data.errorMessage)
+                this.setState({
+                    emailErrorMessage: error.response.data.errorMessage,
+                    invalidEmail: true
+                })
+            } 
+            else {
+                console.error("Unexpected error:", error)
+            }
         }
     }
 
+    validInputs = (): boolean => {
+        const results = {
+            invalidEmail: !this.validateEmail(),
+            invalidPassword: !this.validatePassword(),
+            invalidPhone: !this.validatePhone(),
+            invalidAddress: !this.validateEircode(),
+            invalidFirst: !this.validateFirstName(),
+            invalidLast: !this.validateLastName(),
+            invalidConfirm: !this.validateConfirmPassword()
+        }
+
+        this.setState(results)
+
+        // All result fields must be false (not invalid) in order to return true
+        return Object.values(results).every(invalid => !invalid)
+    }
+
+    // This regular expression checks for a basic valid email format:
+    // ^           -> start of the string
+    // [^\s@]+     -> one or more characters that are not whitespace or '@'
+    // @           -> the '@' symbol
+    // [^\s@]+     -> one or more characters that are not whitespace or '@' (domain name)
+    // \.          -> a literal dot '.'
+    // [^\s@]+     -> one or more characters that are not whitespace or '@' (top-level domain)
+    // $           -> end of the string
+    // All validate email should return true if passed value is valid
+    validateEmail = (): boolean => {
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email)) {
+            this.setState({
+                emailErrorMessage: "Invalid email"
+            })
+
+            return false
+        }
+
+        return true
+    }
+
+    validatePassword = (): boolean => {
+        return this.state.password.length >= 8
+    }
+
+    validateFirstName = (): boolean => {
+        // Custom error message depending on which if statement is targeted first below
+        if (this.state.firstName.length >= 30) {
+            this.setState({
+                firstNameError: "Name must be less than 30 characters"
+            })
+
+            return false
+        }
+        else if (this.state.firstName.length <= 0 || !/^[A-Za-z]+$/.test(this.state.firstName)) {
+            this.setState({
+                firstNameError: "Invalid name"
+            })
+
+            return false
+        }
+
+        return true
+    }
+
+    validateLastName = (): boolean => {
+        // Same thing
+        if (this.state.lastName.length >= 40) {
+            this.setState({
+                secondNameError: "Name must be less than 40 characters"
+            })
+
+            return false
+        }
+        else if (this.state.lastName.length <= 0 || !/^[A-Za-z]+$/.test(this.state.lastName)) {
+            this.setState({
+                secondNameError: "Invalid name"
+            })
+
+            return false
+        }
+
+        return true
+    }
+
+    validatePhone = (): boolean => {
+        const regex = /^(?:\+353|0)8[3-9]\d{7}$/
+        return regex.test(this.state.telephoneNo)
+    }
+
+    validateEircode = (): boolean => {
+        const regex = /^[A-Za-z]\d{2}\s?[A-Za-z0-9]{4}$/
+        return regex.test(this.state.houseAddress.trim())
+    }
+
+    validateConfirmPassword = (): boolean => {
+        return this.state.confirmPassword == this.state.password
+    }
+
+    // Helper function so that I don't need to constantly type out the below stuff
+    changeStyle = (invalid: boolean) => ({
+        borderColor: invalid ? '#FE0404' : '#808080'
+    })
+
+    // Same reason for above but for the error message 
+    showMessage = (invalid: boolean) => ({
+        display: invalid ? 'block' : 'none'
+    })
+
     render() {
-        const { isRegistered } = this.state
+        const {
+            isRegistered,
+            invalidEmail,
+            invalidPassword,
+            invalidFirst,
+            invalidLast,
+            invalidPhone,
+            invalidAddress,
+            invalidConfirm,
+            firstNameError,
+            secondNameError,
+            emailErrorMessage
+        } = this.state
+
         return (
             isRegistered ? (
                 <Redirect to={"/"} />
@@ -108,45 +262,122 @@ export default class Register extends Component<RegisterProps, RegisterState> {
                                 <div className="input-section">
                                     <p>First name</p>
 
-                                    <input type="text" onChange={(e) => this.handleInputChange(e)} className="input-field" name="firstName" />
+                                    <div>
+                                        <input
+                                            type="text"
+                                            onChange={(e) => this.handleInputChange(e)}
+                                            className="input-field"
+                                            name="firstName"
+                                            style={this.changeStyle(invalidFirst)}
+                                            autoComplete="off"
+                                        />
+
+                                        <p className="error-message" style={this.showMessage(invalidFirst)}>{firstNameError}</p>
+                                    </div>
                                 </div>
 
                                 <div className="input-section">
                                     <p>Last name</p>
 
-                                    <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} name="lastName" />
+                                    <div>
+                                        <input
+                                            type="text"
+                                            className="input-field"
+                                            onChange={(e) => this.handleInputChange(e)}
+                                            name="lastName"
+                                            style={this.changeStyle(invalidLast)}
+                                            autoComplete="off"
+                                        />
+
+                                        <p className="error-message" style={this.showMessage(invalidLast)}>{secondNameError}</p>
+                                    </div>
                                 </div>
                             </div>
 
                             <div className="input-section">
                                 <p>Email</p>
 
-                                <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} name="email" />
+                                <div>
+                                    <input
+                                        type="text"
+                                        className="input-field"
+                                        onChange={(e) => this.handleInputChange(e)}
+                                        name="email"
+                                        style={this.changeStyle(invalidEmail)}
+                                    />
+
+                                    <p className="error-message" style={this.showMessage(invalidEmail)}>{emailErrorMessage}</p>
+                                </div>
                             </div>
 
                             <div className="input-section">
                                 <p>Telephone no.</p>
 
-                                <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} name="telephoneNo" />
+                                <div>
+                                    <input
+                                        type="text"
+                                        className="input-field"
+                                        onChange={(e) => this.handleInputChange(e)}
+                                        name="telephoneNo"
+                                        style={this.changeStyle(invalidPhone)}
+                                        autoComplete="tel"
+                                    />
+
+                                    <p className="error-message" style={this.showMessage(invalidPhone)}>Irish phone numbers only</p>
+                                </div>
                             </div>
 
                             <div className="input-section">
-                                <p>House address.</p>
+                                <p>Eircode</p>
 
-                                <input type="text" className="input-field" onChange={(e) => this.handleInputChange(e)} name="houseAddress" />
+                                <div>
+                                    <input
+                                        type="text"
+                                        className="input-field"
+                                        onChange={(e) => this.handleInputChange(e)}
+                                        name="houseAddress"
+                                        style={this.changeStyle(invalidAddress)}
+                                        autoComplete="postal-code"
+                                    />
+
+                                    <p className="error-message" style={this.showMessage(invalidAddress)}>Irish eircodes only</p>
+                                </div>
                             </div>
 
                             <div className="input-row-section">
                                 <div className="input-section">
                                     <p>Password</p>
 
-                                    <input type="password" className="input-field" onChange={(e) => this.handleInputChange(e)} name="password" />
+                                    <div>
+                                        <input
+                                            type="password"
+                                            className="input-field"
+                                            onChange={(e) => this.handleInputChange(e)}
+                                            name="password"
+                                            style={this.changeStyle(invalidPassword)}
+                                            placeholder="8 characters minimum"
+                                            autoComplete="new-password"
+                                        />
+
+                                        <p className="error-message" style={this.showMessage(invalidPassword)}>Invalid password</p>
+                                    </div>
                                 </div>
 
                                 <div className="input-section">
                                     <p>Confirm password</p>
 
-                                    <input type="password" className="input-field" onChange={(e) => this.handleInputChange(e)} name="confirmPassword" />
+                                    <div>
+                                        <input
+                                            type="password"
+                                            className="input-field"
+                                            onChange={(e) => this.handleInputChange(e)}
+                                            name="confirmPassword"
+                                            style={this.changeStyle(invalidConfirm)}
+                                            autoComplete="new-password"
+                                        />
+
+                                        <p className="error-message" style={this.showMessage(invalidConfirm)}>Passwords do not match</p>
+                                    </div>
                                 </div>
                             </div>
 

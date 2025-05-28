@@ -1092,13 +1092,23 @@ $mobile-container-padding: 20px 10px;
                         font-weight: bold;
                     }
 
-                    input {
-                        width: 100%;
-                        @include default-text-input();
-                        border: thin solid $website-gray;
-                        height: 30px;
-                        border-radius: 5px;
-                        background-color: $website-white;
+                    div {
+                        input {
+                            width: 100%;
+                            @include default-text-input();
+                            border: thin solid $website-gray;
+                            height: 30px;
+                            border-radius: 5px;
+                            background-color: $website-white;
+                            font-size: 13px;
+                        }
+
+                        .error-message {
+                            font-size: 10px;
+                            margin-top: 1px;
+                            color: $website-red;
+                            font-weight: normal;
+                        }
                     }
 
                     .forgot-password {

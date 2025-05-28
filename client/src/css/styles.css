@@ -1088,7 +1088,7 @@
     font-size: 14px;
     font-weight: bold;
   }
-  .authentication-page-container .authentication-content .inputs-container .input-section input {
+  .authentication-page-container .authentication-content .inputs-container .input-section div input {
     width: 100%;
     -webkit-appearance: none;
        -moz-appearance: none;
@@ -1103,12 +1103,19 @@
     height: 30px;
     border-radius: 5px;
     background-color: #FFFFFF;
+    font-size: 13px;
   }
-  .authentication-page-container .authentication-content .inputs-container .input-section input::-moz-placeholder {
+  .authentication-page-container .authentication-content .inputs-container .input-section div input::-moz-placeholder {
     color: #bbbbbb;
   }
-  .authentication-page-container .authentication-content .inputs-container .input-section input::placeholder {
+  .authentication-page-container .authentication-content .inputs-container .input-section div input::placeholder {
     color: #bbbbbb;
+  }
+  .authentication-page-container .authentication-content .inputs-container .input-section div .error-message {
+    font-size: 10px;
+    margin-top: 1px;
+    color: #FE0404;
+    font-weight: normal;
   }
   .authentication-page-container .authentication-content .inputs-container .input-section .forgot-password {
     display: flex;

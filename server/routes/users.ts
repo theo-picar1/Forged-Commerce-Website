@@ -38,7 +38,7 @@ router.post('/users/register', validateFields(registerFields), async (req: Reque
         // Check if email already exists and say so if does
         const userExists = await usersModel.findOne({ email })
         if (userExists) {
-            res.status(409).json({ errorMessage: 'This email is already in use!' })
+            res.status(409).json({ errorMessage: 'Email already in use!' })
 
             return
         }
