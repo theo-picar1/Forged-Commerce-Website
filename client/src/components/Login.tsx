@@ -93,7 +93,7 @@ export default class Login extends Component<LoginProps, LoginState> {
                             <div className="input-section">
                                 <p>Email or phone no.</p>
 
-                                <input type="text" name="email" onChange={(e) => this.handleInputChange(e)}/>
+                                <input type="text" name="email" onChange={(e) => this.handleInputChange(e)} />
                             </div>
 
                             <div className="input-section">
@@ -103,7 +103,7 @@ export default class Login extends Component<LoginProps, LoginState> {
                                     <Link to={"/forgot-password"} className="prompt">Forgot password?</Link>
                                 </div>
 
-                                <input type="password" name="password" onChange={(e) => this.handleInputChange(e)}/>
+                                <input type="password" name="password" onChange={(e) => this.handleInputChange(e)} />
                             </div>
 
                             <button className="submit-button" onClick={(e) => this.submitForm(e)}>Sign in</button>
