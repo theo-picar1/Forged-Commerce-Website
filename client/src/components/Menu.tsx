@@ -51,9 +51,15 @@ export default class Menu extends Component<MenuProps> {
                                 <h5>General</h5>
                             </div>
 
-                            <Link to={"/login"} className="link">
-                                <p>Edit Account</p>
-                            </Link>
+                            {localStorage.accessLevel > ACCESS_LEVEL_GUEST ? (
+                                <Link to={"/edit-account"} className="link">
+                                    <p>Edit Account</p>
+                                </Link>
+                            ) : (
+                                <Link to={"/login"} className="link">
+                                    <p>Edit Account</p>
+                                </Link>
+                            )}
 
                             <div>
                                 <p>Purchase History</p>

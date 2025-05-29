@@ -95,22 +95,19 @@ export default class Register extends Component<RegisterProps, RegisterState> {
             // Call the corresponding method to register and hopefully add the new user to the database
             const res = await axios.post(`${SERVER_HOST}/users/register`, inputs)
             if (res.data.errorMessage) {
-                console.log(res.data.errorMessage)
+                return
             }
             else if (res.data) {
-                console.log("User registered")
-
                 this.setState({
                     isRegistered: true
                 })
             }
             else {
-                console.log("Registration failed")
+                alert("Registration failed")
             }
         }
         catch (error: any) {
             if (error.response.data.errorMessage) {
-                console.log(error.response.data.errorMessage)
                 this.setState({
                     emailErrorMessage: error.response.data.errorMessage,
                     invalidEmail: true
@@ -304,6 +301,7 @@ export default class Register extends Component<RegisterProps, RegisterState> {
                                         onChange={(e) => this.handleInputChange(e)}
                                         name="email"
                                         style={this.changeStyle(invalidEmail)}
+                                        autoComplete="email"
                                     />
 
                                     <p className="error-message" style={this.showMessage(invalidEmail)}>{emailErrorMessage}</p>
