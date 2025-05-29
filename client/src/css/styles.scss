@@ -22,6 +22,7 @@ $auto-complete-modal-z: 10;
 // ----- Padding -----
 $mobile-padding: 35px 10px;
 $mobile-container-padding: 20px 10px;
+$laptop-container-padding: 20px;
 
 // ----- Helper Functions -----
 @mixin flex-direction($direction, $justify, $align, $gap) {
@@ -1048,8 +1049,10 @@ $mobile-container-padding: 20px 10px;
     }
 
     .authentication-page-container {
-        @include flex-direction(column, unset, center, 15px);
+        @include flex-direction(column, center, center, 10px);
         padding: $mobile-padding;
+        height: 100vh;
+        width: 100vw;
 
         .title {
             @include flex-direction(row, unset, center, 8px);
@@ -1072,6 +1075,7 @@ $mobile-container-padding: 20px 10px;
             width: 100%;
             @include flex-direction(column, unset, unset, 15px);
             border-radius: 6px;
+            box-shadow: 0 4px 10px $translucent;
 
             h3 {
                 font-weight: bold;
@@ -1126,6 +1130,11 @@ $mobile-container-padding: 20px 10px;
                     margin-top: 5px;
                     @include default-button-css();
                 }
+
+                .link-button {
+                    text-align: center;
+                    text-decoration: none;
+                }
             }
 
             .bottom-section {
@@ -1171,6 +1180,16 @@ $mobile-container-padding: 20px 10px;
             .forgot-password-message {
                 font-size: 12px;
             }
+        }
+    }
+}
+
+@media screen AND (min-width: 375px) {
+    .authentication-page-container {
+
+        .authentication-content {
+            max-width: 375px;
+            padding: $laptop-container-padding;
         }
     }
 }

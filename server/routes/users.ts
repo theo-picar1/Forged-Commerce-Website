@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import usersModel from '../models/users.ts'
 
 import { validateFields } from '../middleware/validations.ts'
+import { match } from 'assert'
 
 const router = express.Router()
 
@@ -62,7 +63,6 @@ router.post('/users/register', validateFields(registerFields), async (req: Reque
         return
     }
     catch (error) {
-        console.error(error)
         res.status(500).json({ errorMessage: 'Internal server error' })
 
         return
@@ -85,10 +85,9 @@ router.post('/users/login', validateFields(loginFields), async (req: Request, re
             // If they password matches, 
             if(correctPassword) {
                 res.json({
-                    matchedUser
+                    firstName: matchedUser.firstName,
+                    accessLevel: matchedUser.accessLevel
                 })
-
-                console.log("User logged in successfully")
 
                 return
             }
@@ -101,14 +100,12 @@ router.post('/users/login', validateFields(loginFields), async (req: Request, re
         }
         // If no email was found in the database, then that email is not in use
         else {
-            res.status(404).json({ errorMessage: 'A user with this email does not exist!' })
-            console.log("User with this email does not exist!")
+            res.status(404).json({ errorMessage: 'This email does not exist' })
 
             return
         }
     }
     catch (error) {
-        console.error(error)
         res.status(500).json({ errorMessage: 'Internal server error' })
 
         return

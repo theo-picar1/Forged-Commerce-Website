@@ -12,25 +12,10 @@ export default class Register extends Component {
                 </Link>
 
                 <form className="authentication-content">
-                    <div className="forgot-password-message">
-                        <h3>Forgot password</h3>
-                        <p>This will be your new password for signing up</p>
-                    </div>
+                    <h5 style={{ textAlign: "center" }}>This feature is not available. We sincerely apologise for the inconvenience!</h5>
 
                     <div className="inputs-container">
-                        <div className="input-section">
-                            <p>New password</p>
-
-                            <input type="password" />
-                        </div>
-
-                        <div className="input-section">
-                            <p>Confirm password</p>
-
-                            <input type="password" />
-                        </div>
-
-                        <button className="submit-button">Save new password</button>
+                        <Link to={"/login"} className="submit-button link-button">Back to login</Link>
                     </div>
                 </form>
             </div>
