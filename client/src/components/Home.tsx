@@ -2,8 +2,10 @@ import React, { Component } from "react"
 import { RouteComponentProps, Switch, Route, withRouter } from "react-router-dom"
 import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants.ts"
-import { Product } from "../types/Product.ts"
 import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
+
+import { Product } from "../types/Product.ts"
+import { Cart } from "../types/Cart.ts"
 
 import Header from './Header.tsx'
 import Footer from './Footer.tsx'
@@ -28,6 +30,7 @@ type HomeState = {
     currentView: string
     counterMap: Map<string, number>
     productToView: any
+    cart: Cart | null
 }
 
 class Home extends Component<HomeProps, HomeState> {
@@ -44,7 +47,8 @@ class Home extends Component<HomeProps, HomeState> {
             productSearchValue: "",
             currentView: "grid",
             counterMap: new Map(), // To show the amount of a particular category (plus the brand new products) for the user. Also takes into account any new category added
-            productToView: null // For ViewProduct.js. Will change this to an actual url {id} down the line
+            productToView: null, // For ViewProduct.js. Will change this to an actual url {id} down the line
+            cart: null
         }
     }
 
@@ -57,6 +61,7 @@ class Home extends Component<HomeProps, HomeState> {
         initMap.set("new", 0)
         initMap.set("used", 0)
 
+        // For getting products
         axios.get<Product[]>(`${SERVER_HOST}/products`).then(res => {
             if (!res.data || res.data.length === 0) {
                 console.log("No products found")
@@ -98,6 +103,9 @@ class Home extends Component<HomeProps, HomeState> {
                 counterMap: initMap
             })
         })
+
+        // For getting the user's cart items
+        // axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
     }
     // ----------------------------------------------------
 
@@ -201,6 +209,8 @@ class Home extends Component<HomeProps, HomeState> {
         }
     }
     // ------------------------------------------------
+
+    // --------------- Shopping Cart Functions ---------------
 
     // --------------- Helper Functions --------------- 
     capitiliseString(string: string): string {

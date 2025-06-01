@@ -86,7 +86,8 @@ router.post('/users/login', validateFields(loginFields), async (req: Request, re
             if(correctPassword) {
                 res.json({
                     firstName: matchedUser.firstName,
-                    accessLevel: matchedUser.accessLevel
+                    accessLevel: matchedUser.accessLevel,
+                    id: matchedUser._id
                 })
 
                 return

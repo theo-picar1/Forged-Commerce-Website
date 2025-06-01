@@ -302,6 +302,7 @@ $laptop-container-padding: 20px;
         }
     }
 
+    // ---------- Modals CSS ----------
     #menu-modal {
         @include slide-in-transition();
         transform: translateX(-100%);
@@ -346,6 +347,7 @@ $laptop-container-padding: 20px;
         }
     }
 
+    // ---------- Main Content ----------
     .website-header {
         width: 100%;
         background-color: $website-blue;
@@ -1048,6 +1050,7 @@ $laptop-container-padding: 20px;
         display: none;
     }
 
+    // ---------- Authentication pages ----------
     .authentication-page-container {
         @include flex-direction(column, center, center, 10px);
         padding: $mobile-padding;
@@ -1180,6 +1183,24 @@ $laptop-container-padding: 20px;
             .forgot-password-message {
                 font-size: 12px;
             }
+        }
+    }
+    // -------------------------------
+
+    // --------- Shopping Cart ----------
+    .empty-shopping-cart {
+        background-color: $main-content-color;
+        padding: $mobile-container-padding;
+        @include flex-direction(column, unset, unset, 75px);
+
+        h4 {
+            text-align: center;
+        }
+
+        .look-for-items {
+            @include default-button-css();
+            text-decoration: none;
+            text-align: center;
         }
     }
 }

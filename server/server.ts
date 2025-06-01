@@ -11,6 +11,7 @@ import createError from 'http-errors'
 // Routes
 import productsRouter from './routes/products.ts'
 import usersRouter from './routes/users.ts'
+import cartRouter from "./routes/cart.ts"
 
 import './config/db.ts' // MongoDB connection file; make sure it's ESM or rename to .mjs
 
@@ -22,6 +23,7 @@ app.use(cors({ credentials: true, origin: process.env.LOCAL_HOST }))
 // Routers
 app.use(productsRouter)
 app.use(usersRouter)
+app.use(cartRouter)
 
 // Port
 app.listen(process.env.SERVER_PORT, () => {
