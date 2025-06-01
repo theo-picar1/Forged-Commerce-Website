@@ -1208,6 +1208,35 @@
   .authentication-page-container .authentication-content .forgot-password-message {
     font-size: 12px;
   }
+  .empty-shopping-cart {
+    background-color: #F3F3F3;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+    gap: 75px;
+  }
+  .empty-shopping-cart h4 {
+    text-align: center;
+  }
+  .empty-shopping-cart .look-for-items {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    background-color: #FE0404;
+    border-radius: 5px;
+    padding: 5px 0;
+    color: #FFFFFF;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    text-align: center;
+  }
+  .empty-shopping-cart .look-for-items:hover {
+    cursor: pointer;
+  }
 }
 @media screen and (min-width: 375px) {
   .authentication-page-container .authentication-content {
