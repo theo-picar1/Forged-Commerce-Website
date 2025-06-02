@@ -27,6 +27,7 @@ interface ProductsProps {
     capitiliseString: (string: string) => string
     counterMap: Map<string, number>
     setProductToView: (product: Product) => void
+    addProductToCart: (product: Product) => void
 }
 
 export default class Products extends Component<ProductsProps, ProductsState> {

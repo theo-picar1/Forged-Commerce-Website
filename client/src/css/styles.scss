@@ -1203,6 +1203,91 @@ $laptop-container-padding: 20px;
             text-align: center;
         }
     }
+
+    .filled-shopping-cart {
+        background-color: $main-content-color;
+        padding: $mobile-container-padding;
+
+        .top-section {
+            padding-bottom: 10px;
+            border-bottom: thin solid $website-black;
+
+            h3 {
+                font-weight: bold;
+            }
+            
+            .proceed-to-checkout {
+                @include default-button-css();
+                width: 100%;
+                margin-top: 10px;
+                background-color: $website-blue;
+            }
+        }
+
+        .cart-products-section {
+            margin-top: 10px;
+            max-height: 40vh;
+            overflow-y: scroll;
+            @include flex-direction(column, unset, unset, 15px);
+
+            .cart-product {
+                background-color: $website-white;
+                padding: $mobile-container-padding;
+
+                .product-details {
+                    @include flex-direction(row, unset, unset, 15px);
+                    height: auto;
+
+                    .left {
+                        
+                        .image-container {
+                            width: 100px;
+                            height: 125px;
+                            background-color: $website-light-gray;
+                            @include flex-direction(unset, center, center, 0);
+
+                            img {
+                                width: inherit;
+                                height: auto;
+                            }
+                        }
+                    }
+
+                    .right {
+                        @include flex-direction(column, unset, unset, 8px);
+
+                        .product-name {
+                            font-weight: bold;
+                        }
+
+                        .product-price {
+                            font-weight: normal;
+                        }
+
+                        .product-stock {
+                            font-size: 12px;
+                            color: $website-red;
+                        }
+                    }
+                }
+
+                .product-buttons {
+                    @include flex-direction(row, space-between, center, 0);
+                    margin-top: 15px;
+
+                    .edit-quantity-section {
+                        @include flex-direction(row, space-between, center, 0);
+                        width: 100px;
+                    }
+
+                    .remove-button {
+                        @include default-button-css();
+                        padding: 6px 12px;
+                    }
+                }
+            }
+        }
+    }
 }
 
 @media screen AND (min-width: 375px) {

@@ -11,7 +11,7 @@ interface ViewProductsProps {
     productToView: Product
     products: Product[]
     setProductToView: (product: Product) => void
-    redirectToLogin: () => void
+    addProductToCart: (product: Product) => void
 }
 
 // Prop has to come first as parameter for some reason
@@ -56,7 +56,7 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
     }
 
     render() {
-        const { productToView, redirectToLogin } = this.props
+        const { productToView, addProductToCart } = this.props
         const { similarProducts } = this.state
 
         return (
@@ -89,11 +89,11 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
                     </div>
 
                     <div className="buttons">
-                        <button id="buy-now" className="button" onClick={() => redirectToLogin()}>Buy now</button>
+                        <button id="buy-now" className="button">Buy now</button>
 
-                        <button id="add-to-basket" className="button" onClick={() => redirectToLogin()}>Add to basket</button>
+                        <button id="add-to-basket" className="button" onClick={() => addProductToCart(productToView)}>Add to basket</button>
 
-                        <div id="add-to-favourites" className="button" onClick={() => redirectToLogin()}>
+                        <div id="add-to-favourites" className="button">
                             <img src="/images/favourite-icon.png" />
 
                             <p>Add to favourites</p>
