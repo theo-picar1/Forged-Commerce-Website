@@ -6,6 +6,7 @@ import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
 
 import { Product } from "../types/Product.ts"
 import { Cart } from "../types/Cart.ts"
+import { CartProducts } from "../types/Cart.ts"
 
 import Header from './Header.tsx'
 import Footer from './Footer.tsx'
@@ -31,6 +32,7 @@ type HomeState = {
     counterMap: Map<string, number>
     productToView: any
     cart: Cart | null
+    cartProducts: CartProducts[]
 }
 
 class Home extends Component<HomeProps, HomeState> {
@@ -48,11 +50,12 @@ class Home extends Component<HomeProps, HomeState> {
             currentView: "grid",
             counterMap: new Map(), // To show the amount of a particular category (plus the brand new products) for the user. Also takes into account any new category added
             productToView: null, // For ViewProduct.js. Will change this to an actual url {id} down the line
-            cart: null
+            cart: null,
+            cartProducts: []
         }
     }
 
-    componentDidMount(): void {
+    async componentDidMount(): Promise<void> {
         let initCategories: string[] = [] // Array that just acts as a placeholder until we get all the unique cateogries from it
         let bestSellerCounter = 0
         let initMap = new Map()
@@ -61,8 +64,10 @@ class Home extends Component<HomeProps, HomeState> {
         initMap.set("new", 0)
         initMap.set("used", 0)
 
-        // For getting products
-        axios.get<Product[]>(`${SERVER_HOST}/products`).then(res => {
+        // For getting all the products from MongoDB
+        try {
+            const res = await axios.get<Product[]>(`${SERVER_HOST}/products`)
+
             if (!res.data || res.data.length === 0) {
                 console.log("No products found")
                 return
@@ -102,10 +107,30 @@ class Home extends Component<HomeProps, HomeState> {
                 bestSellerCount: bestSellerCounter, // Don't remember why I even have this
                 counterMap: initMap
             })
-        })
+        }
+        catch (error: any) {
+            console.error(error)
+        }
 
-        // For getting the user's cart items
-        // axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
+        // For getting the user's cart items only if the user has logged in
+        if (localStorage.id || localStorage.id != undefined) {
+            try {
+                const res = await axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
+
+                if (!res.data || res.data == null) {
+                    console.log("No matching cart for user found!")
+                    return
+                }
+
+                this.setState({
+                    cart: res.data,
+                    cartProducts: res.data.products
+                })
+            }
+            catch (error) {
+                console.error("Id is not defined i think ", error)
+            }
+        }
     }
     // ----------------------------------------------------
 
@@ -211,6 +236,29 @@ class Home extends Component<HomeProps, HomeState> {
     // ------------------------------------------------
 
     // --------------- Shopping Cart Functions ---------------
+    addProductToCart = (product: Product): void => {
+        // If the user is not logged in, they will be redirected to the login page as they cannot use the cart functionality 
+        this.redirectToLogin()
+
+        this.setState(prevState => {
+            let found = false
+
+            const updatedCart = prevState.cartProducts.map(cartItem => {
+                if (cartItem.product._id === product._id) {
+                    found = true
+                    return { ...cartItem, quantity: cartItem.quantity + 1 }
+                }
+                return cartItem
+            })
+
+            if (!found) {
+                updatedCart.push({ product, quantity: 1 })
+            }
+
+            return { cartProducts: updatedCart }
+        })
+    }
+    // -------------------------------------------------------
 
     // --------------- Helper Functions --------------- 
     capitiliseString(string: string): string {
@@ -312,7 +360,7 @@ class Home extends Component<HomeProps, HomeState> {
     // ----------------------------------------------------------------
 
     // --------------- Functions mainly for ViewProduct.js ---------------
-    setProductToView = (product: Product) : void => {
+    setProductToView = (product: Product): void => {
         axios.get(`${SERVER_HOST}/products/${product._id}`).then(res => {
             if (res.data) {
                 if (res.data.errorMessage) {
@@ -333,13 +381,13 @@ class Home extends Component<HomeProps, HomeState> {
 
     // --------------- Authentication functions ---------------
     // For anything that involves having to sign in first in order to be able to do it
-    redirectToLogin = () : void => {
-        if(localStorage.accessLevel > ACCESS_LEVEL_GUEST) {
+    redirectToLogin = (): void => {
+        if (localStorage.accessLevel > ACCESS_LEVEL_GUEST) {
             return
         }
-        
+
         this.props.history.push("/login")
-    }  
+    }
     // --------------------------------------------------------
 
     render() {
@@ -361,6 +409,7 @@ class Home extends Component<HomeProps, HomeState> {
                     completeAutocomplete={this.completeAutocomplete}
                     filterProductsBySearchValue={this.filterProductsBySearchValue}
                     filterProductsByHeaderCategory={this.filterProductsByHeaderCategory}
+                    cartProducts={this.state.cartProducts}
                 />
 
                 {/* This is so that I can switch between different components while still keeping the header and footer components */}
@@ -377,9 +426,10 @@ class Home extends Component<HomeProps, HomeState> {
 
                     <Route exact path="/cart">
                         <ShoppingCart
-                            products={this.state.products}
+                            cartProducts={this.state.cartProducts}
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
+                            setProductToView={this.setProductToView}
                         />
                     </Route>
 
@@ -395,6 +445,7 @@ class Home extends Component<HomeProps, HomeState> {
                             capitiliseString={this.capitiliseString}
                             counterMap={this.state.counterMap}
                             setProductToView={this.setProductToView}
+                            addProductToCart={this.addProductToCart}
                         />
                     </Route>
 
@@ -403,7 +454,7 @@ class Home extends Component<HomeProps, HomeState> {
                             productToView={this.state.productToView}
                             products={this.state.products}
                             setProductToView={this.setProductToView}
-                            redirectToLogin={this.redirectToLogin}
+                            addProductToCart={this.addProductToCart}
                         />
                     </Route>
                 </Switch>

@@ -14,6 +14,7 @@ import ForgotPassword from "./components/ForgotPassword.tsx"
 if(typeof localStorage.accessLevel === "undefined" || typeof localStorage.accessLevel === undefined) {
     localStorage.accessLevel = ACCESS_LEVEL_GUEST
     localStorage.token = null
+    localStorage.id = undefined
 }
 
 export default class App extends Component 

@@ -2,6 +2,7 @@ import React, { Component, createRef } from "react"
 import { Link, withRouter } from "react-router-dom"
 import { Product } from "../types/Product"
 import { RouteComponentProps } from 'react-router-dom'
+import { CartProducts } from "../types/Cart"
 
 interface HeaderProps extends RouteComponentProps {
     categories: string[]
@@ -13,6 +14,7 @@ interface HeaderProps extends RouteComponentProps {
     completeAutocomplete: (value: string) => void
     filterProductsBySearchValue: (e: React.KeyboardEvent<HTMLInputElement>) => void
     filterProductsByHeaderCategory: (value: string) => void
+    cartProducts: CartProducts[]
 }
 
 type HeaderState = {
@@ -97,7 +99,8 @@ class Header extends Component<HeaderProps, HeaderState> {
             suggestions,
             completeAutocomplete,
             filterProductsBySearchValue,
-            filterProductsByHeaderCategory
+            filterProductsByHeaderCategory,
+            cartProducts
         } = this.props
 
         const { atStart, atEnd } = this.state
@@ -121,7 +124,9 @@ class Header extends Component<HeaderProps, HeaderState> {
                             <Link to="/cart" className="link">
                                 <div className="shopping-cart">
                                     <img src="/images/shopping-cart.png" alt="Shopping cart button" />
-                                    <div><p>0</p></div>
+                                    <div>
+                                        <p>{ cartProducts.length }</p>
+                                    </div>
                                 </div>
                             </Link>
                         </div>

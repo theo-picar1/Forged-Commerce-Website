@@ -44,7 +44,7 @@ export default class HomeProducts extends Component<HomeProductsProps> {
     }
 
     render() {
-        const { products } = this.props
+        const { products, addProductToCart } = this.props
 
         return (
             <div className="home-products-container">
