@@ -1328,12 +1328,34 @@
     margin-top: 15px;
   }
   .filled-shopping-cart .cart-products-section .cart-product .product-buttons .edit-quantity-section {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0;
-    width: 100px;
+    display: grid;
+    grid-template-columns: 0.75fr 1.5fr 0.75fr;
+    max-width: 100px;
+    height: 25px;
+    border: thin solid #D9D9D9;
+  }
+  .filled-shopping-cart .cart-products-section .cart-product .product-buttons .edit-quantity-section button {
+    border: none;
+    width: 25px;
+    font-weight: bolder;
+    font-size: 14px;
+    height: 100%;
+    text-align: center;
+  }
+  .filled-shopping-cart .cart-products-section .cart-product .product-buttons .edit-quantity-section .subtract {
+    border-right: thin solid #D9D9D9;
+  }
+  .filled-shopping-cart .cart-products-section .cart-product .product-buttons .edit-quantity-section .add {
+    border-left: thin solid #D9D9D9;
+  }
+  .filled-shopping-cart .cart-products-section .cart-product .product-buttons .edit-quantity-section .quantity {
+    font-size: 14px;
+    width: -moz-min-content;
+    width: min-content;
+    text-align: center;
+    width: 48px;
+    border: none;
+    outline: none;
   }
   .filled-shopping-cart .cart-products-section .cart-product .product-buttons .remove-button {
     -webkit-appearance: none;

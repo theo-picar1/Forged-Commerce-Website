@@ -1276,8 +1276,37 @@ $laptop-container-padding: 20px;
                     margin-top: 15px;
 
                     .edit-quantity-section {
-                        @include flex-direction(row, space-between, center, 0);
-                        width: 100px;
+                        display: grid;
+                        grid-template-columns: 0.75fr 1.5fr 0.75fr;
+                        max-width: 100px;
+                        height: 25px;
+                        border: thin solid $website-light-gray;
+
+                        button {
+                            border: none;
+                            width: 25px;
+                            font-weight: bolder;
+                            font-size: 14px;
+                            height: 100%;
+                            text-align: center;
+                        }
+
+                        .subtract {
+                            border-right: thin solid $website-light-gray;
+                        }
+
+                        .add {
+                            border-left: thin solid $website-light-gray;
+                        }
+
+                        .quantity {
+                            font-size: 14px;
+                            width: min-content;
+                            text-align: center;
+                            width: 48px;
+                            border: none;
+                            outline: none;
+                        }
                     }
 
                     .remove-button {

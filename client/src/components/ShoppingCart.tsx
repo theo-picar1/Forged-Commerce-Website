@@ -8,11 +8,40 @@ interface ShoppingCartProps {
     categories: string[]
     capitiliseString: (input: string) => string
     setProductToView: (product: Product) => void
+    deleteProductFromCart: (productId: string) => void
 }
 
-export default class ShoppingCart extends Component<ShoppingCartProps> {
+interface ShoppingCartState {
+    quantities: { [productId: string]: number }
+}
+
+export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingCartState> {
+    state = {
+        quantities: {} as { [productId: string]: number }
+    }
+
+    componentDidMount() {
+        const quantities: { [productId: string]: number } = {}
+
+        this.props.cartProducts.forEach(cartProduct => {
+            quantities[cartProduct.product._id] = cartProduct.quantity
+        })
+
+        this.setState({ quantities })
+    }
+
+    handleQuantityChange = (productId: string, delta: number) => {
+        this.setState(prevState => ({
+            quantities: {
+                ...prevState.quantities,
+                [productId]: (prevState.quantities[productId] || 0) + delta
+            }
+        }))
+    }
+
     render() {
-        const { cartProducts, setProductToView } = this.props
+        const { cartProducts, setProductToView, deleteProductFromCart } = this.props
+        const { quantities } = this.state
 
         return (
             cartProducts.length === 0 ? (
@@ -50,14 +79,14 @@ export default class ShoppingCart extends Component<ShoppingCartProps> {
 
                                 <div className="product-buttons">
                                     <div className="edit-quantity-section">
-                                        -
+                                        <button className="subtract" onClick={() => this.handleQuantityChange(cartProduct.product._id, -1)}>-</button>
 
-                                        <p>{ cartProduct.quantity }</p>
+                                        <input className="quantity" type="text" readOnly value={ quantities[cartProduct.product._id] || 0 } />
 
-                                        +
+                                        <button className="add" onClick={() => this.handleQuantityChange(cartProduct.product._id, 1)}>+</button>
                                     </div>
 
-                                    <button className="remove-button">Remove product</button>
+                                    <button className="remove-button" onClick={() => deleteProductFromCart(cartProduct.product._id)}>Remove product</button>
                                 </div>
                             </div>
                         )}

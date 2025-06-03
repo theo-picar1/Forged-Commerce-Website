@@ -258,6 +258,12 @@ class Home extends Component<HomeProps, HomeState> {
             return { cartProducts: updatedCart }
         })
     }
+
+    deleteProductFromCart = (productId: string): void => {
+        this.setState(prevState => ({
+            cartProducts: prevState.cartProducts.filter(cartProduct => cartProduct.product._id !== productId)
+        }))
+    }
     // -------------------------------------------------------
 
     // --------------- Helper Functions --------------- 
@@ -430,6 +436,7 @@ class Home extends Component<HomeProps, HomeState> {
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
                             setProductToView={this.setProductToView}
+                            deleteProductFromCart={this.deleteProductFromCart}
                         />
                     </Route>
 

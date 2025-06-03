@@ -1,8 +1,6 @@
 import React, { Component, JSX } from "react"
 import { Product } from "../types/Product"
 
-import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
-
 type ViewProductState = {
     similarProducts: Product[]
 }
