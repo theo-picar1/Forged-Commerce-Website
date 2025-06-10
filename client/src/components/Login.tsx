@@ -95,6 +95,7 @@ export default class Login extends Component<LoginProps, LoginState> {
             }
             else if (res.data) {
                 localStorage.accessLevel = res.data.accessLevel
+                localStorage.id = res.data.id
 
                 this.setState({
                     isLoggedIn: true,

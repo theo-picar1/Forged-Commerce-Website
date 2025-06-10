@@ -1,50 +1,71 @@
-import React, { Component } from "react"
-import { CartProducts } from "../types/Cart"
-import { Product } from "../types/Product"
+import React, { ChangeEvent, Component } from "react"
 import { Link } from "react-router-dom"
 
+import axios from "axios"
+import { SERVER_HOST } from "../config/global_constants"
+
+import { Cart } from "../types/Cart"
+import { Product } from "../types/Product"
+
 interface ShoppingCartProps {
-    cartProducts: CartProducts[]
     categories: string[]
     capitiliseString: (input: string) => string
     setProductToView: (product: Product) => void
-    deleteProductFromCart: (productId: string) => void
+    cart: Cart | null
+    loadCart: () => void
 }
 
-interface ShoppingCartState {
-    quantities: { [productId: string]: number }
-}
+export default class ShoppingCart extends Component<ShoppingCartProps> {
+    // Self-explanatory
+    deleteProductFromCart = async (productId: string): Promise<void> => {
+        try {
+            const res = await axios.delete(`${SERVER_HOST}/cart/${localStorage.id}/${productId}`)
 
-export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingCartState> {
-    state = {
-        quantities: {} as { [productId: string]: number }
+            if (res) {
+                alert("Product deleted!")
+
+                this.props.loadCart()
+            }
+            else {
+                alert("Product was not deleted")
+            }
+        }
+        catch(error: any) {
+            if (error.response.data.errorMessage) {
+                console.log(error.response.data.errorMessage)
+            }
+            else {
+                console.error("Unexpected error:", error)
+            }
+        }
     }
 
-    componentDidMount() {
-        const quantities: { [productId: string]: number } = {}
+    handleQuantityChangeByButton = (productId: string, action: 'add' | 'subtract'): void => {
+        const updatedCart = { ...this.props.cart }
 
-        this.props.cartProducts.forEach(cartProduct => {
-            quantities[cartProduct.product._id] = cartProduct.quantity
+        if (!updatedCart || updatedCart === undefined) return
+
+        updatedCart.products = updatedCart.products?.map(cartProducts => {
+            if (cartProducts.product._id === productId) {
+                const newQuantity = action === 'add' ? cartProducts.quantity + 1 : cartProducts.quantity - 1
+
+                return {
+                    ...cartProducts,
+                    quantity: Math.max(1, newQuantity) // Prevent going below 1
+                }
+            }
+            return cartProducts
         })
 
-        this.setState({ quantities })
-    }
-
-    handleQuantityChange = (productId: string, delta: number) => {
-        this.setState(prevState => ({
-            quantities: {
-                ...prevState.quantities,
-                [productId]: (prevState.quantities[productId] || 0) + delta
-            }
-        }))
+        // Since cart is passed as a prop, you might need to lift state up to allow updating it
+        this.setState({ cart: updatedCart })
     }
 
     render() {
-        const { cartProducts, setProductToView, deleteProductFromCart } = this.props
-        const { quantities } = this.state
+        const { cart, setProductToView } = this.props
 
         return (
-            cartProducts.length === 0 ? (
+            !cart || cart.products.length === 0 ? (
                 <div className="empty-shopping-cart">
                     <h3>Shopping Cart</h3>
 
@@ -57,11 +78,11 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                     <div className="top-section">
                         <h3>Shopping Cart</h3>
 
-                        <button className="proceed-to-checkout">Proceed to checkout ({cartProducts.length})</button>
+                        <button className="proceed-to-checkout">Proceed to checkout ({cart.products.length})</button>
                     </div>
 
                     <div className="cart-products-section">
-                        {cartProducts.map(cartProduct =>
+                        {cart.products.map(cartProduct =>
                             <div className="cart-product" key={cartProduct.product._id}>
                                 <div className="product-details">
                                     <div className="left">
@@ -71,22 +92,22 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                                     </div>
 
                                     <div className="right">
-                                        <p className="product-name">{ cartProduct.product.product_name }</p>
-                                        <h3 className="product-price">€{ cartProduct.product.price }</h3>
-                                        <p className="product-stock">{ cartProduct.product.stock_quantity } available</p>
+                                        <p className="product-name">{cartProduct.product.product_name}</p>
+                                        <h3 className="product-price">€{cartProduct.product.price}</h3>
+                                        <p className="product-stock">{cartProduct.product.stock_quantity} available</p>
                                     </div>
                                 </div>
 
                                 <div className="product-buttons">
                                     <div className="edit-quantity-section">
-                                        <button className="subtract" onClick={() => this.handleQuantityChange(cartProduct.product._id, -1)}>-</button>
+                                        <button className="subtract">-</button>
 
-                                        <input className="quantity" type="text" readOnly value={ quantities[cartProduct.product._id] || 0 } />
+                                        <input className="quantity" type="text" value={cartProduct.quantity} />
 
-                                        <button className="add" onClick={() => this.handleQuantityChange(cartProduct.product._id, 1)}>+</button>
+                                        <button className="add">+</button>
                                     </div>
 
-                                    <button className="remove-button" onClick={() => deleteProductFromCart(cartProduct.product._id)}>Remove product</button>
+                                    <button className="remove-button" onClick={() => this.deleteProductFromCart(cartProduct.product._id)}>Remove product</button>
                                 </div>
                             </div>
                         )}

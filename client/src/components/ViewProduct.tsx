@@ -1,8 +1,9 @@
-import React, { Component, JSX } from "react"
+import React, { ChangeEvent, Component, JSX } from "react"
 import { Product } from "../types/Product"
 
 type ViewProductState = {
     similarProducts: Product[]
+    requestedQuantity: number
 }
 
 interface ViewProductsProps {
@@ -18,7 +19,8 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
         super(props)
 
         this.state = {
-            similarProducts: []
+            similarProducts: [],
+            requestedQuantity: 1
         }
     }
 
@@ -49,13 +51,22 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
         })
     }
 
-    componentDidMount() {
+    handleQuantityChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        // Making sure input passed is a number
+        const quantity = Number(e.target.value)
+
+        this.setState({
+            requestedQuantity: quantity
+        }, () => console.log(quantity))
+    }
+
+    componentDidMount(): void {
         this.findSimilarProducts()
     }
 
     render() {
         const { productToView, addProductToCart } = this.props
-        const { similarProducts } = this.state
+        const { similarProducts, requestedQuantity } = this.state
 
         return (
             <div className="view-product-page-container">
@@ -83,7 +94,7 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
 
                     <div className="product-quantity-container">
                         <p>Quantity</p>
-                        <input type="number" min="1" max={productToView["stock_quantity"]} />
+                        <input type="number" min="1" max={productToView["stock_quantity"]} value={requestedQuantity} onChange={(e) => this.handleQuantityChange(e)}/>
                     </div>
 
                     <div className="buttons">

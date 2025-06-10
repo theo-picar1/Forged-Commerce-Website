@@ -6,7 +6,6 @@ import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
 
 import { Product } from "../types/Product.ts"
 import { Cart } from "../types/Cart.ts"
-import { CartProducts } from "../types/Cart.ts"
 
 import Header from './Header.tsx'
 import Footer from './Footer.tsx'
@@ -28,11 +27,11 @@ type HomeState = {
     categoryToFilterBy: string
     autocompleteSuggestions: any[]
     productSearchValue: string
-    currentView: string
-    counterMap: Map<string, number>
-    productToView: any
+    currentView: string // For changing the view (grid / list view) in Products.js and reserving it through state 
+    counterMap: Map<string, number> // For matching categories and the number of the specific category
+    productToView: any // Read operation for product
     cart: Cart | null
-    cartProducts: CartProducts[]
+    quantityToAdd: number // For adding product to cart
 }
 
 class Home extends Component<HomeProps, HomeState> {
@@ -48,10 +47,10 @@ class Home extends Component<HomeProps, HomeState> {
             autocompleteSuggestions: [],
             productSearchValue: "",
             currentView: "grid",
-            counterMap: new Map(), // To show the amount of a particular category (plus the brand new products) for the user. Also takes into account any new category added
-            productToView: null, // For ViewProduct.js. Will change this to an actual url {id} down the line
+            counterMap: new Map(), 
+            productToView: null, 
             cart: null,
-            cartProducts: []
+            quantityToAdd: 1
         }
     }
 
@@ -100,6 +99,8 @@ class Home extends Component<HomeProps, HomeState> {
                 }
             })
 
+            this.loadCart() // Getting user's is now a separate function so that it can update through other actions that call it
+
             this.setState({
                 products: res.data,
                 filteredProducts: res.data,
@@ -110,26 +111,6 @@ class Home extends Component<HomeProps, HomeState> {
         }
         catch (error: any) {
             console.error(error)
-        }
-
-        // For getting the user's cart items only if the user has logged in
-        if (localStorage.id || localStorage.id != undefined) {
-            try {
-                const res = await axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
-
-                if (!res.data || res.data == null) {
-                    console.log("No matching cart for user found!")
-                    return
-                }
-
-                this.setState({
-                    cart: res.data,
-                    cartProducts: res.data.products
-                })
-            }
-            catch (error) {
-                console.error("Id is not defined i think ", error)
-            }
         }
     }
     // ----------------------------------------------------
@@ -199,8 +180,8 @@ class Home extends Component<HomeProps, HomeState> {
             this.setState({
                 filteredProducts: matched
             }, () => {
-                this.props.history.push('/products')
                 this.switchProductView(this.state.currentView)
+                this.props.history.push('/products')
             })
         }
     }
@@ -236,33 +217,51 @@ class Home extends Component<HomeProps, HomeState> {
     // ------------------------------------------------
 
     // --------------- Shopping Cart Functions ---------------
-    addProductToCart = (product: Product): void => {
+    loadCart = async (): Promise<void> => {
+        // For getting the user's cart items only if the user has logged in
+        if (localStorage.id || localStorage.id != undefined) {
+            try {
+                const res = await axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
+
+                if (!res.data || res.data == null) {
+                    console.log("No matching cart for user found!")
+                    return
+                }
+
+                this.setState({
+                    cart: res.data
+                })
+            }
+            catch (error) {
+                console.error("Id is not defined, I think? ", error)
+            }
+        }
+    }
+
+    addProductToCart = async (product: Product): Promise<void> => {
         // If the user is not logged in, they will be redirected to the login page as they cannot use the cart functionality 
         this.redirectToLogin()
 
-        this.setState(prevState => {
-            let found = false
+        const productToAdd = {
+            productId: product._id,
+            quantity: 1
+        }
 
-            const updatedCart = prevState.cartProducts.map(cartItem => {
-                if (cartItem.product._id === product._id) {
-                    found = true
-                    return { ...cartItem, quantity: cartItem.quantity + 1 }
-                }
-                return cartItem
-            })
+        try {
+            const res = await axios.post(`${SERVER_HOST}/cart/${localStorage.id}`, productToAdd)
 
-            if (!found) {
-                updatedCart.push({ product, quantity: 1 })
+            if (res) {
+                alert("Product added!")
+
+                this.loadCart()
             }
-
-            return { cartProducts: updatedCart }
-        })
-    }
-
-    deleteProductFromCart = (productId: string): void => {
-        this.setState(prevState => ({
-            cartProducts: prevState.cartProducts.filter(cartProduct => cartProduct.product._id !== productId)
-        }))
+            else {
+                alert("product was not added")
+            }
+        }
+        catch (error: any) {
+            console.error("Add product to cart error: ", error)
+        }
     }
     // -------------------------------------------------------
 
@@ -415,7 +414,7 @@ class Home extends Component<HomeProps, HomeState> {
                     completeAutocomplete={this.completeAutocomplete}
                     filterProductsBySearchValue={this.filterProductsBySearchValue}
                     filterProductsByHeaderCategory={this.filterProductsByHeaderCategory}
-                    cartProducts={this.state.cartProducts}
+                    cart={this.state.cart}
                 />
 
                 {/* This is so that I can switch between different components while still keeping the header and footer components */}
@@ -432,11 +431,11 @@ class Home extends Component<HomeProps, HomeState> {
 
                     <Route exact path="/cart">
                         <ShoppingCart
-                            cartProducts={this.state.cartProducts}
+                            cart={this.state.cart}
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
                             setProductToView={this.setProductToView}
-                            deleteProductFromCart={this.deleteProductFromCart}
+                            loadCart={this.loadCart}
                         />
                     </Route>
 
