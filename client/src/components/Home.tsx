@@ -5,8 +5,6 @@ import { SERVER_HOST } from "../config/global_constants.ts"
 import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
 
 import { Product } from "../types/Product.ts"
-import { Cart } from "../types/Cart.ts"
-import { CartProducts } from "../types/Cart.ts"
 
 import Header from './Header.tsx'
 import Footer from './Footer.tsx'
@@ -28,11 +26,11 @@ type HomeState = {
     categoryToFilterBy: string
     autocompleteSuggestions: any[]
     productSearchValue: string
-    currentView: string
-    counterMap: Map<string, number>
-    productToView: any
-    cart: Cart | null
-    cartProducts: CartProducts[]
+    currentView: string // For changing the view (grid / list view) in Products.js and reserving it through state 
+    counterMap: Map<string, number> // For matching categories and the number of the specific category
+    productToView: any // Read operation for product
+    cartLength: number
+    quantityToAdd: number // For adding product to cart
 }
 
 class Home extends Component<HomeProps, HomeState> {
@@ -48,13 +46,14 @@ class Home extends Component<HomeProps, HomeState> {
             autocompleteSuggestions: [],
             productSearchValue: "",
             currentView: "grid",
-            counterMap: new Map(), // To show the amount of a particular category (plus the brand new products) for the user. Also takes into account any new category added
-            productToView: null, // For ViewProduct.js. Will change this to an actual url {id} down the line
-            cart: null,
-            cartProducts: []
+            counterMap: new Map(),
+            productToView: null,
+            cartLength: 0,
+            quantityToAdd: 1
         }
     }
 
+    // --------------- Retrieving data functions ---------------
     async componentDidMount(): Promise<void> {
         let initCategories: string[] = [] // Array that just acts as a placeholder until we get all the unique cateogries from it
         let bestSellerCounter = 0
@@ -112,23 +111,23 @@ class Home extends Component<HomeProps, HomeState> {
             console.error(error)
         }
 
-        // For getting the user's cart items only if the user has logged in
-        if (localStorage.id || localStorage.id != undefined) {
+        // Don't bother getting the user's cart if they're not logged in
+        if (localStorage.id === null || localStorage.id === undefined) return
+        else {
             try {
-                const res = await axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
+                const res = await axios.get(`${SERVER_HOST}/cart/${localStorage.id}`)
 
-                if (!res.data || res.data == null) {
-                    console.log("No matching cart for user found!")
-                    return
+                if(res.data) {
+                    this.setState({
+                        cartLength: res.data.products.length
+                    })
                 }
-
-                this.setState({
-                    cart: res.data,
-                    cartProducts: res.data.products
-                })
+                else {
+                    alert("Unable to retrieve cart from the database!")
+                }
             }
-            catch (error) {
-                console.error("Id is not defined i think ", error)
+            catch (error: any) {
+                console.error(error)
             }
         }
     }
@@ -199,8 +198,8 @@ class Home extends Component<HomeProps, HomeState> {
             this.setState({
                 filteredProducts: matched
             }, () => {
-                this.props.history.push('/products')
                 this.switchProductView(this.state.currentView)
+                this.props.history.push('/products')
             })
         }
     }
@@ -236,26 +235,49 @@ class Home extends Component<HomeProps, HomeState> {
     // ------------------------------------------------
 
     // --------------- Shopping Cart Functions ---------------
-    addProductToCart = (product: Product): void => {
+    handleRequestedQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const quantity = Number(e.target.value)
+
+        this.setState({
+            quantityToAdd: quantity
+        })
+    }
+
+    addProductToCart = async (product: Product): Promise<void> => {
         // If the user is not logged in, they will be redirected to the login page as they cannot use the cart functionality 
         this.redirectToLogin()
 
-        this.setState(prevState => {
-            let found = false
+        const productToAdd = {
+            productId: product._id,
+            quantity: this.state.quantityToAdd
+        }
 
-            const updatedCart = prevState.cartProducts.map(cartItem => {
-                if (cartItem.product._id === product._id) {
-                    found = true
-                    return { ...cartItem, quantity: cartItem.quantity + 1 }
-                }
-                return cartItem
-            })
+        try {
+            const res = await axios.post(`${SERVER_HOST}/cart/${localStorage.id}`, productToAdd)
 
-            if (!found) {
-                updatedCart.push({ product, quantity: 1 })
+            if (res) {
+                alert("Product added!")
+
+                this.setState({
+                    quantityToAdd: 1,
+                    cartLength: res.data.updatedLength
+                })
             }
+            else {
+                alert("product was not added")
+            }
+        }
+        catch (error: any) {
+            console.error("Add product to cart error: ", error)
+        }
+    }
 
-            return { cartProducts: updatedCart }
+    // Mainly to update cart length when user deletes a product from their cart
+    updateCartLength = () => {
+        const currentLength = this.state.cartLength
+
+        this.setState({
+            cartLength: currentLength - 1
         })
     }
     // -------------------------------------------------------
@@ -409,7 +431,7 @@ class Home extends Component<HomeProps, HomeState> {
                     completeAutocomplete={this.completeAutocomplete}
                     filterProductsBySearchValue={this.filterProductsBySearchValue}
                     filterProductsByHeaderCategory={this.filterProductsByHeaderCategory}
-                    cartProducts={this.state.cartProducts}
+                    cartLength={this.state.cartLength}
                 />
 
                 {/* This is so that I can switch between different components while still keeping the header and footer components */}
@@ -426,10 +448,11 @@ class Home extends Component<HomeProps, HomeState> {
 
                     <Route exact path="/cart">
                         <ShoppingCart
-                            cartProducts={this.state.cartProducts}
+                            cartLength={this.state.cartLength}
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
                             setProductToView={this.setProductToView}
+                            updateCartLength={this.updateCartLength}
                         />
                     </Route>
 
@@ -455,6 +478,8 @@ class Home extends Component<HomeProps, HomeState> {
                             products={this.state.products}
                             setProductToView={this.setProductToView}
                             addProductToCart={this.addProductToCart}
+                            handleRequestedQuantityChange={this.handleRequestedQuantityChange}
+                            quantityToAdd={this.state.quantityToAdd}
                         />
                     </Route>
                 </Switch>

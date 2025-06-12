@@ -183,7 +183,8 @@ export default class Products extends Component<ProductsProps, ProductsState> {
             categories,
             capitiliseString,
             counterMap,
-            setProductToView
+            setProductToView,
+            addProductToCart
         } = this.props
         
         const {
@@ -405,7 +406,7 @@ export default class Products extends Component<ProductsProps, ProductsState> {
                                     <div className="product-bottom-section">
                                         <p>€{product["price"]}</p>
 
-                                        <div className="add-to-shopping-cart-button">
+                                        <div className="add-to-shopping-cart-button" onClick={() => addProductToCart(product)}>
                                             <img src="/images/shopping-cart.png" alt="Add to shopping cart button" />
                                         </div>
                                     </div>

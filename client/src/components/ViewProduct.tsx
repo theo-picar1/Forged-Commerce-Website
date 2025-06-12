@@ -1,7 +1,5 @@
-import React, { Component, JSX } from "react"
+import React, { ChangeEvent, Component, JSX } from "react"
 import { Product } from "../types/Product"
-
-import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
 
 type ViewProductState = {
     similarProducts: Product[]
@@ -12,6 +10,8 @@ interface ViewProductsProps {
     products: Product[]
     setProductToView: (product: Product) => void
     addProductToCart: (product: Product) => void
+    handleRequestedQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    quantityToAdd: number
 }
 
 // Prop has to come first as parameter for some reason
@@ -51,12 +51,12 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
         })
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.findSimilarProducts()
     }
 
     render() {
-        const { productToView, addProductToCart } = this.props
+        const { productToView, addProductToCart, handleRequestedQuantityChange, quantityToAdd } = this.props
         const { similarProducts } = this.state
 
         return (
@@ -85,13 +85,25 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
 
                     <div className="product-quantity-container">
                         <p>Quantity</p>
-                        <input type="number" min="1" max={productToView["stock_quantity"]} />
+
+                        <input 
+                            type="number" 
+                            min="1" 
+                            max={productToView["stock_quantity"]} 
+                            placeholder="Enter quantity here" 
+                            value={quantityToAdd}
+                            onChange={(e) => handleRequestedQuantityChange(e)}
+                        />
                     </div>
 
                     <div className="buttons">
                         <button id="buy-now" className="button">Buy now</button>
 
-                        <button id="add-to-basket" className="button" onClick={() => addProductToCart(productToView)}>Add to basket</button>
+                        <button 
+                            id="add-to-basket" 
+                            className="button" 
+                            onClick={() => addProductToCart(productToView)}
+                        >Add to basket</button>
 
                         <div id="add-to-favourites" className="button">
                             <img src="/images/favourite-icon.png" />
@@ -158,9 +170,11 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
                                         <div className="product-name-container">
                                             <p className="product-name">{product["product_name"]}</p>
                                         </div>
+
                                         {product["discount"] > 0 ? (
                                             <div className="discounted-price-container">
                                                 <p className="product-price">€{this.discountedPrice(product["price"], product["discount"])}</p>
+
                                                 <p className="original-price">€{product["price"]}</p>
                                             </div>
                                         ) : <p className="product-price">€{product["price"]}</p>

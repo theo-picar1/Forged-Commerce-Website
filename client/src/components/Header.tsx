@@ -1,8 +1,10 @@
 import React, { Component, createRef } from "react"
 import { Link, withRouter } from "react-router-dom"
+// Don't remember why but I need this for export default withRouter(Home) at bottom of file
+import { RouteComponentProps } from 'react-router-dom' 
+
 import { Product } from "../types/Product"
-import { RouteComponentProps } from 'react-router-dom'
-import { CartProducts } from "../types/Cart"
+import { Cart } from "../types/Cart"
 
 interface HeaderProps extends RouteComponentProps {
     categories: string[]
@@ -14,7 +16,7 @@ interface HeaderProps extends RouteComponentProps {
     completeAutocomplete: (value: string) => void
     filterProductsBySearchValue: (e: React.KeyboardEvent<HTMLInputElement>) => void
     filterProductsByHeaderCategory: (value: string) => void
-    cartProducts: CartProducts[]
+    cartLength: number
 }
 
 type HeaderState = {
@@ -100,7 +102,7 @@ class Header extends Component<HeaderProps, HeaderState> {
             completeAutocomplete,
             filterProductsBySearchValue,
             filterProductsByHeaderCategory,
-            cartProducts
+            cartLength
         } = this.props
 
         const { atStart, atEnd } = this.state
@@ -125,7 +127,7 @@ class Header extends Component<HeaderProps, HeaderState> {
                                 <div className="shopping-cart">
                                     <img src="/images/shopping-cart.png" alt="Shopping cart button" />
                                     <div>
-                                        <p>{ cartProducts.length }</p>
+                                        <p>{ cartLength }</p>
                                     </div>
                                 </div>
                             </Link>

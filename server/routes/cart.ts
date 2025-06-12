@@ -18,7 +18,7 @@ router.get('/cart/:userId', async (req: Request, res: Response): Promise<void> =
             cart = await cartModel.findById(cart._id).populate('products.product')
         }
 
-        res.status(200).json({ cart })
+        res.status(200).json(cart) // Don't add { } since that makes it another object when doing res.data
 
         return
     }
@@ -52,14 +52,14 @@ router.post('/cart/:userId', async (req: Request, res: Response): Promise<void> 
 
             await matchedCart.save()
 
-            // Then after updating the user's cart, populate the products with all their fields as it refs the Products database
-            const populatedCart = await cartModel.findById(matchedCart._id).populate('products.product')
-
-            res.status(200).json({ message: 'Product added to existing cart', cart: populatedCart })
+            // Send back a success message and also the updated cart length
+            res.status(200).json({ 
+                message: 'Product added to existing cart',
+                updatedLength: matchedCart.products.length
+            })
 
             return
         }
-        // Otherwise I need to make a new cart just for them, and then add the product to their cart
         else {
             res.status(404).json({ errorMessage: 'Cart not found!' })
 
@@ -67,11 +67,96 @@ router.post('/cart/:userId', async (req: Request, res: Response): Promise<void> 
         }
     }
     catch (error) {
-        console.error(error)
         res.status(500).json({ errorMessage: 'Failed to add product to shopping cart' })
 
         return
     }
 })
+
+// To save all quantity changes to the user's products in their shopping cart
+router.put('/cart/:userId', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.params.userId
+        const { products } = req.body
+
+        const matchedCart = await cartModel.findOne({ user: userId })
+
+        if(matchedCart) {
+            matchedCart.products = products
+
+            await matchedCart.save()
+
+            res.status(200).json({ message: 'Changes to quantities saved!' })
+
+            return
+        }
+        else {
+            res.status(404).json({ errorMessage: 'Could not find user\'s cart found!' })
+
+            return
+        }
+    }
+    catch (error) {
+        res.status(500).json({ errorMessage: 'Unable to save changes. Please try again later!' })
+
+        return
+    }
+})
+
+// To delete a product in a user's cart by product id
+router.delete('/cart/:userId/:productId', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.params.userId
+        const productId = req.params.productId
+
+        const matchedCart = await cartModel.findOne({ user: userId })
+
+        if (matchedCart) {
+            // This is to see if the product was deleted or not
+            const initialLength = matchedCart.products.length
+
+            matchedCart.products = matchedCart.products.filter(cartProduct => !cartProduct.product.equals(productId))
+
+            // If the lenghts are the same then the product was not delete
+            if (initialLength === matchedCart.products.length) {
+                res.status(404).json({ errorMessage: 'Unable to delete product from cart!' })
+                return
+            }
+
+            // Otherwise, sae the newly updated user's cart to MongoDB
+            await matchedCart.save()
+
+            res.status(200).json({ 
+                message: 'Product deleted from cart!',
+                updatedLength: matchedCart.products.length
+            })
+
+            return
+        }
+        else {
+            res.status(404).json({ errorMessage: 'Cart not found!' })
+
+            return
+        }
+    }
+    catch (error) {
+        res.status(500).json({ errorMessage: 'Failed to remove product from shopping cart' })
+
+        return
+    }
+})
+
+// const findMatchingUserCart = async (userId: string): Promise<void> => {
+//     const matchedCart = await cartModel.findOne({ user: userId })
+
+//     if (matchedCart) {
+//         return
+//     }
+//     else {
+//         res.status(404).json({ errorMessage: 'Cart not found!' })
+
+//         return
+//     }
+// }
 
 export default router

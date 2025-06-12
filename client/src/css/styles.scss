@@ -320,6 +320,8 @@ $laptop-container-padding: 20px;
                 color: $website-white;
                 @include flex-direction(row, space-between, center, 0);
                 padding: $mobile-container-padding;
+                position: relative;
+                z-index: 10;
             }
 
             main {
@@ -455,7 +457,7 @@ $laptop-container-padding: 20px;
                 width: inherit;
                 color: $website-black;
                 height: auto;
-                margin-top: 40px;
+                margin-top: 5px;
                 z-index: $auto-complete-modal-z;
                 border-radius: 10px;
                 overflow: hidden;
@@ -1185,6 +1187,7 @@ $laptop-container-padding: 20px;
             }
         }
     }
+
     // -------------------------------
 
     // --------- Shopping Cart ----------
@@ -1215,12 +1218,42 @@ $laptop-container-padding: 20px;
             h3 {
                 font-weight: bold;
             }
-            
-            .proceed-to-checkout {
-                @include default-button-css();
-                width: 100%;
+
+            .buttons-section {
+                @include flex-direction(row, space-between, center, 8px);
                 margin-top: 10px;
-                background-color: $website-blue;
+
+                .proceed-to-checkout {
+                    background-color: $website-red;
+                    border: thin solid $invisible;
+                    color: $website-white;
+                    padding: 3px 10px;
+                    border-radius: 2px;
+                    font-weight: bold;
+                    font-size: 14px;
+                }
+
+                .save-changes {
+                    flex-grow: 1;
+                    background-color: $website-white;
+                    border: thin solid $website-gray;
+                    color: $website-black;
+                    padding: 3px 0px;
+                    border-radius: 2px;
+                    font-weight: normal;
+                    font-size: 14px;
+                }
+
+                .disabled-save-changes {
+                    @extend .save-changes;
+                    pointer-events: none;
+                    color: $translucent;
+                    border: thin solid $website-light-gray;
+
+                    &:hover {
+                        cursor: not-allowed;
+                    }
+                }
             }
         }
 
@@ -1233,13 +1266,14 @@ $laptop-container-padding: 20px;
             .cart-product {
                 background-color: $website-white;
                 padding: $mobile-container-padding;
+                @include flex-direction(column, space-between, unset, 0);
 
                 .product-details {
                     @include flex-direction(row, unset, unset, 15px);
                     height: auto;
 
                     .left {
-                        
+
                         .image-container {
                             width: 100px;
                             height: 125px;
@@ -1276,13 +1310,52 @@ $laptop-container-padding: 20px;
                     margin-top: 15px;
 
                     .edit-quantity-section {
-                        @include flex-direction(row, space-between, center, 0);
-                        width: 100px;
+                        display: grid;
+                        grid-template-columns: 0.75fr 1.5fr 0.75fr;
+                        max-width: 100px;
+                        height: 25px;
+                        border: thin solid $website-light-gray;
+
+                        button {
+                            border: none;
+                            width: 25px;
+                            font-weight: bolder;
+                            font-size: 14px;
+                            height: 100%;
+                            text-align: center;
+                        }
+
+                        .subtract {
+                            border-right: thin solid $website-light-gray;
+                        }
+
+                        .add {
+                            border-left: thin solid $website-light-gray;
+                        }
+
+                        .quantity {
+                            font-size: 14px;
+                            width: min-content;
+                            text-align: center;
+                            width: 48px;
+                            border: none;
+                            outline: none;
+                        }
                     }
 
                     .remove-button {
                         @include default-button-css();
-                        padding: 6px 12px;
+                        @include flex-direction(unset, center, center, 0);
+                        border-radius: 2px;
+                        background-color: $website-white;
+                        border: thin solid $website-light-gray;
+                        width: 20px;
+                        height: 20px;
+                        padding: 14px;
+
+                        img {
+                            width: 20px;
+                        }
                     }
                 }
             }

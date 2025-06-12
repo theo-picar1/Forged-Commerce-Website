@@ -34,6 +34,6 @@ const productsSchema = new Schema<IProduct>({
   }
 )
 
-const productsModel = model<IProduct>('products', productsSchema)
+const productsModel = model<IProduct>('Product', productsSchema)
 
 export default productsModel
