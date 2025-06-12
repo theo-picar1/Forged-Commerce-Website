@@ -3,7 +3,6 @@ import { Product } from "../types/Product"
 
 type ViewProductState = {
     similarProducts: Product[]
-    requestedQuantity: number
 }
 
 interface ViewProductsProps {
@@ -11,6 +10,8 @@ interface ViewProductsProps {
     products: Product[]
     setProductToView: (product: Product) => void
     addProductToCart: (product: Product) => void
+    handleRequestedQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    quantityToAdd: number
 }
 
 // Prop has to come first as parameter for some reason
@@ -19,8 +20,7 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
         super(props)
 
         this.state = {
-            similarProducts: [],
-            requestedQuantity: 1
+            similarProducts: []
         }
     }
 
@@ -51,22 +51,13 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
         })
     }
 
-    handleQuantityChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        // Making sure input passed is a number
-        const quantity = Number(e.target.value)
-
-        this.setState({
-            requestedQuantity: quantity
-        }, () => console.log(quantity))
-    }
-
     componentDidMount(): void {
         this.findSimilarProducts()
     }
 
     render() {
-        const { productToView, addProductToCart } = this.props
-        const { similarProducts, requestedQuantity } = this.state
+        const { productToView, addProductToCart, handleRequestedQuantityChange, quantityToAdd } = this.props
+        const { similarProducts } = this.state
 
         return (
             <div className="view-product-page-container">
@@ -94,13 +85,25 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
 
                     <div className="product-quantity-container">
                         <p>Quantity</p>
-                        <input type="number" min="1" max={productToView["stock_quantity"]} value={requestedQuantity} onChange={(e) => this.handleQuantityChange(e)}/>
+
+                        <input 
+                            type="number" 
+                            min="1" 
+                            max={productToView["stock_quantity"]} 
+                            placeholder="Enter quantity here" 
+                            value={quantityToAdd}
+                            onChange={(e) => handleRequestedQuantityChange(e)}
+                        />
                     </div>
 
                     <div className="buttons">
                         <button id="buy-now" className="button">Buy now</button>
 
-                        <button id="add-to-basket" className="button" onClick={() => addProductToCart(productToView)}>Add to basket</button>
+                        <button 
+                            id="add-to-basket" 
+                            className="button" 
+                            onClick={() => addProductToCart(productToView)}
+                        >Add to basket</button>
 
                         <div id="add-to-favourites" className="button">
                             <img src="/images/favourite-icon.png" />
@@ -167,9 +170,11 @@ export default class ViewProduct extends Component<ViewProductsProps, ViewProduc
                                         <div className="product-name-container">
                                             <p className="product-name">{product["product_name"]}</p>
                                         </div>
+
                                         {product["discount"] > 0 ? (
                                             <div className="discounted-price-container">
                                                 <p className="product-price">€{this.discountedPrice(product["price"], product["discount"])}</p>
+
                                                 <p className="original-price">€{product["price"]}</p>
                                             </div>
                                         ) : <p className="product-price">€{product["price"]}</p>

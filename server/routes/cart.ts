@@ -52,7 +52,11 @@ router.post('/cart/:userId', async (req: Request, res: Response): Promise<void> 
 
             await matchedCart.save()
 
-            res.status(200).json({ message: 'Product added to existing cart' })
+            // Send back a success message and also the updated cart length
+            res.status(200).json({ 
+                message: 'Product added to existing cart',
+                updatedLength: matchedCart.products.length
+            })
 
             return
         }
@@ -63,21 +67,49 @@ router.post('/cart/:userId', async (req: Request, res: Response): Promise<void> 
         }
     }
     catch (error) {
-        console.error(error)
         res.status(500).json({ errorMessage: 'Failed to add product to shopping cart' })
 
         return
     }
 })
 
+// To save all quantity changes to the user's products in their shopping cart
+router.put('/cart/:userId', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.params.userId
+        const { products } = req.body
+
+        const matchedCart = await cartModel.findOne({ user: userId })
+
+        if(matchedCart) {
+            matchedCart.products = products
+
+            await matchedCart.save()
+
+            res.status(200).json({ message: 'Changes to quantities saved!' })
+
+            return
+        }
+        else {
+            res.status(404).json({ errorMessage: 'Could not find user\'s cart found!' })
+
+            return
+        }
+    }
+    catch (error) {
+        res.status(500).json({ errorMessage: 'Unable to save changes. Please try again later!' })
+
+        return
+    }
+})
+
+// To delete a product in a user's cart by product id
 router.delete('/cart/:userId/:productId', async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.params.userId
         const productId = req.params.productId
 
         const matchedCart = await cartModel.findOne({ user: userId })
-
-        matchedCart?.products.map(product => console.log(product))
 
         if (matchedCart) {
             // This is to see if the product was deleted or not
@@ -94,7 +126,10 @@ router.delete('/cart/:userId/:productId', async (req: Request, res: Response): P
             // Otherwise, sae the newly updated user's cart to MongoDB
             await matchedCart.save()
 
-            res.status(200).json({ message: 'Product deleted from cart!' })
+            res.status(200).json({ 
+                message: 'Product deleted from cart!',
+                updatedLength: matchedCart.products.length
+            })
 
             return
         }
@@ -105,11 +140,23 @@ router.delete('/cart/:userId/:productId', async (req: Request, res: Response): P
         }
     }
     catch (error) {
-        console.error("Super duper bad error")
         res.status(500).json({ errorMessage: 'Failed to remove product from shopping cart' })
 
         return
     }
 })
+
+// const findMatchingUserCart = async (userId: string): Promise<void> => {
+//     const matchedCart = await cartModel.findOne({ user: userId })
+
+//     if (matchedCart) {
+//         return
+//     }
+//     else {
+//         res.status(404).json({ errorMessage: 'Cart not found!' })
+
+//         return
+//     }
+// }
 
 export default router

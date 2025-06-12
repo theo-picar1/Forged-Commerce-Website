@@ -11,11 +11,55 @@ interface ShoppingCartProps {
     categories: string[]
     capitiliseString: (input: string) => string
     setProductToView: (product: Product) => void
-    cart: Cart | null
-    loadCart: () => void
+    cartLength: number
+    updateCartLength: () => void
 }
 
-export default class ShoppingCart extends Component<ShoppingCartProps> {
+type ShoppingCartState = {
+    cart: Cart | null
+    originalCart: Cart | null
+    changedQuantity: boolean
+}
+
+export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingCartState> {
+    constructor(props: ShoppingCartProps) {
+        super(props)
+
+        this.state = {
+            cart: null,
+            originalCart: null,
+            changedQuantity: false
+        }
+    }
+
+    // Get cart data first
+    componentDidMount(): void {
+        this.fetchCart()
+    }
+
+    // Function that acts as both a data retriever and an updater
+    fetchCart = async (): Promise<void> => {
+        // For getting the user's cart items only if the user has logged in
+        if (localStorage.id != null || localStorage.id != undefined) {
+            try {
+                const res = await axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
+
+                if (!res.data || res.data == null) {
+                    alert("No matching cart for user found!")
+                    return
+                }
+
+                this.setState({
+                    cart: res.data,
+                    originalCart: res.data
+                })
+            }
+            catch (error) {
+                console.error("Id is not defined, I think? ", error)
+            }
+        }
+    }
+
     // Self-explanatory
     deleteProductFromCart = async (productId: string): Promise<void> => {
         try {
@@ -24,13 +68,14 @@ export default class ShoppingCart extends Component<ShoppingCartProps> {
             if (res) {
                 alert("Product deleted!")
 
-                this.props.loadCart()
+                this.props.updateCartLength()
+                this.fetchCart()
             }
             else {
                 alert("Product was not deleted")
             }
         }
-        catch(error: any) {
+        catch (error: any) {
             if (error.response.data.errorMessage) {
                 console.log(error.response.data.errorMessage)
             }
@@ -40,29 +85,75 @@ export default class ShoppingCart extends Component<ShoppingCartProps> {
         }
     }
 
-    handleQuantityChangeByButton = (productId: string, action: 'add' | 'subtract'): void => {
-        const updatedCart = { ...this.props.cart }
+    // Button that will save all quantity changes to all products in the cart by just replacing the old mongo cart products with the newly updated one
+    saveEditedQuantity = async (): Promise<void> => {
+        if (!this.state.cart) return
 
-        if (!updatedCart || updatedCart === undefined) return
+        const updatedProducts = this.state.cart.products
 
-        updatedCart.products = updatedCart.products?.map(cartProducts => {
-            if (cartProducts.product._id === productId) {
-                const newQuantity = action === 'add' ? cartProducts.quantity + 1 : cartProducts.quantity - 1
+        try {
+            const res = await axios.put(`${SERVER_HOST}/cart/${localStorage.id}`, { products: updatedProducts })
+
+            if (res) {
+                alert("Changes have been successfully saved!")
+
+                this.setState({
+                    changedQuantity: false
+                }, () => this.fetchCart())
+            }
+            else {
+                alert("Changes were not saved. Please try again!")
+            }
+        }
+        catch (error: any) {
+            if (error.response.data.errorMessage) {
+                console.log(error.response.data.errorMessage)
+            }
+            else {
+                console.error("Unexpected error:", error)
+            }
+        }
+    }
+
+    // Handles requested quantity change when user clicks the add or subtract buttons
+    handleQuantityChangeByButton = (product: Product, action: 'add' | 'subtract'): void => {
+        const updatedCart = { ...this.state.cart } as Cart
+
+        updatedCart.products = updatedCart.products.map(cartProduct => {
+            if (cartProduct.product._id === product._id) {
+                let newQuantity = cartProduct.quantity
+
+                // Making sure if user adds it doesn't go above available stock, and it doesn't go below 1 if subtracting
+                if (action === 'add' && newQuantity < cartProduct.product.stock_quantity) {
+                    newQuantity += 1
+                }
+                else if (action === 'subtract' && newQuantity > 1) {
+                    newQuantity -= 1
+                }
 
                 return {
-                    ...cartProducts,
-                    quantity: Math.max(1, newQuantity) // Prevent going below 1
+                    ...cartProduct,
+                    quantity: newQuantity
                 }
             }
-            return cartProducts
+            return cartProduct
         })
 
-        // Since cart is passed as a prop, you might need to lift state up to allow updating it
-        this.setState({ cart: updatedCart })
+        // Check for any quantity changes by using some operator which will return true as long as at least one product quantity does not match
+        const originalProducts = this.state.originalCart?.products || []
+        const edited = updatedCart.products.some(updated =>
+            originalProducts.find(original => original.product._id === updated.product._id)?.quantity !== updated.quantity
+        )
+
+        this.setState({
+            cart: updatedCart,
+            changedQuantity: edited
+        })
     }
 
     render() {
-        const { cart, setProductToView } = this.props
+        const { setProductToView } = this.props
+        const { changedQuantity, cart } = this.state
 
         return (
             !cart || cart.products.length === 0 ? (
@@ -78,7 +169,15 @@ export default class ShoppingCart extends Component<ShoppingCartProps> {
                     <div className="top-section">
                         <h3>Shopping Cart</h3>
 
-                        <button className="proceed-to-checkout">Proceed to checkout ({cart.products.length})</button>
+                        <div className="buttons-section">
+                            <button className="proceed-to-checkout">Proceed to checkout ({cart.products.length})</button>
+
+                            {changedQuantity ? (
+                                <button className="save-changes" onClick={() => this.saveEditedQuantity()}>Save</button>
+                            ) : (
+                                <button className="disabled-save-changes">Save</button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="cart-products-section">
@@ -100,14 +199,16 @@ export default class ShoppingCart extends Component<ShoppingCartProps> {
 
                                 <div className="product-buttons">
                                     <div className="edit-quantity-section">
-                                        <button className="subtract">-</button>
+                                        <button className="subtract" onClick={() => this.handleQuantityChangeByButton(cartProduct.product, "subtract")}>-</button>
 
-                                        <input className="quantity" type="text" value={cartProduct.quantity} />
+                                        <input className="quantity" type="text" value={cartProduct.quantity} readOnly />
 
-                                        <button className="add">+</button>
+                                        <button className="add" onClick={() => this.handleQuantityChangeByButton(cartProduct.product, "add")}>+</button>
                                     </div>
 
-                                    <button className="remove-button" onClick={() => this.deleteProductFromCart(cartProduct.product._id)}>Remove product</button>
+                                    <div className="remove-button" onClick={() => this.deleteProductFromCart(cartProduct.product._id)}>
+                                        <img src="/images/bin-icon.png" />
+                                    </div>
                                 </div>
                             </div>
                         )}
