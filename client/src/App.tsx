@@ -15,6 +15,7 @@ if(typeof localStorage.accessLevel === "undefined" || typeof localStorage.access
     localStorage.accessLevel = ACCESS_LEVEL_GUEST
     localStorage.token = null
     localStorage.id = undefined
+    localStorage.cartId = undefined
 }
 
 export default class App extends Component 

@@ -49,6 +49,8 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                     return
                 }
 
+                localStorage.cartId = res.data._id
+
                 this.setState({
                     cart: res.data,
                     originalCart: res.data
@@ -149,6 +151,30 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
             cart: updatedCart,
             changedQuantity: edited
         })
+    }
+
+    // To post all items the user has in their cart to their purchase history
+    checkoutItems = async (): Promise<void> => {
+        if (localStorage.cartId !== undefined || localStorage.cartId !== null) {
+            try {
+                const res = await axios.post(`${SERVER_HOST}/purchases/${localStorage.id}`)
+
+                if (res) {
+                alert("Successfully checked out!")
+            }
+            else {
+                alert("Failed to check out items!")
+            }
+            }
+            catch (error: any) {
+                if (error.response.data.errorMessage) {
+                    console.log(error.response.data.errorMessage)
+                }
+                else {
+                    console.error("Unexpected error:", error)
+                }
+            }
+        }
     }
 
     render() {

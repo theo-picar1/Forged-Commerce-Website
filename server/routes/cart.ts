@@ -17,8 +17,9 @@ router.get('/cart/:userId', async (req: Request, res: Response): Promise<void> =
             // Populate product refs (even if empty)
             cart = await cartModel.findById(cart._id).populate('products.product')
         }
-
-        res.status(200).json(cart) // Don't add { } since that makes it another object when doing res.data
+        else {
+            res.status(200).json(cart)
+        } 
 
         return
     }
@@ -53,7 +54,7 @@ router.post('/cart/:userId', async (req: Request, res: Response): Promise<void> 
             await matchedCart.save()
 
             // Send back a success message and also the updated cart length
-            res.status(200).json({ 
+            res.status(200).json({
                 message: 'Product added to existing cart',
                 updatedLength: matchedCart.products.length
             })
@@ -81,7 +82,7 @@ router.put('/cart/:userId', async (req: Request, res: Response): Promise<void> =
 
         const matchedCart = await cartModel.findOne({ user: userId })
 
-        if(matchedCart) {
+        if (matchedCart) {
             matchedCart.products = products
 
             await matchedCart.save()
@@ -126,7 +127,7 @@ router.delete('/cart/:userId/:productId', async (req: Request, res: Response): P
             // Otherwise, sae the newly updated user's cart to MongoDB
             await matchedCart.save()
 
-            res.status(200).json({ 
+            res.status(200).json({
                 message: 'Product deleted from cart!',
                 updatedLength: matchedCart.products.length
             })
@@ -145,18 +146,5 @@ router.delete('/cart/:userId/:productId', async (req: Request, res: Response): P
         return
     }
 })
-
-// const findMatchingUserCart = async (userId: string): Promise<void> => {
-//     const matchedCart = await cartModel.findOne({ user: userId })
-
-//     if (matchedCart) {
-//         return
-//     }
-//     else {
-//         res.status(404).json({ errorMessage: 'Cart not found!' })
-
-//         return
-//     }
-// }
 
 export default router
