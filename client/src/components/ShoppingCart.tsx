@@ -12,7 +12,7 @@ interface ShoppingCartProps {
     capitiliseString: (input: string) => string
     setProductToView: (product: Product) => void
     cartLength: number
-    updateCartLength: () => void
+    updateCartLength: (newLength: number) => void
 }
 
 type ShoppingCartState = {
@@ -70,11 +70,36 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
             if (res) {
                 alert("Product deleted!")
 
-                this.props.updateCartLength()
                 this.fetchCart()
+                this.props.updateCartLength(res.data.updatedLength)
             }
             else {
                 alert("Product was not deleted")
+            }
+        }
+        catch (error: any) {
+            if (error.response.data.errorMessage) {
+                console.log(error.response.data.errorMessage)
+            }
+            else {
+                console.error("Unexpected error:", error)
+            }
+        }
+    }
+
+    // Function that is called when a user decides to checkout their items. Checked out items are saved to purchase history
+    deleteAllFromCart = async () => {
+        try {
+            const res = await axios.delete(`${SERVER_HOST}/cart/${localStorage.id}`)
+
+            if(res) {
+                alert("Successfully deleted all cart items")
+
+                this.fetchCart()
+                this.props.updateCartLength(0) // SInce everything is deleted anyways so I just hardcode the length 0
+            }
+            else {
+                alert("Successfully checked out but unable to update cart!")
             }
         }
         catch (error: any) {
@@ -155,16 +180,16 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
 
     // To post all items the user has in their cart to their purchase history
     checkoutItems = async (): Promise<void> => {
-        if (localStorage.cartId !== undefined || localStorage.cartId !== null) {
+        if (localStorage.cartId && localStorage.cartId !== undefined) {
             try {
-                const res = await axios.post(`${SERVER_HOST}/purchases/${localStorage.id}`)
+                const res = await axios.post(`${SERVER_HOST}/purchases/${localStorage.id}`, { cartId: localStorage.cartId })
 
                 if (res) {
-                alert("Successfully checked out!")
-            }
-            else {
-                alert("Failed to check out items!")
-            }
+                    this.deleteAllFromCart()
+                }
+                else {
+                    alert("Failed to check out items!")
+                }
             }
             catch (error: any) {
                 if (error.response.data.errorMessage) {
@@ -196,7 +221,7 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                         <h3>Shopping Cart</h3>
 
                         <div className="buttons-section">
-                            <button className="proceed-to-checkout">Proceed to checkout ({cart.products.length})</button>
+                            <button className="proceed-to-checkout" onClick={() => this.checkoutItems()}>Proceed to checkout ({cart.products.length})</button>
 
                             {changedQuantity ? (
                                 <button className="save-changes" onClick={() => this.saveEditedQuantity()}>Save</button>

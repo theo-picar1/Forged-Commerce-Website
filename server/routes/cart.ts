@@ -17,9 +17,8 @@ router.get('/cart/:userId', async (req: Request, res: Response): Promise<void> =
             // Populate product refs (even if empty)
             cart = await cartModel.findById(cart._id).populate('products.product')
         }
-        else {
-            res.status(200).json(cart)
-        } 
+
+        res.status(200).json(cart)
 
         return
     }
@@ -144,6 +143,24 @@ router.delete('/cart/:userId/:productId', async (req: Request, res: Response): P
         res.status(500).json({ errorMessage: 'Failed to remove product from shopping cart' })
 
         return
+    }
+})
+
+// Function that will delete all items in the user's cart when they manage to checkout successfully
+router.delete('/cart/:userId', async (req: Request, res: Response): Promise<void> => {
+    const userId = req.params.userId
+
+    const matchedCart = await cartModel.findOne({ user: userId })
+
+    if (matchedCart) {
+        matchedCart.products = [] 
+        
+        await matchedCart.save()
+
+        res.status(200).json({ errorMessage: "Successfully deleted items after check out!" })
+    }
+    else {
+        res.status(404).json({ errorMessage: "Delete many error: Unable to find cart with userId" })
     }
 })
 

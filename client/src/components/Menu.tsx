@@ -62,7 +62,9 @@ export default class Menu extends Component<MenuProps> {
                             )}
 
                             <div>
-                                <p>Purchase History</p>
+                                <Link to={"/purchase-history"} className="link">
+                                    <p>Purchase History</p>
+                                </Link>
                             </div>
 
                             <div>

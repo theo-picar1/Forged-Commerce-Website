@@ -23,6 +23,6 @@ const purchasesSchema = new Schema<IPurchase>({
   }
 )
 
-const productsModel = model<IPurchase>('Purchase', purchasesSchema)
+const purchasesModel = model<IPurchase>('Purchase', purchasesSchema)
 
-export default productsModel
+export default purchasesModel

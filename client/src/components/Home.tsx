@@ -5,6 +5,8 @@ import { SERVER_HOST } from "../config/global_constants.ts"
 import { ACCESS_LEVEL_GUEST } from "../config/global_constants.ts"
 
 import { Product } from "../types/Product.ts"
+import { Cart } from "../types/Cart.ts"
+import { History } from "../types/Purchases.ts"
 
 import Header from './Header.tsx'
 import Footer from './Footer.tsx'
@@ -13,6 +15,7 @@ import Menu from "./Menu.tsx"
 import ShoppingCart from "./ShoppingCart.tsx"
 import Products from "./Products.tsx"
 import ViewProduct from "./ViewProduct.tsx"
+import PurchaseHistory from "./PurchaseHistory.tsx"
 
 // Define the type for props
 type HomeProps = RouteComponentProps // Add extra props if needed
@@ -114,8 +117,9 @@ class Home extends Component<HomeProps, HomeState> {
         // Don't bother getting the user's cart if they're not logged in
         if (localStorage.id === null || localStorage.id === undefined) return
         else {
+            // Mainly just doing this to get the cart length for the header
             try {
-                const res = await axios.get(`${SERVER_HOST}/cart/${localStorage.id}`)
+                const res = await axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
 
                 if(res.data) {
                     this.setState({
@@ -124,6 +128,24 @@ class Home extends Component<HomeProps, HomeState> {
                 }
                 else {
                     alert("Unable to retrieve cart from the database!")
+                }
+            }
+            catch (error: any) {
+                console.error(error)
+            }
+        }
+
+        // Same logic as above for getting purchase history
+        if (localStorage.id === null || localStorage.id === undefined) return
+        else {
+            try {
+                const res = await axios.get<History>(`${SERVER_HOST}/purchases/${localStorage.id}`)
+
+                if(res.data) {
+                    console.log("Successfully created and/or retrieved purchase history data!")
+                }
+                else {
+                    alert("Unable to retrieve purchase history from the database!")
                 }
             }
             catch (error: any) {
@@ -273,11 +295,9 @@ class Home extends Component<HomeProps, HomeState> {
     }
 
     // Mainly to update cart length when user deletes a product from their cart
-    updateCartLength = () => {
-        const currentLength = this.state.cartLength
-
+    updateCartLength = (newLength: number) => {
         this.setState({
-            cartLength: currentLength - 1
+            cartLength: newLength
         })
     }
     // -------------------------------------------------------
@@ -481,6 +501,10 @@ class Home extends Component<HomeProps, HomeState> {
                             handleRequestedQuantityChange={this.handleRequestedQuantityChange}
                             quantityToAdd={this.state.quantityToAdd}
                         />
+                    </Route>
+
+                    <Route exact path="/purchase-history">
+                        <PurchaseHistory />
                     </Route>
                 </Switch>
 
