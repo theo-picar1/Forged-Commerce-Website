@@ -1,7 +1,15 @@
-import { Cart } from "./Cart"
+import { Product } from "./Product"
+
+export interface Items {
+    price: number
+    product_name: string
+    quantity: number
+    product_images: string[]
+}
 
 export interface Purchases {
-    cart: Cart
+    _id: string
+    items: Items[]
     purchased_at: Date
 }
 

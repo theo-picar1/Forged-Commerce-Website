@@ -1,8 +1,15 @@
 import mongoose from "mongoose"
 const { Schema, model } = mongoose
 
+interface ProductItem {
+  product_name: string
+  quantity: number
+  price: number
+  product_images: string[]
+}
+
 interface Purchases {
-  cart: mongoose.Types.ObjectId,
+  items: ProductItem[]
   purchased_at: Date
 }
 
@@ -11,17 +18,22 @@ export interface IPurchase extends mongoose.Document {
   purchases: Purchases[]
 }
 
+const productItemSchema = new Schema<ProductItem>({
+  product_name: { type: String, required: true },
+  quantity: { type: Number, required: true },
+  price: { type: Number, required: true },
+  product_images: [{ type: String, required: true }]
+})
+
 const purchasesSchema = new Schema<IPurchase>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   purchases: [{
-    cart: { type: Schema.Types.ObjectId, ref: 'Cart', required: true },
+    items: [productItemSchema],
     purchased_at: { type: Date, required: true }
   }]
-},
-  {
-    collection: 'purchases'
-  }
-)
+}, {
+  collection: 'purchases'
+})
 
 const purchasesModel = model<IPurchase>('Purchase', purchasesSchema)
 

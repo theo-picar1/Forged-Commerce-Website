@@ -87,31 +87,6 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
         }
     }
 
-    // Function that is called when a user decides to checkout their items. Checked out items are saved to purchase history
-    deleteAllFromCart = async () => {
-        try {
-            const res = await axios.delete(`${SERVER_HOST}/cart/${localStorage.id}`)
-
-            if(res) {
-                alert("Successfully deleted all cart items")
-
-                this.fetchCart()
-                this.props.updateCartLength(0) // SInce everything is deleted anyways so I just hardcode the length 0
-            }
-            else {
-                alert("Successfully checked out but unable to update cart!")
-            }
-        }
-        catch (error: any) {
-            if (error.response.data.errorMessage) {
-                console.log(error.response.data.errorMessage)
-            }
-            else {
-                console.error("Unexpected error:", error)
-            }
-        }
-    }
-
     // Button that will save all quantity changes to all products in the cart by just replacing the old mongo cart products with the newly updated one
     saveEditedQuantity = async (): Promise<void> => {
         if (!this.state.cart) return
@@ -185,10 +160,16 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                 const res = await axios.post(`${SERVER_HOST}/purchases/${localStorage.id}`, { cartId: localStorage.cartId })
 
                 if (res) {
-                    this.deleteAllFromCart()
+                    alert("Successfully checked out")
+
+                    this.fetchCart()
+                    this.props.updateCartLength(0)
+
+                    return
                 }
                 else {
                     alert("Failed to check out items!")
+                    return
                 }
             }
             catch (error: any) {

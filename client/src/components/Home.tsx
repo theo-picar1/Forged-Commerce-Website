@@ -143,9 +143,13 @@ class Home extends Component<HomeProps, HomeState> {
 
                 if(res.data) {
                     console.log("Successfully created and/or retrieved purchase history data!")
+
+                    return
                 }
                 else {
                     alert("Unable to retrieve purchase history from the database!")
+
+                    return
                 }
             }
             catch (error: any) {
@@ -306,16 +310,6 @@ class Home extends Component<HomeProps, HomeState> {
     capitiliseString(string: string): string {
         return string.substring(0, 1).toUpperCase() + string.substring(1)
     }
-
-    // logItems() {
-    //     this.state.products.forEach(product => {
-    //         console.log(product)
-    //     })
-
-    //     this.state.categories.forEach(category => {
-    //         console.log(category)
-    //     })
-    // }
     // -------------------------------------------------
 
     // --------------- Functions mainly for Products.js ---------------

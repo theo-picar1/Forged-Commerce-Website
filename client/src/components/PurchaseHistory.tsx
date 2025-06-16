@@ -4,16 +4,13 @@ import { SERVER_HOST } from "../config/global_constants.ts"
 import axios from "axios"
 
 import { History } from "../types/Purchases.ts"
-import { RouteComponentProps } from "react-router-dom"
 
 type PurchaseHistoryState = {
     purchaseHistory: History | null
 }
 
-type PurchaseHistoryProps = RouteComponentProps
-
-export default class PurchaseHistory extends Component<PurchaseHistoryProps, PurchaseHistoryState> {
-    constructor(props: PurchaseHistoryProps) {
+export default class PurchaseHistory extends Component<{}, PurchaseHistoryState> {
+    constructor(props: {}) {
         super(props)
 
         this.state = {
@@ -27,11 +24,9 @@ export default class PurchaseHistory extends Component<PurchaseHistoryProps, Pur
             const res = await axios.get(`${SERVER_HOST}/purchases/${localStorage.id}`)
 
             if (res) {
-                console.log("Successfully loaded purchase history for user")
-
                 this.setState({
                     purchaseHistory: res.data
-                }, () => console.log(this.state.purchaseHistory))
+                })
             }
             else {
                 alert("Unable to load/fetch purchase history for user")
@@ -47,22 +42,84 @@ export default class PurchaseHistory extends Component<PurchaseHistoryProps, Pur
         }
     }
 
+    // To determine what suffix the provided day needs
+    getOrdinalSuffix(day: number): string {
+        if (day > 3 && day < 21) return 'th' // special case for 11th, 12th, 13th
+
+        switch (day % 10) {
+            case 1: return 'st'
+            case 2: return 'nd'
+            case 3: return 'rd'
+            default: return 'th'
+        }
+    }
+
+    // Just a helper function to format new Date object into the DD/MM/YYYY
+    formatDate(dateString: Date): string {
+        const date = new Date(dateString)
+        const day = date.getDate()
+        const suffix = this.getOrdinalSuffix(day)
+
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ]
+        const month = monthNames[date.getMonth()]
+        const year = date.getFullYear()
+
+        return `${day}${suffix} ${month}, ${year}`
+    }
+
     render() {
         return (
             <div className="purchase-history-page">
-                {/* {this.state.purchaseHistory?.purchases.map(purchase =>
-                    <div className="purchase">
-                        <p className="purchase-date">date</p>
+                <div className="purchases">
+                    {this.state.purchaseHistory?.purchases.map(purchase =>
+                        <div className="purchase">
+                            <div className="header">
+                                <div className="order-id">
+                                    <p>Order:</p>
 
-                        <div className="purchased-items">
-                            {purchase.cart.products.map(cartProduct =>
-                                <div className="product">
-                                    <h1>{cartProduct.product.product_name}</h1>
+                                    <p>{purchase._id}</p>
                                 </div>
-                            )}
+
+                                <div className="order-details">
+                                    <div>
+                                        <p className="title">Date:</p>
+
+                                        <p className="detail">{this.formatDate(purchase.purchased_at)}</p>
+                                    </div>
+
+                                    <div>
+                                        <p className="title">Total:</p>
+
+                                        <p className="detail">€00.00</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="purchased-items">
+                                {purchase.items.map(item =>
+                                    <div className="purchased-item">
+                                        <div className="product-images">
+                                            <img src={item.product_images[0]} className="image" />
+                                        </div>
+
+                                        <div className="product-details">
+                                            <div>
+                                                <p className="name">{item.product_name}</p>
+
+                                                <p className="price-and-quantity">€{item.price} x {item.quantity}</p>
+                                            </div>
+
+                                            <button className="view-product">View Product</button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                )} */}
+                    )}
+                </div>
             </div>
         )
     }
