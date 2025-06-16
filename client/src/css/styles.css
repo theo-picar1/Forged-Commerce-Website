@@ -1410,6 +1410,96 @@
   .filled-shopping-cart .cart-products-section .cart-product .product-buttons .remove-button img {
     width: 20px;
   }
+  .purchase-history-page {
+    padding: 20px 10px;
+    background-color: #F3F3F3;
+  }
+  .purchase-history-page .purchases {
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+    gap: 20px;
+  }
+  .purchase-history-page .purchases .purchase {
+    border: thin solid #000000;
+  }
+  .purchase-history-page .purchases .purchase .header {
+    background-color: #D9D9D9;
+    padding: 10px;
+    border-bottom: thin solid #000000;
+  }
+  .purchase-history-page .purchases .purchase .header .order-id {
+    font-weight: bold;
+  }
+  .purchase-history-page .purchases .purchase .header .order-details {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: unset;
+    align-items: center;
+    gap: 30px;
+  }
+  .purchase-history-page .purchases .purchase .header .order-details .detail {
+    font-weight: 500;
+  }
+  .purchase-history-page .purchases .purchase .purchased-items {
+    padding: 20px 10px;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+    gap: 15px;
+  }
+  .purchase-history-page .purchases .purchase .purchased-items .purchased-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: unset;
+    align-items: unset;
+    gap: 10px;
+  }
+  .purchase-history-page .purchases .purchase .purchased-items .purchased-item .product-images {
+    width: 125px;
+    height: 125px;
+    background-color: #D9D9D9;
+    display: flex;
+    flex-direction: unset;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    border: thin solid #D9D9D9;
+  }
+  .purchase-history-page .purchases .purchase .purchased-items .purchased-item .product-images img {
+    width: inherit;
+    max-height: 125px;
+  }
+  .purchase-history-page .purchases .purchase .purchased-items .purchased-item .product-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: unset;
+    gap: 5px;
+  }
+  .purchase-history-page .purchases .purchase .purchased-items .purchased-item .product-details div {
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+    gap: 2px;
+  }
+  .purchase-history-page .purchases .purchase .purchased-items .purchased-item .product-details div .price-and-quantity {
+    font-size: 20px;
+    color: #FE0404;
+  }
+  .purchase-history-page .purchases .purchase .purchased-items .purchased-item .product-details .view-product {
+    border: thin solid black;
+    border-radius: 2px;
+    font-size: 14px;
+    width: 115px;
+    padding: 3px 0;
+    margin-top: 10px;
+  }
 }
 @media screen and (min-width: 375px) {
   .authentication-page-container .authentication-content {

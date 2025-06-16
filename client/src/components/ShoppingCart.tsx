@@ -12,13 +12,14 @@ interface ShoppingCartProps {
     capitiliseString: (input: string) => string
     setProductToView: (product: Product) => void
     cartLength: number
-    updateCartLength: () => void
+    updateCartLength: (newLength: number) => void
 }
 
 type ShoppingCartState = {
     cart: Cart | null
     originalCart: Cart | null
     changedQuantity: boolean
+    totalPrice: number
 }
 
 export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingCartState> {
@@ -28,7 +29,8 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
         this.state = {
             cart: null,
             originalCart: null,
-            changedQuantity: false
+            changedQuantity: false,
+            totalPrice: 0
         }
     }
 
@@ -49,9 +51,22 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                     return
                 }
 
+                localStorage.cartId = res.data._id
+
+                let total: number = 0
+
+                // Get the total by foreaching every product and adding (product's price * quantity) to total
+                res.data.products.forEach(product => {
+                    total += (product.product.price * product.quantity)
+                })
+
+                // So that it is always two decimal places
+                total = parseFloat(total.toFixed(2))
+
                 this.setState({
                     cart: res.data,
-                    originalCart: res.data
+                    originalCart: res.data,
+                    totalPrice: total
                 })
             }
             catch (error) {
@@ -68,8 +83,8 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
             if (res) {
                 alert("Product deleted!")
 
-                this.props.updateCartLength()
                 this.fetchCart()
+                this.props.updateCartLength(res.data.updatedLength)
             }
             else {
                 alert("Product was not deleted")
@@ -151,9 +166,39 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
         })
     }
 
+    // To post all items the user has in their cart to their purchase history
+    checkoutItems = async (): Promise<void> => {
+        if (localStorage.cartId && localStorage.cartId !== undefined) {
+            try {
+                const res = await axios.post(`${SERVER_HOST}/purchases/${localStorage.id}`, { cartId: localStorage.cartId, totalPrice: this.state.totalPrice })
+
+                if (res) {
+                    alert("Successfully checked out")
+
+                    this.fetchCart()
+                    this.props.updateCartLength(0)
+
+                    return
+                }
+                else {
+                    alert("Failed to check out items!")
+                    return
+                }
+            }
+            catch (error: any) {
+                if (error.response.data.errorMessage) {
+                    console.log(error.response.data.errorMessage)
+                }
+                else {
+                    console.error("Unexpected error:", error)
+                }
+            }
+        }
+    }
+
     render() {
         const { setProductToView } = this.props
-        const { changedQuantity, cart } = this.state
+        const { changedQuantity, cart, totalPrice } = this.state
 
         return (
             !cart || cart.products.length === 0 ? (
@@ -170,7 +215,7 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                         <h3>Shopping Cart</h3>
 
                         <div className="buttons-section">
-                            <button className="proceed-to-checkout">Proceed to checkout ({cart.products.length})</button>
+                            <button className="proceed-to-checkout" onClick={() => this.checkoutItems()}>Proceed to checkout ({cart.products.length})</button>
 
                             {changedQuantity ? (
                                 <button className="save-changes" onClick={() => this.saveEditedQuantity()}>Save</button>
@@ -181,6 +226,7 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                     </div>
 
                     <div className="cart-products-section">
+                        <h4>Total: €{totalPrice}</h4>
                         {cart.products.map(cartProduct =>
                             <div className="cart-product" key={cartProduct.product._id}>
                                 <div className="product-details">

@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 const { Schema, model } = mongoose
 
-// 1. Define interface for a product document
 export interface IProduct extends mongoose.Document {
   product_name: string
   product_rating: number
