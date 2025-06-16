@@ -19,6 +19,7 @@ type ShoppingCartState = {
     cart: Cart | null
     originalCart: Cart | null
     changedQuantity: boolean
+    totalPrice: number
 }
 
 export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingCartState> {
@@ -28,7 +29,8 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
         this.state = {
             cart: null,
             originalCart: null,
-            changedQuantity: false
+            changedQuantity: false,
+            totalPrice: 0
         }
     }
 
@@ -51,9 +53,20 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
 
                 localStorage.cartId = res.data._id
 
+                let total: number = 0
+
+                // Get the total by foreaching every product and adding (product's price * quantity) to total
+                res.data.products.forEach(product => {
+                    total += (product.product.price * product.quantity)
+                })
+
+                // So that it is always two decimal places
+                total = parseFloat(total.toFixed(2))
+
                 this.setState({
                     cart: res.data,
-                    originalCart: res.data
+                    originalCart: res.data,
+                    totalPrice: total
                 })
             }
             catch (error) {
@@ -157,7 +170,7 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
     checkoutItems = async (): Promise<void> => {
         if (localStorage.cartId && localStorage.cartId !== undefined) {
             try {
-                const res = await axios.post(`${SERVER_HOST}/purchases/${localStorage.id}`, { cartId: localStorage.cartId })
+                const res = await axios.post(`${SERVER_HOST}/purchases/${localStorage.id}`, { cartId: localStorage.cartId, totalPrice: this.state.totalPrice })
 
                 if (res) {
                     alert("Successfully checked out")
@@ -185,7 +198,7 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
 
     render() {
         const { setProductToView } = this.props
-        const { changedQuantity, cart } = this.state
+        const { changedQuantity, cart, totalPrice } = this.state
 
         return (
             !cart || cart.products.length === 0 ? (
@@ -213,6 +226,7 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                     </div>
 
                     <div className="cart-products-section">
+                        <h4>Total: €{totalPrice}</h4>
                         {cart.products.map(cartProduct =>
                             <div className="cart-product" key={cartProduct.product._id}>
                                 <div className="product-details">

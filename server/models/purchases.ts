@@ -11,9 +11,10 @@ interface ProductItem {
 interface Purchases {
   items: ProductItem[]
   purchased_at: Date
+  totalPrice: number
 }
 
-export interface IPurchase extends mongoose.Document {
+interface IPurchase extends mongoose.Document {
   user: mongoose.Types.ObjectId
   purchases: Purchases[]
 }
@@ -29,7 +30,8 @@ const purchasesSchema = new Schema<IPurchase>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   purchases: [{
     items: [productItemSchema],
-    purchased_at: { type: Date, required: true }
+    purchased_at: { type: Date, required: true },
+    totalPrice: { type: Number, required: true }
   }]
 }, {
   collection: 'purchases'

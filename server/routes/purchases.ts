@@ -30,7 +30,7 @@ router.get('/purchases/:userId', async (req: Request, res: Response): Promise<vo
 // Post the user's cart and add it to the purchase history. Pretty much just checking out
 router.post('/purchases/:userId', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { cartId } = req.body
+        const { cartId, totalPrice } = req.body
         const userId = req.params.userId
 
         // Find the cart being posted to purchase history for reference
@@ -51,7 +51,8 @@ router.post('/purchases/:userId', async (req: Request, res: Response): Promise<v
 
         const purchaseEntry = {
             items,
-            purchased_at: new Date()
+            purchased_at: new Date(),
+            totalPrice: totalPrice
         }
 
         // Saving to user's purchase history

@@ -9,7 +9,6 @@ interface CartProduct {
 export interface ICart extends mongoose.Document {
     user: mongoose.Types.ObjectId
     products: CartProduct[]
-    total_price: number
 }
 
 const cartSchema = new Schema<ICart>({
@@ -19,8 +18,7 @@ const cartSchema = new Schema<ICart>({
             product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
             quantity: { type: Number, default: 1, min: 1 }
         }
-    ],
-    total_price: { type: Number }
+    ]
 }, {
     collection: 'cart'
 })

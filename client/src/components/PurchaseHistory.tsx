@@ -75,7 +75,7 @@ export default class PurchaseHistory extends Component<{}, PurchaseHistoryState>
             <div className="purchase-history-page">
                 <div className="purchases">
                     {this.state.purchaseHistory?.purchases.map(purchase =>
-                        <div className="purchase">
+                        <div className="purchase" key={purchase._id}>
                             <div className="header">
                                 <div className="order-id">
                                     <p>Order:</p>
@@ -93,14 +93,14 @@ export default class PurchaseHistory extends Component<{}, PurchaseHistoryState>
                                     <div>
                                         <p className="title">Total:</p>
 
-                                        <p className="detail">€00.00</p>
+                                        <p className="detail">€{purchase.totalPrice}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="purchased-items">
                                 {purchase.items.map(item =>
-                                    <div className="purchased-item">
+                                    <div className="purchased-item" key={item._id}>
                                         <div className="product-images">
                                             <img src={item.product_images[0]} className="image" />
                                         </div>

@@ -1,6 +1,7 @@
 import { Product } from "./Product"
 
 export interface Items {
+    _id: string
     price: number
     product_name: string
     quantity: number
@@ -11,6 +12,7 @@ export interface Purchases {
     _id: string
     items: Items[]
     purchased_at: Date
+    totalPrice: number
 }
 
 export interface History {
