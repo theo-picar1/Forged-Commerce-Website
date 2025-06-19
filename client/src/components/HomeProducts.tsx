@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { Link } from "react-router-dom"
 
 import { Product } from "../types/Product"
 
@@ -8,7 +9,6 @@ interface HomeProductsProps {
     categories: string[]
     capitiliseString: (input: string) => string
     currentView: string
-    setProductToView: (product: Product) => void
 }
 
 export default class HomeProducts extends Component<HomeProductsProps> {
@@ -22,14 +22,14 @@ export default class HomeProducts extends Component<HomeProductsProps> {
     // Function that just returns the html format of the product card so that I don't need to copy and paste this chunk of code multiple times
     productCard(product: Product) {
         return (
-            <div className="product" key={product["_id"]} onClick={() => this.props.setProductToView(product)}>
+            <div className="product" key={product["_id"]}>
                 <div className="product-image-container">
                     <img src={product["product_images"][0]} alt="" />
                 </div>
 
                 <div className="product-details">
                     <div className="product-name-container">
-                        <p className="product-name">{product["product_name"]}</p>
+                        <Link to={`/product/${product._id}`} className="product-name">{product["product_name"]}</Link>
                     </div>
                     {product["discount"] > 0 ? (
                         <div className="discounted-price-container">
@@ -44,7 +44,7 @@ export default class HomeProducts extends Component<HomeProductsProps> {
     }
 
     render() {
-        const { products, addProductToCart } = this.props
+        const { products } = this.props
 
         return (
             <div className="home-products-container">

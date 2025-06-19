@@ -1,6 +1,7 @@
 import React, { Component, JSX } from "react"
 
 import { Product } from "../types/Product"
+import { Link } from "react-router-dom"
 
 // Type is for this.state
 type ProductsState = {
@@ -26,7 +27,6 @@ interface ProductsProps {
     categories: string[]
     capitiliseString: (string: string) => string
     counterMap: Map<string, number>
-    setProductToView: (product: Product) => void
     addProductToCart: (product: Product) => void
 }
 
@@ -183,7 +183,6 @@ export default class Products extends Component<ProductsProps, ProductsState> {
             categories,
             capitiliseString,
             counterMap,
-            setProductToView,
             addProductToCart
         } = this.props
         
@@ -384,10 +383,10 @@ export default class Products extends Component<ProductsProps, ProductsState> {
                 {productsToShow.length > 0 ? (
                     <main id="products-section">
                         {productsToShow.map(product =>
-                            <div className="product" key={product["_id"]} onClick={() => setProductToView(product)}>
-                                <div className="product-image-container">
+                            <div className="product" key={product._id}>
+                                <Link to={`/product/${product._id}`} className="product-image-container">
                                     <img id="product-image" src={product["product_images"][0]} />
-                                </div>
+                                </Link>
 
                                 <div className="product-details">
                                     <p className="product-name">{product["product_name"]}</p>

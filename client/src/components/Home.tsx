@@ -393,27 +393,7 @@ class Home extends Component<HomeProps, HomeState> {
             }
         }
     }
-    // ----------------------------------------------------------------
-
-    // --------------- Functions mainly for ViewProduct.js ---------------
-    setProductToView = (product: Product): void => {
-        axios.get(`${SERVER_HOST}/products/${product._id}`).then(res => {
-            if (res.data) {
-                if (res.data.errorMessage) {
-                    console.log(res.data.errorMessage)
-                }
-                else {
-                    this.setState({
-                        productToView: product
-                    }, () => this.props.history.push("/view-product"))
-                }
-            }
-            else {
-                console.log("Product with provided ID not found!")
-            }
-        })
-    }
-    // -------------------------------------------------------------------
+    // --------------------------------------------------------
 
     // --------------- Authentication functions ---------------
     // For anything that involves having to sign in first in order to be able to do it
@@ -456,7 +436,6 @@ class Home extends Component<HomeProps, HomeState> {
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
                             currentView={this.state.currentView}
-                            setProductToView={this.setProductToView}
                         />
                     </Route>
 
@@ -465,7 +444,6 @@ class Home extends Component<HomeProps, HomeState> {
                             cartLength={this.state.cartLength}
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
-                            setProductToView={this.setProductToView}
                             updateCartLength={this.updateCartLength}
                         />
                     </Route>
@@ -481,16 +459,13 @@ class Home extends Component<HomeProps, HomeState> {
                             categories={this.state.categories}
                             capitiliseString={this.capitiliseString}
                             counterMap={this.state.counterMap}
-                            setProductToView={this.setProductToView}
                             addProductToCart={this.addProductToCart}
                         />
                     </Route>
 
-                    <Route exact path="/view-product">
+                    <Route exact path="/product/:id">
                         <ViewProduct
-                            productToView={this.state.productToView}
                             products={this.state.products}
-                            setProductToView={this.setProductToView}
                             addProductToCart={this.addProductToCart}
                             handleRequestedQuantityChange={this.handleRequestedQuantityChange}
                             quantityToAdd={this.state.quantityToAdd}

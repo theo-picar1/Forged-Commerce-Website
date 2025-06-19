@@ -10,7 +10,6 @@ import { Product } from "../types/Product"
 interface ShoppingCartProps {
     categories: string[]
     capitiliseString: (input: string) => string
-    setProductToView: (product: Product) => void
     cartLength: number
     updateCartLength: (newLength: number) => void
 }
@@ -197,7 +196,6 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
     }
 
     render() {
-        const { setProductToView } = this.props
         const { changedQuantity, cart, totalPrice } = this.state
 
         return (
@@ -228,10 +226,10 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                     <div className="cart-products-section">
                         <h4>Total: €{totalPrice}</h4>
                         {cart.products.map(cartProduct =>
-                            <div className="cart-product" key={cartProduct.product._id}>
+                            <Link to={`/product/${cartProduct.product._id}`} className="cart-product" key={cartProduct.product._id}>
                                 <div className="product-details">
                                     <div className="left">
-                                        <div className="image-container" onClick={() => setProductToView(cartProduct.product)}>
+                                        <div className="image-container">
                                             <img src={cartProduct.product.product_images[0]} alt="" />
                                         </div>
                                     </div>
@@ -256,7 +254,7 @@ export default class ShoppingCart extends Component<ShoppingCartProps, ShoppingC
                                         <img src="/images/bin-icon.png" />
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         )}
                     </div>
                 </div>
