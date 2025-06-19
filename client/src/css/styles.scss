@@ -206,22 +206,25 @@ $laptop-container-padding: 20px;
             margin-top: 5px;
 
             .product-name-container {
-                height: 30px;
+                max-height: 50px;
+                line-height: 0.95;
 
                 .product-name {
                     font-size: 14px;
                     color: $website-black;
-                    line-height: 0.95;
+                    text-decoration: none;
                 }
             }
 
             .discounted-price-container {
                 @include flex-direction(row, unset, flex-end, 10px);
+                margin-top: 2px;
             }
 
             .product-price {
                 color: $website-red;
                 font-weight: bold;
+                margin-top: 2px;
             }
 
             .original-price {

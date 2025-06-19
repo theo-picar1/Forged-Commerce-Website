@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { Link, Redirect, useHistory } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
-import { SERVER_HOST, ACCESS_LEVEL_GUEST, ACCESS_LEVEL_NORMAL_USER } from "../config/global_constants.ts"
+import { SERVER_HOST, ACCESS_LEVEL_NORMAL_USER } from "../config/global_constants.ts"
 
 const Register: React.FC = () => {
     const [firstName, setFirstName] = useState("")
@@ -11,7 +11,6 @@ const Register: React.FC = () => {
     const [houseAddress, setHouseAddress] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
-
     const [isRegistered, setIsRegistered] = useState(false)
     const [invalidEmail, setInvalidEmail] = useState(false)
     const [invalidPassword, setInvalidPassword] = useState(false)
@@ -23,6 +22,8 @@ const Register: React.FC = () => {
     const [firstNameError, setFirstNameError] = useState("")
     const [secondNameError, setSecondNameError] = useState("")
     const [emailErrorMessage, setEmailErrorMessage] = useState("")
+
+    const navigate = useNavigate()
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -143,7 +144,7 @@ const Register: React.FC = () => {
     const changeStyle = (invalid: boolean) => ({ borderColor: invalid ? '#FE0404' : '#808080' })
     const showMessage = (invalid: boolean) => ({ display: invalid ? 'block' : 'none' })
 
-    if (isRegistered) return <Redirect to="/" />
+    if (isRegistered) navigate("/")
 
     return (
         <div className="authentication-page-container">

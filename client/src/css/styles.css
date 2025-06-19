@@ -353,12 +353,13 @@
     margin-top: 5px;
   }
   .home-products-container .product-section .horizontal-product-scroll .product .product-details .product-name-container {
-    height: 30px;
+    max-height: 50px;
+    line-height: 0.95;
   }
   .home-products-container .product-section .horizontal-product-scroll .product .product-details .product-name-container .product-name {
     font-size: 14px;
     color: #000000;
-    line-height: 0.95;
+    text-decoration: none;
   }
   .home-products-container .product-section .horizontal-product-scroll .product .product-details .discounted-price-container {
     display: flex;
@@ -366,10 +367,12 @@
     justify-content: unset;
     align-items: flex-end;
     gap: 10px;
+    margin-top: 2px;
   }
   .home-products-container .product-section .horizontal-product-scroll .product .product-details .product-price {
     color: #FE0404;
     font-weight: bold;
+    margin-top: 2px;
   }
   .home-products-container .product-section .horizontal-product-scroll .product .product-details .original-price {
     font-size: 12px;
@@ -987,12 +990,13 @@
     margin-top: 5px;
   }
   .view-product-page-container .similar-products .products .product .product-details .product-name-container {
-    height: 30px;
+    max-height: 50px;
+    line-height: 0.95;
   }
   .view-product-page-container .similar-products .products .product .product-details .product-name-container .product-name {
     font-size: 14px;
     color: #000000;
-    line-height: 0.95;
+    text-decoration: none;
   }
   .view-product-page-container .similar-products .products .product .product-details .discounted-price-container {
     display: flex;
@@ -1000,10 +1004,12 @@
     justify-content: unset;
     align-items: flex-end;
     gap: 10px;
+    margin-top: 2px;
   }
   .view-product-page-container .similar-products .products .product .product-details .product-price {
     color: #FE0404;
     font-weight: bold;
+    margin-top: 2px;
   }
   .view-product-page-container .similar-products .products .product .product-details .original-price {
     font-size: 12px;

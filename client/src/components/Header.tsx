@@ -1,12 +1,9 @@
-import React, { Component, createRef } from "react"
-import { Link, withRouter } from "react-router-dom"
-// Don't remember why but I need this for export default withRouter(Home) at bottom of file
-import { RouteComponentProps } from 'react-router-dom' 
+import React, { useRef, useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 
 import { Product } from "../types/Product"
-import { Cart } from "../types/Cart"
 
-interface HeaderProps extends RouteComponentProps {
+interface HeaderProps {
     categories: string[]
     capitiliseString: (input: string) => string
     openSlideInModal: (modalToToggle: string) => void
@@ -19,31 +16,46 @@ interface HeaderProps extends RouteComponentProps {
     cartLength: number
 }
 
-type HeaderState = {
-    atStart: boolean
-    atEnd: boolean
-}
+const Header: React.FC<HeaderProps> = ({
+    categories,
+    capitiliseString,
+    openSlideInModal,
+    displayAutocompleteSuggestions,
+    productSearchValue,
+    suggestions,
+    completeAutocomplete,
+    filterProductsBySearchValue,
+    filterProductsByHeaderCategory,
+    cartLength
+}) => {
+    const bottomRef = useRef<HTMLDivElement | null>(null) // To keep track of scroll
+    const [atStart, setStart] = useState<boolean>(false)
+    const [atEnd, setEnd] = useState<boolean>(false)
 
-class Header extends Component<HeaderProps, HeaderState> {
-    bottomRef: React.RefObject<HTMLDivElement | null> = createRef()
 
-    constructor(props: HeaderProps) {
-        super(props)
+    const updateScrollShadows = (): void => {
+        /* 
+            scrollLeft = pixels scrolled from the left
+            clientWidth = width of the element where the scrollable elements are
+            scrollWidth = the entire width of the scrollable content
+        */
+        const el = bottomRef.current
 
-        this.state = {
-            atStart: true,
-            atEnd: false
+        if (el) {
+            setStart(el.scrollLeft === 0) // Set atStart to true if at the original position
+            setEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth)
         }
     }
 
-    componentDidMount() {
-        this.updateScrollShadows()
+    useEffect(() => {
+        updateScrollShadows()
 
-        if (this.bottomRef.current) {
-            this.bottomRef.current.addEventListener("scroll", this.updateScrollShadows)
+        // Run updateScrollShadows if we're starting to scroll horizontally
+        if (bottomRef.current) {
+            bottomRef.current.addEventListener("scroll", updateScrollShadows)
         }
 
-        window.addEventListener("resize", this.updateScrollShadows)
+        window.addEventListener("resize", updateScrollShadows)
 
         // JS logic that blurs either side depending on how far the user has scrolled in .bottom-wrapper. Might remove this
         let bottomSection = document.querySelector('.bottom-wrapper') as HTMLElement
@@ -62,134 +74,98 @@ class Header extends Component<HeaderProps, HeaderState> {
                 topSection.classList.remove('hide')
             }
         })
-    }
 
-    componentWillUnmount() {
-        if (this.bottomRef.current) {
-            this.bottomRef.current.removeEventListener("scroll", this.updateScrollShadows)
+        return () => {
+            if (bottomRef.current) {
+                bottomRef.current.removeEventListener("scroll", updateScrollShadows)
+            }
+
+            window.removeEventListener("resize", updateScrollShadows)
         }
+    }, [])
 
-        window.removeEventListener("resize", this.updateScrollShadows)
-    }
+    return (
+        <React.Fragment>
+            <header className="website-header top">
+                <div className="top theos-row">
+                    <div className="left">
+                        <img src="/images/menu-icon.png" alt="Menu button" className="menu-icon" onClick={() => openSlideInModal("menu-modal")} />
 
-    updateScrollShadows = () => {
-        /* 
-            scrollLeft = pixels scrolled from the left
-            clientWidth = width of the element where the scrollable elements are
-            scrollWidth = the entire width of the scrollable content
-        */
-        const el = this.bottomRef.current
-        let atStart: boolean
-        let atEnd: boolean
+                        <Link to="" className="link">
+                            <div className="website-title">
+                                <img src="/images/app-logo.png" alt="" />
+                                <p>FORGED</p>
+                            </div>
+                        </Link>
+                    </div>
 
-        if (el) {
-            atStart = el.scrollLeft === 0
-            atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth
-
-            this.setState({ atStart, atEnd })
-        }
-    }
-
-    render() {
-        // To stop saying this.props and this.state EVERY SINGLE TIME
-        const {
-            categories,
-            capitiliseString,
-            openSlideInModal,
-            displayAutocompleteSuggestions,
-            productSearchValue,
-            suggestions,
-            completeAutocomplete,
-            filterProductsBySearchValue,
-            filterProductsByHeaderCategory,
-            cartLength
-        } = this.props
-
-        const { atStart, atEnd } = this.state
-
-        return (
-            <React.Fragment>
-                <header className="website-header top">
-                    <div className="top theos-row">
-                        <div className="left">
-                            <img src="/images/menu-icon.png" alt="Menu button" className="menu-icon" onClick={() => openSlideInModal("menu-modal")} />
-
-                            <Link to="/" className="link">
-                                <div className="website-title">
-                                    <img src="/images/app-logo.png" alt="" />
-                                    <p>FORGED</p>
+                    <div className="right">
+                        <Link to="cart" className="link">
+                            <div className="shopping-cart">
+                                <img src="/images/shopping-cart.png" alt="Shopping cart button" />
+                                <div>
+                                    <p>{cartLength}</p>
                                 </div>
-                            </Link>
-                        </div>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
 
-                        <div className="right">
-                            <Link to="/cart" className="link">
-                                <div className="shopping-cart">
-                                    <img src="/images/shopping-cart.png" alt="Shopping cart button" />
-                                    <div>
-                                        <p>{ cartLength }</p>
-                                    </div>
-                                </div>
-                            </Link>
+                <div className="middle theos-row">
+                    <div className="searchbar-container">
+                        <input id="product-searchbar" type="text" placeholder="Search for products" autoComplete="off" value={productSearchValue}
+                            onChange={e => displayAutocompleteSuggestions(e)}
+                            onKeyDown={e => filterProductsBySearchValue(e)}
+                        />
+
+                        <div>
+                            <img src="/images/search-icon.png" alt="Search icon" />
                         </div>
                     </div>
 
-                    <div className="middle theos-row">
-                        <div className="searchbar-container">
-                            <input id="product-searchbar" type="text" placeholder="Search for products" autoComplete="off" value={productSearchValue}
-                                onChange={e => displayAutocompleteSuggestions(e)}
-                                onKeyDown={e => filterProductsBySearchValue(e)}
-                            />
+                    {suggestions.length > 0 && (
+                        <div id="product-autocomplete-modal">
+                            {suggestions.map(product =>
+                                <div key={product["_id"]} onClick={() => completeAutocomplete(product["product_name"])}>
+                                    <img src="/images/search-icon.png" />
 
-                            <div>
-                                <img src="/images/search-icon.png" alt="Search icon" />
-                            </div>
+                                    <p>{product["product_name"]}</p>
+                                </div>
+                            )}
                         </div>
+                    )}
+                </div>
 
-                        {suggestions.length > 0 && (
-                            <div id="product-autocomplete-modal">
-                                {suggestions.map(product =>
-                                    <div key={product["_id"]} onClick={() => completeAutocomplete(product["product_name"])}>
-                                        <img src="/images/search-icon.png" />
+                <div className={`bottom-wrapper theos-row ${atStart ? "at-start" : ""} ${atEnd ? "at-end" : ""}`}>
+                    <div className="bottom" ref={bottomRef}>
+                        <label className="category-radio">
+                            <input
+                                type="radio"
+                                className="header-category"
+                                value=""
+                                name="header-category"
+                                onClick={() => filterProductsByHeaderCategory("")} />
 
-                                        <p>{product["product_name"]}</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                            <p>All</p>
+                        </label>
 
-                    <div className={`bottom-wrapper theos-row ${atStart ? "at-start" : ""} ${atEnd ? "at-end" : ""}`}>
-                        <div className="bottom" ref={this.bottomRef}>
-                            <label className="category-radio">
+                        {categories.map(category =>
+                            <label className="category-radio" key={category}>
                                 <input
                                     type="radio"
                                     className="header-category"
-                                    value=""
                                     name="header-category"
-                                    onClick={() => filterProductsByHeaderCategory("")} />
+                                    value={category}
+                                    onClick={() => filterProductsByHeaderCategory(`${category}`)} />
 
-                                <p>All</p>
+                                <p>{capitiliseString(category)}</p>
                             </label>
-
-                            {categories.map(category =>
-                                <label className="category-radio" key={category}>
-                                    <input
-                                        type="radio"
-                                        className="header-category"
-                                        name="header-category"
-                                        value={category}
-                                        onClick={() => filterProductsByHeaderCategory(`${category}`)} />
-
-                                    <p>{capitiliseString(category)}</p>
-                                </label>
-                            )}
-                        </div>
+                        )}
                     </div>
-                </header>
-            </React.Fragment>
-        )
-    }
+                </div>
+            </header>
+        </React.Fragment>
+    )
 }
 
-export default withRouter(Header)
+export default Header

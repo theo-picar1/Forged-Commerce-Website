@@ -17,7 +17,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
     products,
     addProductToCart,
     handleRequestedQuantityChange,
-    quantityToAdd,
+    quantityToAdd
 }) => {
     const { id } = useParams<{ id: string }>()
 

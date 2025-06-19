@@ -1,9 +1,9 @@
-import React, { Component } from "react"
+import React from "react"
 
-export default class NoPageFound extends Component {
-    render() {
-        return (
-            <h1>404 Page Error</h1>
-        )
-    }
+const NoPageFound: React.FC = () => {
+    return (
+        <h1>404 Page Error</h1>
+    )
 }
+
+export default NoPageFound
