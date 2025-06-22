@@ -11,18 +11,52 @@ interface ViewProductsProps {
     addProductToCart: (product: Product) => void
     handleRequestedQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     quantityToAdd: number
+    updateProductFavourite: (productId: string) => void
 }
 
 const ViewProduct: React.FC<ViewProductsProps> = ({
     products,
     addProductToCart,
     handleRequestedQuantityChange,
-    quantityToAdd
+    quantityToAdd,
+    updateProductFavourite
 }) => {
     const { id } = useParams<{ id: string }>()
 
     const [product, setProduct] = useState<Product | null>(null)
     const [similarProducts, setSimilarProducts] = useState<Product[]>([])
+
+    const addToFavourites = async (productId: string): Promise<void> => {
+        try {
+            const res = await axios.post(`${SERVER_HOST}/favourites/${localStorage.id}/${productId}`)
+
+            if (!res) {
+                console.log("Unable to perform request at the moment!")
+
+                return
+            }
+            else {
+                console.log(res.data.message)
+
+                // Set the boolean field 'favourite' to be either true or false, depending if user removes or adds product to favourites
+                updateProductFavourite(productId)
+
+                // Locally updating product's 'favourite' boolean so UI also updates immediately
+                // Check all products and check to see if their favourite field is the same before
+                setProduct(prev => prev ? { ...prev, favourite: !prev.favourite } : prev)
+
+                return
+            }
+        }
+        catch (error: any) {
+            if (error.response.data.errorMessage) {
+                console.log(error.response.data.errorMessage)
+            }
+            else {
+                console.log(error)
+            }
+        }
+    }
 
     // the little circles just below the product image depending on ow many images that product has
     function createImageIndexes(noOfImages: number): JSX.Element[] {
@@ -61,7 +95,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                 if (res) {
                     setProduct(res.data)
                     console.log(res.data)
-                } 
+                }
                 else {
                     console.log("Failed to retrieve product")
                 }
@@ -124,11 +158,19 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                         Add to basket
                     </button>
 
-                    <div id="add-to-favourites" className="button">
-                        <img src="/images/favourite-icon.png" />
+                    {product.favourite ? (
+                        <div id="add-to-favourites" className="button favourited" onClick={() => addToFavourites(product._id)}>
+                            <img src="/images/favourite-icon.png" />
 
-                        <p>Add to favourites</p>
-                    </div>
+                            <p>Remove from favourites</p>
+                        </div>
+                    ) : (
+                        <div id="add-to-favourites" className="button not-favourited" onClick={() => addToFavourites(product._id)}>
+                            <img src="/images/favourite-icon.png" />
+
+                            <p>Add to favourites</p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="about-this-product">

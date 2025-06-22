@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose'
 import mongoose from "mongoose"
+const { Schema, model } = mongoose
 
 export interface IFavourite extends mongoose.Document {
     userId: mongoose.Types.ObjectId

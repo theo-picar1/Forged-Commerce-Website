@@ -14,11 +14,13 @@ import Login from "./components/Login.tsx"
 import Register from "./components/Register.tsx"
 import ForgotPassword from "./components/ForgotPassword.tsx"
 
+// All pages for the Home Component
 import HomeProducts from "./components/HomeProducts.tsx"
 import ShoppingCart from "./components/ShoppingCart.tsx"
 import Products from "./components/Products.tsx"
 import ViewProduct from "./components/ViewProduct.tsx"
 import PurchaseHistory from "./components/PurchaseHistory.tsx"
+import Favourites from "./components/Favourites.tsx"
 
 import { Product } from "./types/Product.ts"
 import { Cart } from "./types/Cart.ts"
@@ -31,6 +33,7 @@ if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.acces
     localStorage.cartId = undefined
 }
 
+// --------------- MODAL LOGIC ---------------
 function openSlideInModal(modalToToggle: string): void {
     const modal = document.getElementById(modalToToggle)
 
@@ -50,7 +53,9 @@ function closeSlideInModal(modalToToggle: string): void {
         alert(`Modal with ID '${modalToToggle}' was not found!`)
     }
 }
+// -----------------------------------------------------
 
+// --------------- PRODUCTS.JS FUNCTIONS ---------------
 const switchProductView = (view: string): void => {
     let products = document.getElementById("products-section")
     if (products) {
@@ -128,7 +133,6 @@ function capitiliseString(string: string): string {
 const AppContent: React.FC = () => {
     const navigate = useNavigate()
 
-    // === All your states and logic ===
     const [products, setProducts] = useState<any[]>([])
     const [filteredProducts, setFilteredProducts] = useState<any[]>([])
     const [categories, setCategories] = useState<string[]>([])
@@ -140,49 +144,53 @@ const AppContent: React.FC = () => {
     const [cartLength, setCartLength] = useState<number>(0)
     const [quantityToAdd, setQuantityToAdd] = useState<number>(1)
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const initCategories: string[] = []
-            const initMap = new Map<string, number>([
-                ['new', 0],
-                ['used', 0],
-            ])
+    // ----- TO FETCH PRODUCTS -----
+    const fetchProducts = async () => {
+        const initCategories: string[] = []
+        const initMap = new Map<string, number>([
+            ['new', 0],
+            ['used', 0],
+        ])
 
-            try {
-                const res = await axios.get<Product[]>(`${SERVER_HOST}/products`)
-                const data = res.data
+        try {
+            const res = await axios.get<Product[]>(`${SERVER_HOST}/products`)
+            const data = res.data
 
-                if (!data || data.length === 0) {
-                    console.log('No products found')
-                    return
+            if (!data || data.length === 0) {
+                console.log('No products found')
+                return
+            }
+
+            data.forEach(product => {
+                if (product.category && product.category.length > 0) {
+                    initCategories.push(...product.category)
+                    product.category.forEach(category => {
+                        initMap.set(category, (initMap.get(category) || 0) + 1)
+                    })
                 }
 
-                data.forEach(product => {
-                    if (product.category && product.category.length > 0) {
-                        initCategories.push(...product.category)
-                        product.category.forEach(category => {
-                            initMap.set(category, (initMap.get(category) || 0) + 1)
-                        })
-                    }
+                if ('brand_new' in product) {
+                    const condition = product.brand_new ? 'new' : 'used'
+                    initMap.set(condition, (initMap.get(condition) || 0) + 1)
+                }
+            })
 
-                    if ('brand_new' in product) {
-                        const condition = product.brand_new ? 'new' : 'used'
-                        initMap.set(condition, (initMap.get(condition) || 0) + 1)
-                    }
-                })
-
-                setProducts(data)
-                setFilteredProducts(data)
-                setCategories([...new Set(initCategories)])
-                setCounterMap(initMap)
-            } catch (err) {
-                console.error('Error fetching products:', err)
-            }
+            setProducts(data)
+            setFilteredProducts(data)
+            setCategories([...new Set(initCategories)])
+            setCounterMap(initMap)
         }
+        catch (err) {
+            console.error('Error fetching products:', err)
+        }
+    }
 
+    useEffect(() => {
         fetchProducts()
     }, [])
+    // --------------------------------
 
+    // ----- TO FETCH USER'S CART -----
     useEffect(() => {
         const userId = localStorage.getItem('id')
         if (!userId) return
@@ -203,6 +211,7 @@ const AppContent: React.FC = () => {
         fetchCart()
     }, [])
 
+    // ----- TO FETCH USER'S PURCHASE HISTORY -----
     useEffect(() => {
         const userId = localStorage.getItem('id')
         if (!userId) return
@@ -223,6 +232,7 @@ const AppContent: React.FC = () => {
         fetchHistory()
     }, [])
 
+    // --------------- SEARCH FUNCTIONALITY ---------------
     const completeAutocomplete = (value: string): void => {
         setProductSearchValue(value)
         setAutocompleteSuggestions([])
@@ -258,7 +268,9 @@ const AppContent: React.FC = () => {
             navigate("/products")
         }
     }
+    // ----------------------------------------------------
 
+    // --------------- FILTER FUNCTIONALITY ---------------
     const filterProductsByHeaderCategory = (value: string): void => {
         let matched: Product[] = []
 
@@ -283,7 +295,9 @@ const AppContent: React.FC = () => {
         const quantity = Number(e.target.value)
         setQuantityToAdd(quantity)
     }
+    // ----------------------------------------
 
+    // ---------- CART FUNCTIONALITY ----------
     const redirectToLogin = (): void => {
         if (localStorage.accessLevel > ACCESS_LEVEL_GUEST) {
             return
@@ -317,11 +331,43 @@ const AppContent: React.FC = () => {
     const updateCartLength = (newLength: number) => {
         setCartLength(newLength)
     }
+    // ----------------------------------------------
 
+    // ---------- FUNCTIONS FOR PRODUCT.JS ----------
     const switchProductViewImage = (view: string): void => {
         setCurrentView(view)
         switchProductView(view)
     }
+    // ---------------------------------------------
+
+    // ---------- FAVOURITING FUNCTIONALITY ----------
+    const updateProductFavourite = async (productId: string) => {
+        try {
+            const res = await axios.put(`${SERVER_HOST}/products/update-favourite/${productId}`)
+
+            if (!res.data) {
+                console.log(res.data.errorMessage)
+
+                return
+            }
+            else {
+                console.log(res.data.message)
+
+                fetchProducts()
+
+                return
+            }
+        }
+        catch (error: any) {
+            if (error.response.data.errorMessage) {
+                console.error(error.response.data.errorMessage)
+            }
+            else {
+                console.error("Unexpected error: ", error)
+            }
+        }
+    }
+    // -----------------------------------------------
 
     return (
         <Routes>
@@ -345,6 +391,7 @@ const AppContent: React.FC = () => {
                 />
             }>
                 <Route index element={<HomeProducts products={products} />} />
+
                 <Route path="cart" element={
                     <ShoppingCart
                         cartLength={cartLength}
@@ -353,6 +400,7 @@ const AppContent: React.FC = () => {
                         updateCartLength={updateCartLength}
                     />
                 } />
+
                 <Route path="products" element={
                     <Products
                         originalProducts={products}
@@ -367,15 +415,24 @@ const AppContent: React.FC = () => {
                         addProductToCart={addProductToCart}
                     />
                 } />
+
                 <Route path="product/:id" element={
                     <ViewProduct
                         products={products}
                         addProductToCart={addProductToCart}
                         handleRequestedQuantityChange={handleRequestedQuantityChange}
                         quantityToAdd={quantityToAdd}
+                        updateProductFavourite={updateProductFavourite}
                     />
                 } />
-                <Route path="purchase-history" element={<PurchaseHistory />} />
+
+                <Route path="purchase-history" element={
+                    <PurchaseHistory
+                        updateProductFavourite={updateProductFavourite}
+                    />
+                } />
+
+                <Route path="favourites" element={<Favourites />} />
             </Route>
 
             <Route path="*" element={<NoPageFound />} />
