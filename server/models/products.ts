@@ -13,7 +13,6 @@ export interface IProduct extends mongoose.Document {
   price: number
   stock_quantity: number
   sold: number
-  favourite: boolean
 }
 
 const productsSchema = new Schema<IProduct>({
@@ -27,8 +26,7 @@ const productsSchema = new Schema<IProduct>({
   product_images: { type: [String], required: true },
   price: { type: Number, required: true },
   stock_quantity: { type: Number, required: true },
-  sold: { type: Number, required: true },
-  favourite: { type: Boolean, required: true }
+  sold: { type: Number, required: true }
 },
   {
     collection: 'products'

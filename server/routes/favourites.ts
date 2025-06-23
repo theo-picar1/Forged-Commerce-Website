@@ -84,6 +84,12 @@ router.delete('/favourites/:userId/:productId', async (req: Request, res: Respon
 
             return
         }
+
+        await matchedFav.save()
+
+        res.status(200).json({ message: "Product successfully removed from favourites "})
+
+        return
     }
     catch(error) {
         res.status(500).json({ errorMessage: "Server error: Unable to perform request for user"})

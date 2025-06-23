@@ -25,6 +25,7 @@ import Favourites from "./components/Favourites.tsx"
 import { Product } from "./types/Product.ts"
 import { Cart } from "./types/Cart.ts"
 import { History } from "./types/Purchases.ts"
+import { Favourite } from "./types/Favourite.ts"
 
 if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.accessLevel === undefined) {
     localStorage.accessLevel = ACCESS_LEVEL_GUEST
@@ -140,9 +141,9 @@ const AppContent: React.FC = () => {
     const [productSearchValue, setProductSearchValue] = useState<string>("")
     const [currentView, setCurrentView] = useState<string>("")
     const [counterMap, setCounterMap] = useState<Map<string, number>>(new Map())
-    const [productToView, setProductToView] = useState<any>(null)
     const [cartLength, setCartLength] = useState<number>(0)
     const [quantityToAdd, setQuantityToAdd] = useState<number>(1)
+    const [userFavourites, setFavourites] = useState<Favourite | null>(null)
 
     // ----- TO FETCH PRODUCTS -----
     const fetchProducts = async () => {
@@ -341,22 +342,78 @@ const AppContent: React.FC = () => {
     // ---------------------------------------------
 
     // ---------- FAVOURITING FUNCTIONALITY ----------
-    const updateProductFavourite = async (productId: string) => {
+    useEffect(() => {
+        const fetchFavourites = async (): Promise<void> => {
+            try {
+                const res = await axios.get<Favourite>(`${SERVER_HOST}/favourites/${localStorage.id}`)
+
+                if (!res) {
+                    console.log("Unable to fetch products")
+
+                    return
+                }
+
+                setFavourites(res.data)
+            }
+            catch (error: any) {
+                if (error.response.data.errorMessage) {
+                    console.log(error.response.data.errorMessage)
+                }
+                else {
+                    console.log(error)
+                }
+            }
+        }
+
+        fetchFavourites()
+    }, [])
+
+    // Function so that UI also updates immediately when product is removed from favourites
+    const refreshFavourites = (productId: string, condition: string, productToAdd?: Product) => {
+        if (condition === "remove") {
+            setFavourites(prev => {
+                // This is if userFavourites is null
+                if (!prev) return prev
+
+                // Remove the removed favourited product in the state
+                const updated = {
+                    ...prev,
+                    favourites: prev.favourites.filter(favourite => favourite._id !== productId)
+                }
+
+                return updated
+            })
+        }
+        else {
+            setFavourites(prev => {
+                // This is if userFavourites is null
+                if (!prev) return prev
+                if(!productToAdd) return prev
+
+                const updatedFavourites = [...prev.favourites, productToAdd]
+
+                return {
+                    ...prev,
+                    favourites: updatedFavourites
+                }
+            })
+        }
+    }
+
+    const removeFavourite = async (productId: string) => {
         try {
-            const res = await axios.put(`${SERVER_HOST}/products/update-favourite/${productId}`)
+            const res = await axios.delete(`${SERVER_HOST}/favourites/${localStorage.id}/${productId}`)
 
-            if (!res.data) {
-                console.log(res.data.errorMessage)
-
-                return
+            if (!res.data || !res) {
+                alert(res.data.message)
             }
             else {
-                console.log(res.data.message)
+                alert(res.data.message)
 
-                fetchProducts()
-
-                return
+                refreshFavourites(productId, "remove")
             }
+
+            return
         }
         catch (error: any) {
             if (error.response.data.errorMessage) {
@@ -418,21 +475,26 @@ const AppContent: React.FC = () => {
 
                 <Route path="product/:id" element={
                     <ViewProduct
+                        userFavourites={userFavourites}
                         products={products}
                         addProductToCart={addProductToCart}
                         handleRequestedQuantityChange={handleRequestedQuantityChange}
                         quantityToAdd={quantityToAdd}
-                        updateProductFavourite={updateProductFavourite}
+                        removeFavourite={removeFavourite}
+                        refreshFavourites={refreshFavourites}
                     />
                 } />
 
                 <Route path="purchase-history" element={
-                    <PurchaseHistory
-                        updateProductFavourite={updateProductFavourite}
-                    />
+                    <PurchaseHistory />
                 } />
 
-                <Route path="favourites" element={<Favourites />} />
+                <Route path="favourites" element={
+                    <Favourites
+                        userFavourites={userFavourites}
+                        removeFavourite={removeFavourite}
+                    />
+                } />
             </Route>
 
             <Route path="*" element={<NoPageFound />} />

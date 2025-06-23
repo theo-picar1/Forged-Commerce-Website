@@ -1462,20 +1462,17 @@ $laptop-container-padding: 20px;
         .filter-tools {
             margin-top: 15px;
 
-            .filters-container {
-                @include flex-direction(row, space-between, center, 0);
+            .filter-button {
+                @include flex-direction(row, unset, center, 5px);
+                background-color: $website-white;
+                border-radius: 2px;
+                padding-left: 9px;
+                padding-right: 13px;
+                border: thin solid $website-black;
+                width: min-content;
 
-                .filter-button {
-                    @include flex-direction(row, unset, center, 5px);
-                    background-color: $website-white;
-                    border-radius: 2px;
-                    padding-left: 9px;
-                    padding-right: 13px;
-                    border: thin solid $website-black;
-
-                    img {
-                        width: 20px;
-                    }
+                img {
+                    width: 20px;
                 }
             }
         }
@@ -1534,7 +1531,7 @@ $laptop-container-padding: 20px;
                     .right {
                         text-align: right;
 
-                        .save-date { 
+                        .save-date {
                             font-size: 14px;
                         }
                     }
@@ -1555,6 +1552,17 @@ $laptop-container-padding: 20px;
                         padding: 2px 0;
                     }
                 }
+            }
+
+            .empty-message {
+                padding-top: 30px;
+                font-weight: normal;
+                text-align: center;
+            }
+
+            button {
+                background-color: $website-white;
+                border: thin solid $website-black;
             }
         }
     }

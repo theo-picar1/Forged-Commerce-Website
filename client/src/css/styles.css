@@ -1521,14 +1521,7 @@
   .favourites-page .filter-tools {
     margin-top: 15px;
   }
-  .favourites-page .filter-tools .filters-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0;
-  }
-  .favourites-page .filter-tools .filters-container .filter-button {
+  .favourites-page .filter-tools .filter-button {
     display: flex;
     flex-direction: row;
     justify-content: unset;
@@ -1539,8 +1532,10 @@
     padding-left: 9px;
     padding-right: 13px;
     border: thin solid #000000;
+    width: -moz-min-content;
+    width: min-content;
   }
-  .favourites-page .filter-tools .filters-container .filter-button img {
+  .favourites-page .filter-tools .filter-button img {
     width: 20px;
   }
   .favourites-page .favourited-products {
@@ -1620,6 +1615,15 @@
     color: #FFFFFF;
     border: none;
     padding: 2px 0;
+  }
+  .favourites-page .favourited-products .empty-message {
+    padding-top: 30px;
+    font-weight: normal;
+    text-align: center;
+  }
+  .favourites-page .favourited-products button {
+    background-color: #FFFFFF;
+    border: thin solid #000000;
   }
 }
 @media screen and (min-width: 375px) {

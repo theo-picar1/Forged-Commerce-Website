@@ -11,5 +11,4 @@ export interface Product {
     price: number
     stock_quantity: number
     sold: number
-    favourite: boolean
 }

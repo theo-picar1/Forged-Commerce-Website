@@ -5,28 +5,35 @@ import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants"
 
 import { Product } from "../types/Product"
+import { Favourite } from "../types/Favourite"
 
 interface ViewProductsProps {
     products: Product[]
+    userFavourites: Favourite | null
     addProductToCart: (product: Product) => void
     handleRequestedQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     quantityToAdd: number
-    updateProductFavourite: (productId: string) => void
+    removeFavourite: (productId: string) => void
+    refreshFavourites: (productId: string, condition: string, productToAdd: Product) => void
 }
 
 const ViewProduct: React.FC<ViewProductsProps> = ({
     products,
+    userFavourites,
     addProductToCart,
     handleRequestedQuantityChange,
     quantityToAdd,
-    updateProductFavourite
+    removeFavourite,
+    refreshFavourites
 }) => {
+    // For the id that is in the URL for ViewProduct
     const { id } = useParams<{ id: string }>()
 
     const [product, setProduct] = useState<Product | null>(null)
     const [similarProducts, setSimilarProducts] = useState<Product[]>([])
+    const [favouriteProducts, setFavouritedProducts] = useState<string[]>([])
 
-    const addToFavourites = async (productId: string): Promise<void> => {
+    const addToFavourites = async (productId: string, productToAdd: Product): Promise<void> => {
         try {
             const res = await axios.post(`${SERVER_HOST}/favourites/${localStorage.id}/${productId}`)
 
@@ -36,14 +43,9 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                 return
             }
             else {
-                console.log(res.data.message)
+                alert(res.data.message)
 
-                // Set the boolean field 'favourite' to be either true or false, depending if user removes or adds product to favourites
-                updateProductFavourite(productId)
-
-                // Locally updating product's 'favourite' boolean so UI also updates immediately
-                // Check all products and check to see if their favourite field is the same before
-                setProduct(prev => prev ? { ...prev, favourite: !prev.favourite } : prev)
+                refreshFavourites(productId, "add", productToAdd)
 
                 return
             }
@@ -112,7 +114,18 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
         if (product) {
             findSimilarProducts()
         }
-    }, [product, products])
+    }, [id])
+
+    // To find all products that are favourited for UI purposes
+    useEffect(() => {
+        let favourited: string[] = []
+
+        userFavourites?.favourites.forEach(favourite => {
+            favourited.push(favourite._id)
+        })
+
+        setFavouritedProducts(favourited)
+    }, [userFavourites])
 
     return product ? (
         <div className="view-product-page-container">
@@ -158,14 +171,14 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                         Add to basket
                     </button>
 
-                    {product.favourite ? (
-                        <div id="add-to-favourites" className="button favourited" onClick={() => addToFavourites(product._id)}>
+                    {favouriteProducts.includes(product._id) ? (
+                        <div id="add-to-favourites" className="button favourited" onClick={() => removeFavourite(product._id)}>
                             <img src="/images/favourite-icon.png" />
 
                             <p>Remove from favourites</p>
                         </div>
                     ) : (
-                        <div id="add-to-favourites" className="button not-favourited" onClick={() => addToFavourites(product._id)}>
+                        <div id="add-to-favourites" className="button not-favourited" onClick={() => addToFavourites(product._id, product)}>
                             <img src="/images/favourite-icon.png" />
 
                             <p>Add to favourites</p>
