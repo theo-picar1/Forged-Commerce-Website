@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import productsModel from '../models/products.ts'  // No need to include `.ts` in import
+import productsModel from '../models/products.ts'
 
 const router = express.Router()
 

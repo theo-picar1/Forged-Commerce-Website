@@ -70,7 +70,9 @@ const Menu: React.FC<MenuProps> = ({
                         </div>
 
                         <div>
-                            <p>Favourites</p>
+                            <Link to={"/favourites"} className="link">
+                                <p>Favourites</p>
+                            </Link>
                         </div>
 
                         {localStorage.accessLevel > ACCESS_LEVEL_GUEST ? (

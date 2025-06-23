@@ -970,6 +970,12 @@ $laptop-container-padding: 20px;
                 #add-to-favourites {
                     @include flex-direction(row, center, center, 5px);
                 }
+
+                .favourited {
+                    background-color: $website-red;
+                    color: $website-white;
+                    font-weight: bold;
+                }
             }
 
             .about-this-product {
@@ -1441,6 +1447,122 @@ $laptop-container-padding: 20px;
                         }
                     }
                 }
+            }
+        }
+    }
+
+    .favourites-page {
+        padding: $mobile-container-padding;
+        background-color: $main-content-color;
+
+        h3 {
+            font-weight: bolder;
+        }
+
+        .filter-tools {
+            margin-top: 15px;
+
+            .filter-button {
+                @include flex-direction(row, unset, center, 5px);
+                background-color: $website-white;
+                border-radius: 2px;
+                padding-left: 9px;
+                padding-right: 13px;
+                border: thin solid $website-black;
+                width: min-content;
+
+                img {
+                    width: 20px;
+                }
+            }
+        }
+
+        .favourited-products {
+            @include flex-direction(column, unset, unset, 15px);
+            margin-top: 10px;
+
+            .product {
+                padding: 12px;
+                background-color: $website-white;
+
+                .images-container {
+                    width: 100%;
+                    background-color: $website-light-gray;
+                    height: 175px;
+
+                    .images-scroll-container {
+                        @include flex-direction(row, unset, unset, 0);
+                        overflow-x: scroll;
+                        width: 175px;
+                        height: inherit;
+                        margin: auto;
+                        background-color: $website-black;
+                        scrollbar-width: none;
+                        scroll-snap-type: x mandatory;
+                        scroll-snap-stop: always;
+
+                        .image {
+                            width: inherit;
+                            height: auto;
+                            scroll-snap-align: start;
+                        }
+                    }
+                }
+
+                .product-details {
+                    @include flex-direction(row, space-between, unset, 0);
+                    margin-top: 8px;
+
+                    .left {
+
+                        .name {
+                            font-weight: bold;
+                            font-size: 20px;
+                        }
+
+                        .price {
+                            color: $website-red;
+                            font-weight: light;
+                            font-size: 24px;
+                            margin-top: -3px;
+                        }
+                    }
+
+                    .right {
+                        text-align: right;
+
+                        .save-date {
+                            font-size: 14px;
+                        }
+                    }
+                }
+
+                .buttons {
+                    @include flex-direction(column, unset, unset, 6px);
+                    margin-top: 10px;
+
+                    button {
+                        border: thin solid $website-black;
+                    }
+
+                    .remove-from-favourites {
+                        background-color: $website-red;
+                        color: $website-white;
+                        border: none;
+                        padding: 2px 0;
+                    }
+                }
+            }
+
+            .empty-message {
+                padding-top: 30px;
+                font-weight: normal;
+                text-align: center;
+            }
+
+            button {
+                background-color: $website-white;
+                border: thin solid $website-black;
             }
         }
     }

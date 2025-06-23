@@ -13,6 +13,7 @@ import productsRouter from './routes/products.ts'
 import usersRouter from './routes/users.ts'
 import cartRouter from "./routes/cart.ts"
 import purchasesRouter from "./routes/purchases.ts"
+import favouritesRouter from "./routes/favourites.ts"
 
 import './config/db.ts' // MongoDB connection file; make sure it's ESM or rename to .mjs
 
@@ -26,6 +27,7 @@ app.use(productsRouter)
 app.use(usersRouter)
 app.use(cartRouter)
 app.use(purchasesRouter)
+app.use(favouritesRouter)
 
 // Port
 app.listen(process.env.SERVER_PORT, () => {
