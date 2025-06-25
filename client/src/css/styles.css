@@ -1082,9 +1082,21 @@
     border-radius: 6px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5215686275);
   }
-  .authentication-page-container .authentication-content h3 {
+  .authentication-page-container .authentication-content .top-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+  }
+  .authentication-page-container .authentication-content .top-section h3 {
     font-weight: bold;
     font-size: 24px;
+  }
+  .authentication-page-container .authentication-content .top-section .link {
+    text-decoration: none;
+    color: #2163A2;
+    font-size: 14px;
   }
   .authentication-page-container .authentication-content .inputs-container {
     display: flex;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
-import { ACCESS_LEVEL_GUEST } from "./config/global_constants.ts"
 
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_GUEST } from "./config/global_constants.ts"
 import axios from "axios"
 import { SERVER_HOST } from "./config/global_constants.ts"
 
@@ -21,6 +21,7 @@ import Products from "./components/Products.tsx"
 import ViewProduct from "./components/ViewProduct.tsx"
 import PurchaseHistory from "./components/PurchaseHistory.tsx"
 import Favourites from "./components/Favourites.tsx"
+import AdminLogin from "./components/AdminLogin.tsx"
 
 import { Product } from "./types/Product.ts"
 import { Cart } from "./types/Cart.ts"
@@ -146,47 +147,48 @@ const AppContent: React.FC = () => {
     const [userFavourites, setFavourites] = useState<Favourite | null>(null)
 
     // ----- TO FETCH PRODUCTS -----
-    const fetchProducts = async () => {
-        const initCategories: string[] = []
-        const initMap = new Map<string, number>([
-            ['new', 0],
-            ['used', 0],
-        ])
-
-        try {
-            const res = await axios.get<Product[]>(`${SERVER_HOST}/products`)
-            const data = res.data
-
-            if (!data || data.length === 0) {
-                console.log('No products found')
-                return
-            }
-
-            data.forEach(product => {
-                if (product.category && product.category.length > 0) {
-                    initCategories.push(...product.category)
-                    product.category.forEach(category => {
-                        initMap.set(category, (initMap.get(category) || 0) + 1)
-                    })
-                }
-
-                if ('brand_new' in product) {
-                    const condition = product.brand_new ? 'new' : 'used'
-                    initMap.set(condition, (initMap.get(condition) || 0) + 1)
-                }
-            })
-
-            setProducts(data)
-            setFilteredProducts(data)
-            setCategories([...new Set(initCategories)])
-            setCounterMap(initMap)
-        }
-        catch (err) {
-            console.error('Error fetching products:', err)
-        }
-    }
 
     useEffect(() => {
+        const fetchProducts = async () => {
+            const initCategories: string[] = []
+            const initMap = new Map<string, number>([
+                ['new', 0],
+                ['used', 0],
+            ])
+
+            try {
+                const res = await axios.get<Product[]>(`${SERVER_HOST}/products`)
+                const data = res.data
+
+                if (!data || data.length === 0) {
+                    console.log('No products found')
+                    return
+                }
+
+                data.forEach(product => {
+                    if (product.category && product.category.length > 0) {
+                        initCategories.push(...product.category)
+                        product.category.forEach(category => {
+                            initMap.set(category, (initMap.get(category) || 0) + 1)
+                        })
+                    }
+
+                    if ('brand_new' in product) {
+                        const condition = product.brand_new ? 'new' : 'used'
+                        initMap.set(condition, (initMap.get(condition) || 0) + 1)
+                    }
+                })
+
+                setProducts(data)
+                setFilteredProducts(data)
+                setCategories([...new Set(initCategories)])
+                setCounterMap(initMap)
+            }
+            catch (err) {
+                console.error('Error fetching products:', err)
+            }
+        }
+
         fetchProducts()
     }, [])
     // --------------------------------
@@ -299,36 +301,44 @@ const AppContent: React.FC = () => {
     // ----------------------------------------
 
     // ---------- CART FUNCTIONALITY ----------
-    const redirectToLogin = (): void => {
-        if (localStorage.accessLevel > ACCESS_LEVEL_GUEST) {
+    const addProductToCart = async (product: Product): Promise<void> => {
+        // If user is not logged in, redirect them to login page
+        if (localStorage.accessLevel < ACCESS_LEVEL_GUEST) {
+            navigate("/login")
             return
         }
-        navigate("/login")
-    }
+        // If they're an admin, let them know they are not authorised to use this feature
+        else if (localStorage.accessLevel >= ACCESS_LEVEL_ADMIN) {
+            alert("You are not authorised to use this feature!")
+            return
+        }
 
-    const addProductToCart = async (product: Product): Promise<void> => {
-        redirectToLogin()
-
+        // Object to send via axios
         const productToAdd = {
             productId: product._id,
             quantity: quantityToAdd
         }
 
+        // Axios call for adding the product to user's specified cart
         try {
             const res = await axios.post(`${SERVER_HOST}/cart/${localStorage.id}`, productToAdd)
 
             if (res) {
-                alert("Product added!")
-                setQuantityToAdd(1)
-                setCartLength(res.data.updatedLength)
-            } else {
+                alert(res.data.message)
+
+                setQuantityToAdd(1) // Reset the quantity number to add to basket back to its default value 1
+                setCartLength(res.data.updatedLength) // Update cart length for header
+            }
+            else {
                 alert("product was not added")
             }
-        } catch (error: any) {
+        }
+        catch (error: any) {
             console.error("Add product to cart error: ", error)
         }
     }
 
+    // Mainly for components that also affect the cart's length via adding or deleting and are childrn components
     const updateCartLength = (newLength: number) => {
         setCartLength(newLength)
     }
@@ -388,7 +398,7 @@ const AppContent: React.FC = () => {
             setFavourites(prev => {
                 // This is if userFavourites is null
                 if (!prev) return prev
-                if(!productToAdd) return prev
+                if (!productToAdd) return prev
 
                 const updatedFavourites = [...prev.favourites, productToAdd]
 
@@ -431,6 +441,7 @@ const AppContent: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
 
             <Route path="/" element={
                 <Home

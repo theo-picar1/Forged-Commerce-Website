@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
 
-import { ACCESS_LEVEL_GUEST, SERVER_HOST } from "../config/global_constants.ts"
+import { ACCESS_LEVEL_GUEST, ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../config/global_constants.ts"
 
 interface MenuProps {
     categories: string[]
@@ -53,27 +53,45 @@ const Menu: React.FC<MenuProps> = ({
                             <h5>General</h5>
                         </div>
 
-                        {localStorage.accessLevel > ACCESS_LEVEL_GUEST ? (
-                            <Link to={"/edit-account"} className="link">
-                                <p>Edit Account</p>
-                            </Link>
+                        {localStorage.accessLevel < ACCESS_LEVEL_ADMIN ? (
+                            <React.Fragment>
+                                {localStorage.accessLevel > ACCESS_LEVEL_GUEST ? (
+                                    <Link to={"/edit-account"} className="link">
+                                        <p>Edit Account</p>
+                                    </Link>
+                                ) : (
+                                    <Link to={"/login"} className="link">
+                                        <p>Edit Account</p>
+                                    </Link>
+                                )}
+
+                                <div>
+                                    <Link to={"/purchase-history"} className="link">
+                                        <p>Purchase History</p>
+                                    </Link>
+                                </div>
+
+                                <div>
+                                    <Link to={"/favourites"} className="link">
+                                        <p>Favourites</p>
+                                    </Link>
+                                </div>
+                            </React.Fragment>
                         ) : (
-                            <Link to={"/login"} className="link">
-                                <p>Edit Account</p>
-                            </Link>
+                            <React.Fragment>
+                                <div>
+                                    <p>User Dashboard</p>
+                                </div>
+
+                                <div>
+                                    <p>Product Page</p>
+                                </div>
+
+                                <div>
+                                    <p>Categories Manager</p>
+                                </div>
+                            </React.Fragment>
                         )}
-
-                        <div>
-                            <Link to={"/purchase-history"} className="link">
-                                <p>Purchase History</p>
-                            </Link>
-                        </div>
-
-                        <div>
-                            <Link to={"/favourites"} className="link">
-                                <p>Favourites</p>
-                            </Link>
-                        </div>
 
                         {localStorage.accessLevel > ACCESS_LEVEL_GUEST ? (
                             <div>
