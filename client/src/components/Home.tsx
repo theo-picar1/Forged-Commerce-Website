@@ -4,6 +4,8 @@ import { Outlet } from "react-router-dom"
 import Menu from "./Menu.tsx"
 import Header from "./Header.tsx"
 import Footer from "./Footer.tsx"
+import EditProduct from "./EditProduct.tsx"
+import AddProduct from "./AddProduct.tsx"
 
 // NOTE: THIS COMPONENT SERVES MAINLY AS A PAGE NAVIGATOR NOW FOR MAIN CONTENT OF THE WEBSITE. ALL LOGIC IS NOW IN APP.TSX
 
@@ -32,7 +34,7 @@ const Home: React.FC<HomeProps> = ({
     filterProductsByHeaderCategory,
     cartLength,
     closeSlideInModal,
-    openSlideInModal,
+    openSlideInModal
 }) => {
     // --------------------------------------------------------
     return (
@@ -40,6 +42,10 @@ const Home: React.FC<HomeProps> = ({
             <Menu
                 categories={categories}
                 capitiliseString={capitiliseString}
+                closeSlideInModal={closeSlideInModal}
+            />
+
+            <AddProduct 
                 closeSlideInModal={closeSlideInModal}
             />
 

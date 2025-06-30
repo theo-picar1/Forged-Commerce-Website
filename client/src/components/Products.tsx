@@ -3,6 +3,8 @@ import React, { useState, useEffect, JSX } from "react"
 import { Product } from "../types/Product"
 import { Link } from "react-router-dom"
 
+import { ACCESS_LEVEL_ADMIN } from "../config/global_constants"
+
 // Interface is for the props being passed to this component
 interface ProductsProps {
     originalProducts: Product[]
@@ -315,6 +317,18 @@ const Products: React.FC<ProductsProps> = ({
                 </div>
             </div>
 
+            {localStorage.accessLevel == ACCESS_LEVEL_ADMIN ? (
+                <div className="admin-tools">
+                    <button onClick={() => openSlideInModal("add-product-modal")}>
+                        <p>Add product</p>
+                    </button>
+
+                    <button>
+                        <p>Delete products</p>
+                    </button>
+                </div>
+            ) : null}
+
             <div className="filter-tools">
                 <div className="left">
                     <div className="filter-button" onClick={() => openSlideInModal("advanced-product-filters-modal")}>
@@ -368,9 +382,21 @@ const Products: React.FC<ProductsProps> = ({
                                 <div className="product-bottom-section">
                                     <p>€{product["price"]}</p>
 
-                                    <div className="add-to-shopping-cart-button" onClick={() => addProductToCart(product)}>
-                                        <img src="/images/shopping-cart.png" alt="Add to shopping cart button" />
-                                    </div>
+                                    {localStorage.accessLevel < ACCESS_LEVEL_ADMIN ? (
+                                        <div className="add-to-shopping-cart-button" onClick={() => addProductToCart(product)}>
+                                            <img src="/images/shopping-cart.png" alt="Add to shopping cart button" />
+                                        </div>
+                                    ) : (
+                                        <div className="admin-tools">
+                                            <div>
+                                                <img src="/images/edit-icon.png" className="edit-icon" />
+                                            </div>
+
+                                            <div>
+                                                <img src="/images/bin-icon.png" />
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

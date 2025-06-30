@@ -27,6 +27,7 @@ import { Product } from "./types/Product.ts"
 import { Cart } from "./types/Cart.ts"
 import { History } from "./types/Purchases.ts"
 import { Favourite } from "./types/Favourite.ts"
+import EditProduct from "./components/EditProduct.tsx"
 
 if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.accessLevel === undefined) {
     localStorage.accessLevel = ACCESS_LEVEL_GUEST
@@ -38,11 +39,13 @@ if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.acces
 // --------------- MODAL LOGIC ---------------
 function openSlideInModal(modalToToggle: string): void {
     const modal = document.getElementById(modalToToggle)
+    console.log("hello")
 
     if (modal) {
         modal.classList.add("active")
-    } else {
-        alert(`Modal with ID '${modalToToggle}' was not found!`)
+    } 
+    else {
+        console.log("Modal with ID ", modalToToggle, "was not found!")
     }
 }
 
@@ -505,6 +508,10 @@ const AppContent: React.FC = () => {
                         userFavourites={userFavourites}
                         removeFavourite={removeFavourite}
                     />
+                } />
+
+                <Route path="edit-product/:id" element={
+                    <EditProduct />
                 } />
             </Route>
 

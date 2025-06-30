@@ -261,6 +261,23 @@ $laptop-container-padding: 20px;
     z-index: $slide-in-modal;
 }
 
+@mixin pop-up-transition() {
+    pointer-events: none;
+    position: fixed;
+    background-color: $translucent;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    transform: scale(0.5);
+    transform-origin: center center;
+    opacity: 0;
+
+    &.active {
+        pointer-events: auto;
+        transform: scale(1);
+        opacity: 1;
+    }
+}
 // -----------------------------
 
 @media screen AND (min-width: 0px) {
@@ -362,6 +379,7 @@ $laptop-container-padding: 20px;
         box-shadow: 0 0 10px 5px $translucent;
         position: sticky;
         top: 0;
+        z-index: 5;
 
         // Because bootstrap is messing up my stuff
         .theos-row {
@@ -754,6 +772,31 @@ $laptop-container-padding: 20px;
             }
         }
 
+        .admin-tools {
+            width: 100%;
+            @include flex-direction(row, flex-end, center, 5px);
+
+            button {
+                width: auto;
+                height: 25px;
+                border: thin solid $website-black;
+                border-radius: 1px;
+                @include flex-direction(unset, center, center, 0);
+                padding: 0 10px;
+                font-size: 14px;
+                background-color: $website-white;
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: $website-light-gray;
+                }
+
+                &:active {
+                    background-color: $website-gray;
+                }
+            }
+        }
+
         .filter-tools {
             @include flex-direction(row, space-between, center, 0);
 
@@ -859,6 +902,25 @@ $laptop-container-padding: 20px;
                                 height: auto;
                             }
                         }
+
+                        .admin-tools {
+                            @include flex-direction(row, flex-end, center, 5px);
+
+                            div {
+                                width: 25px;
+                                height: 25px;
+                                border: thin solid $website-black;
+
+                                img {
+                                    width: 20px;
+                                    height: auto;
+                                }
+
+                                .edit-icon {
+                                    filter: invert(1);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -874,6 +936,33 @@ $laptop-container-padding: 20px;
         background-color: $main-content-color;
         padding: $mobile-container-padding;
         @include flex-direction(column, unset, unset, 15px);
+
+        .admin-tools {
+            width: 100%;
+            @include flex-direction(row, flex-end, center, 5px);
+
+            .admin-button {
+                @include flex-direction(unset, center, center, 0);
+                width: auto;
+                height: 25px;
+                border: thin solid $website-black;
+                border-radius: 1px;
+                margin-bottom: -10px;
+                padding: 0 10px;
+                text-decoration: none;
+                color: $website-black;
+                font-size: 14px;
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: $website-light-gray;
+                }
+
+                &:active {
+                    background-color: $website-gray;
+                }
+            }
+        }
 
         .image-carousel-container {
             @include flex-direction(column, unset, center, 5px);
@@ -1574,6 +1663,23 @@ $laptop-container-padding: 20px;
                 background-color: $website-white;
                 border: thin solid $website-black;
             }
+        }
+    }
+
+    .edit-product-page {
+        padding: $mobile-container-padding;
+        background-color: $main-content-color;
+    }
+
+    .crud-modal {
+        @include pop-up-transition();
+        @include flex-direction(unset, center, center, 0);
+
+        .crud-modal-content {
+            width: auto;
+            height: 50%;
+            background-color: $main-content-color;
+            border-radius: 8px;
         }
     }
 }

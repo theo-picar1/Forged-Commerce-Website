@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
+import { ACCESS_LEVEL_ADMIN } from "../config/global_constants"
+
 import { Product } from "../types/Product"
 
 interface HeaderProps {
@@ -99,16 +101,18 @@ const Header: React.FC<HeaderProps> = ({
                         </Link>
                     </div>
 
-                    <div className="right">
-                        <Link to="cart" className="link">
-                            <div className="shopping-cart">
-                                <img src="/images/shopping-cart.png" alt="Shopping cart button" />
-                                <div>
-                                    <p>{cartLength}</p>
+                    {localStorage.accessLevel < ACCESS_LEVEL_ADMIN ? (
+                        <div className="right">
+                            <Link to="cart" className="link">
+                                <div className="shopping-cart">
+                                    <img src="/images/shopping-cart.png" alt="Shopping cart button" />
+                                    <div>
+                                        <p>{cartLength}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    </div>
+                            </Link>
+                        </div>
+                    ) : null}
                 </div>
 
                 <div className="middle theos-row">

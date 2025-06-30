@@ -1,8 +1,8 @@
 import React, { useState, useEffect, JSX } from "react"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 import axios from "axios"
-import { SERVER_HOST } from "../config/global_constants"
+import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../config/global_constants"
 
 import { Product } from "../types/Product"
 import { Favourite } from "../types/Favourite"
@@ -38,7 +38,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
             const res = await axios.post(`${SERVER_HOST}/favourites/${localStorage.id}/${productId}`)
 
             if (!res) {
-                console.log("Unable to perform request at the moment!")
+                alert("Unable to perform request at the moment!")
 
                 return
             }
@@ -52,10 +52,10 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
         }
         catch (error: any) {
             if (error.response.data.errorMessage) {
-                console.log(error.response.data.errorMessage)
+                alert(error.response.data.errorMessage)
             }
             else {
-                console.log(error)
+                console.log("Unexpected server error: ", error)
             }
         }
     }
@@ -96,10 +96,9 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
 
                 if (res) {
                     setProduct(res.data)
-                    console.log(res.data)
                 }
                 else {
-                    console.log("Failed to retrieve product")
+                    alert("Failed to retrieve product")
                 }
             } catch (error: any) {
                 console.error("Unexpected error:", error)
@@ -129,6 +128,18 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
 
     return product ? (
         <div className="view-product-page-container">
+            { localStorage.accessLevel >= ACCESS_LEVEL_ADMIN ? (
+                <div className="admin-tools">
+                    <Link to={`/edit-product/${id}`} className="edit admin-button">
+                        <p>Edit product</p>
+                    </Link>
+                    
+                    <div className="delete admin-button">
+                        <p>Delete product</p>
+                    </div>
+                </div>
+            ) : null }
+
             <div className="image-carousel-container">
                 <div className="image-carousel">
                     <div className="image-container">
