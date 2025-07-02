@@ -3,7 +3,7 @@ import React, { useState, useEffect, JSX } from "react"
 import { Product } from "../types/Product"
 import { Link } from "react-router-dom"
 
-import { ACCESS_LEVEL_ADMIN } from "../config/global_constants"
+import { ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../config/global_constants"
 
 // Interface is for the props being passed to this component
 interface ProductsProps {
@@ -362,7 +362,7 @@ const Products: React.FC<ProductsProps> = ({
                     {productsToShow.map(product =>
                         <div className="product" key={product._id}>
                             <Link to={`/product/${product._id}`} className="product-image-container">
-                                <img id="product-image" src={product["product_images"][0]} />
+                                <img id="product-image" src={`${SERVER_HOST}/uploads/${product["product_images"][0]}`} />
                             </Link>
 
                             <div className="product-details">

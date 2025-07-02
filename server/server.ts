@@ -29,6 +29,9 @@ app.use(cartRouter)
 app.use(purchasesRouter)
 app.use(favouritesRouter)
 
+// Serve uploaded images from the '/uploads' folder: ${SERVER_HOST}/uploads/${imageFilename}
+app.use('/uploads', express.static('uploads'))
+
 // Port
 app.listen(process.env.SERVER_PORT, () => {
   console.log(`Connected to port ${process.env.SERVER_PORT}`)

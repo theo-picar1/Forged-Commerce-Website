@@ -17,16 +17,16 @@ export interface IProduct extends mongoose.Document {
 
 const productsSchema = new Schema<IProduct>({
   product_name: { type: String, required: true },
-  product_rating: { type: Number, required: true },
-  no_of_reviews: { type: Number, required: true },
+  product_rating: { type: Number, required: false, default: 0 },
+  no_of_reviews: { type: Number, required: false, default: 0 },
   category: { type: [String], required: true },
   description: { type: String, required: true },
   brand_new: { type: Boolean, required: true },
   discount: { type: Number, required: true },
-  product_images: { type: [String], required: true },
+  product_images: { type: [String], required: false, default: [] },
   price: { type: Number, required: true },
   stock_quantity: { type: Number, required: true },
-  sold: { type: Number, required: true }
+  sold: { type: Number, required: false, default: 0 }
 },
   {
     collection: 'products'

@@ -144,7 +144,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                 <div className="image-carousel">
                     <div className="image-container">
                         {product.product_images.map((url, i) => (
-                            <div key={i} style={{ backgroundImage: `url(${url})` }}></div>
+                            <img key={i} src={`${SERVER_HOST}/uploads/${url}`}/>
                         ))}
                     </div>
                 </div>

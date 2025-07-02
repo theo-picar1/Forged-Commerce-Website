@@ -31,9 +31,6 @@ import EditProduct from "./components/EditProduct.tsx"
 
 if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.accessLevel === undefined) {
     localStorage.accessLevel = ACCESS_LEVEL_GUEST
-    localStorage.token = null
-    localStorage.id = undefined
-    localStorage.cartId = undefined
 }
 
 // --------------- MODAL LOGIC ---------------

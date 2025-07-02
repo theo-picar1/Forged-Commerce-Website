@@ -47,6 +47,8 @@ const Home: React.FC<HomeProps> = ({
 
             <AddProduct 
                 closeSlideInModal={closeSlideInModal}
+                categories={categories}
+                capitiliseString={capitiliseString}
             />
 
             <Header
