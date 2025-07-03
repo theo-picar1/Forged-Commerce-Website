@@ -4,6 +4,7 @@ import { Product } from "../types/Product"
 import { Link } from "react-router-dom"
 
 import { ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../config/global_constants"
+import axios from "axios"
 
 // Interface is for the props being passed to this component
 interface ProductsProps {
@@ -160,6 +161,31 @@ const Products: React.FC<ProductsProps> = ({
             bottomWrapper.style.height = "auto"
         }
     }, [productsToShow])
+
+    // Function to delete one single product by its id 
+    const deleteProduct = async (id: string): Promise<void> => {
+        try {
+            const res = await axios.delete(`${SERVER_HOST}/products/${id}`)         
+            
+            if(!res || !res.data) {
+                alert(res.data.errorMessage)
+            }
+            else {
+                setProductsToShow(prev => prev.filter(p => p._id !== id))
+                alert(res.data.message)
+            }
+
+            return
+        }
+        catch(error: any) {
+            if(error.response.data.errorMessage) {
+                console.error(error.response.data.errorMessage)
+            }
+            else {
+                console.error(error)
+            }
+        }
+    }
 
     return (
         <div className="products-page-container">
@@ -402,7 +428,7 @@ const Products: React.FC<ProductsProps> = ({
                                                 <img src="/images/edit-icon.png" className="edit-icon" />
                                             </Link>
 
-                                            <div className="button">
+                                            <div className="button" onClick={() => deleteProduct(product._id)}>
                                                 <img src="/images/bin-icon.png" />
                                             </div>
                                         </div>

@@ -110,6 +110,7 @@ router.post('/products', upload.array('product_images'), async (req: Request, re
   }
 })
 
+// Edit a product
 router.put('/products/:id', upload.array('uploaded_images'), async (req: Request, res: Response): Promise<void> => {
   console.log(req.body)
   try {
@@ -139,6 +140,27 @@ router.put('/products/:id', upload.array('uploaded_images'), async (req: Request
   catch(error) {
     res.status(500).json({errorMessage: "Unexpected edit product error: ", error})
     return
+  }
+})
+
+// Delete one product by id
+router.delete('/products/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+
+    const deletedProduct = await productsModel.findByIdAndDelete(id)
+
+    if(!deletedProduct) {
+      res.status(404).json({ errorMessage: "Could not find and delete product" })
+    }
+    else {
+      res.status(200).json({ message: "Product was successfully deleted!" })
+    }
+
+    return
+  }
+  catch(error) {
+    res.status(500).json({errorMessage: "Unexpected delete product error: ", error})
   }
 })
 
