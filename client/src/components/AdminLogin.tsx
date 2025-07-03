@@ -1,10 +1,10 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
-import { SERVER_HOST } from "../config/global_constants.ts"
 import axios from "axios"
+import { SERVER_HOST } from "../config/global_constants"
 
-const Login: React.FC = () => {
+const AdminLogin: React.FC = () => {
     // Same thing as this.state
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -12,7 +12,6 @@ const Login: React.FC = () => {
     const [invalidEmail, setInvalidEmail] = useState(false)
     const [invalidPassword, setInvalidPassword] = useState(false)
     const [emailErrorMessage, setEmailErrorMessage] = useState("")
-    const [firstName, setFirstName] = useState("")
 
     // Handling all changes done to the input fields for Login component
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -20,7 +19,7 @@ const Login: React.FC = () => {
 
         if (name === "email") {
             setEmail(value)
-        } 
+        }
         else if (name === "password") {
             setPassword(value)
         }
@@ -65,26 +64,27 @@ const Login: React.FC = () => {
         }
 
         try {
-            const res = await axios.post(`${SERVER_HOST}/users/login`, inputs)
-            if (res.data.errorMessage) {
-                return
-            } 
-            else if (res.data) {
+            const res = await axios.post(`${SERVER_HOST}/users/admin/login`, inputs)
+
+            // Let guy know if know if no data was sent back or if data sent back was an errorMessage
+            if (!res || res.data.errorMessage) {
+                alert(res.data.errorMessage)
+            }
+            // Otherwise, set admin access levels and admin id for user
+            else {
                 localStorage.accessLevel = res.data.accessLevel
                 localStorage.id = res.data.id
-
                 setIsLoggedIn(true)
-                setFirstName(res.data.firstName)
-            } 
-            else {
-                alert("Registration failed")
             }
-        } 
+        }
+        // Most likely a server error if this else block is targeted
         catch (error: any) {
-            if (error.response?.data?.errorMessage) {
+            // See if it was one of the custom erros set
+            if (error.response.data.errorMessage) {
                 setEmailErrorMessage(error.response.data.errorMessage)
                 setInvalidEmail(true)
-            } 
+            }
+            // Otherwise, it is an unexepected error need fixing
             else {
                 console.error("Unexpected error:", error)
             }
@@ -111,7 +111,7 @@ const Login: React.FC = () => {
 
             {isLoggedIn ? (
                 <div className="authentication-content">
-                    <p style={{ textAlign: "center", fontWeight: "bold" }}>Welcome back {firstName}!</p>
+                    <p style={{ textAlign: "center", fontWeight: "bold" }}>Welcome back Administrator!</p>
 
                     <div className="inputs-container">
                         <Link to={"/"} className="submit-button link-button">
@@ -122,9 +122,9 @@ const Login: React.FC = () => {
             ) : (
                 <form className="authentication-content">
                     <div className="top-section">
-                        <h3>Sign in</h3>
+                        <h3>Admin Login</h3>
 
-                        <Link className="link" to={"/admin-login"}>Admin login</Link>
+                        <Link to={"/login"} className="link">User login</Link>
                     </div>
 
                     <div className="inputs-container">
@@ -190,4 +190,4 @@ const Login: React.FC = () => {
     )
 }
 
-export default Login
+export default AdminLogin

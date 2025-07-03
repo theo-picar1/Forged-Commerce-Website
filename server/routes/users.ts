@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs'
 import usersModel from '../models/users.ts'
 
 import { validateFields } from '../middleware/validations.ts'
-import { match } from 'assert'
 
 const router = express.Router()
 
@@ -113,9 +112,52 @@ router.post('/users/login', validateFields(loginFields), async (req: Request, re
     }
 })
 
+// Loggin in an admin
+router.post('/users/admin/login', validateFields(loginFields), async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body
+
+        const admin = await usersModel.findOne({ email: process.env.ADMIN_EMAIL })
+
+        if(admin && email === admin.email) {
+            const valid = await bcrypt.compare(password, admin.password)
+
+            if(valid) {
+                res.status(200).json({
+                    accessLevel: 2,
+                    message: "Successfully logged in as administrator",
+                    id: admin._id
+                })
+            }
+            else {
+                res.status(401).json({ errorMessage: "Invalid password was given." })
+            }
+
+            return
+        }
+        else {
+            res.status(404).json({ errorMessage: "Could not find user with given email!" })
+
+            return
+        }
+    }
+    catch(error) {
+        res.status(500).json({ errorMessage: "Server error: ", error })
+    }
+})
+
 // For logging out a user. Don't need async because I am not using await inside the method
 router.post(`/users/logout`, (req: Request, res: Response) => {       
-    res.json({  })
+    try {
+        res.status(200).json({ message: "Successfully logged out!" })
+
+        return
+    }
+    catch(error) {
+        res.status(500).json({ errorMessage: "Server error: ", error })
+
+        return
+    }
 })
 
 export default router

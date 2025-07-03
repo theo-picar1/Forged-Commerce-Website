@@ -29,7 +29,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
 }) => {
     const [cart, setCart] = useState<Cart | null>(null)
     const [originalCart, setOriginalCart] = useState<Cart | null>(null)
-    const [changedQuantity, setChangedQuantity] = useState<boolean>(false)
+    const [changedQuantity, setChangedQuantity] = useState<boolean>(false) // This is to determine whether or not the save butto becomes clickable or not
     const [totalPrice, setTotalPrice] = useState<number>(0)
 
     // Function that acts as both a data retriever and an updater
@@ -221,7 +221,16 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                             <div className="product-details">
                                 <div className="left">
                                     <div className="image-container">
-                                        <img src={cartProduct.product.product_images[0]} alt="" />
+                                        <img
+                                            src={
+                                                // Check to see if image url was one from the web or not
+                                                cartProduct.product.product_images[0].startsWith('http://') ||
+                                                    cartProduct.product.product_images[0].startsWith('https://')
+                                                    ? cartProduct.product.product_images[0]
+                                                    : `${SERVER_HOST}/uploads/${cartProduct.product.product_images[0]}`
+                                            }
+                                            alt=""
+                                        />
                                     </div>
                                 </div>
 

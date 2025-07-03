@@ -3,6 +3,9 @@ import React, { useState, useEffect, JSX } from "react"
 import { Product } from "../types/Product"
 import { Link } from "react-router-dom"
 
+import { ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../config/global_constants"
+import axios from "axios"
+
 // Interface is for the props being passed to this component
 interface ProductsProps {
     originalProducts: Product[]
@@ -158,6 +161,31 @@ const Products: React.FC<ProductsProps> = ({
             bottomWrapper.style.height = "auto"
         }
     }, [productsToShow])
+
+    // Function to delete one single product by its id 
+    const deleteProduct = async (id: string): Promise<void> => {
+        try {
+            const res = await axios.delete(`${SERVER_HOST}/products/${id}`)         
+            
+            if(!res || !res.data) {
+                alert(res.data.errorMessage)
+            }
+            else {
+                setProductsToShow(prev => prev.filter(p => p._id !== id))
+                alert(res.data.message)
+            }
+
+            return
+        }
+        catch(error: any) {
+            if(error.response.data.errorMessage) {
+                console.error(error.response.data.errorMessage)
+            }
+            else {
+                console.error(error)
+            }
+        }
+    }
 
     return (
         <div className="products-page-container">
@@ -315,6 +343,18 @@ const Products: React.FC<ProductsProps> = ({
                 </div>
             </div>
 
+            {localStorage.accessLevel == ACCESS_LEVEL_ADMIN ? (
+                <div className="admin-tools">
+                    <button onClick={() => openSlideInModal("add-product-modal")}>
+                        <p>Add product</p>
+                    </button>
+
+                    <button>
+                        <p>Delete products</p>
+                    </button>
+                </div>
+            ) : null}
+
             <div className="filter-tools">
                 <div className="left">
                     <div className="filter-button" onClick={() => openSlideInModal("advanced-product-filters-modal")}>
@@ -348,8 +388,18 @@ const Products: React.FC<ProductsProps> = ({
                     {productsToShow.map(product =>
                         <div className="product" key={product._id}>
                             <Link to={`/product/${product._id}`} className="product-image-container">
-                                <img id="product-image" src={product["product_images"][0]} />
+                                <img
+                                    id="product-image"
+                                    src={
+                                        // Check if URL was copy and pasted from the web
+                                        product.product_images[0].startsWith('http://') ||
+                                            product.product_images[0].startsWith('https://')
+                                            ? product.product_images[0]
+                                            : `${SERVER_HOST}/uploads/${product.product_images[0]}`
+                                    }
+                                />
                             </Link>
+
 
                             <div className="product-details">
                                 <p className="product-name">{product["product_name"]}</p>
@@ -368,9 +418,21 @@ const Products: React.FC<ProductsProps> = ({
                                 <div className="product-bottom-section">
                                     <p>€{product["price"]}</p>
 
-                                    <div className="add-to-shopping-cart-button" onClick={() => addProductToCart(product)}>
-                                        <img src="/images/shopping-cart.png" alt="Add to shopping cart button" />
-                                    </div>
+                                    {localStorage.accessLevel < ACCESS_LEVEL_ADMIN ? (
+                                        <div className="add-to-shopping-cart-button" onClick={() => addProductToCart(product)}>
+                                            <img src="/images/shopping-cart.png" alt="Add to shopping cart button" />
+                                        </div>
+                                    ) : (
+                                        <div className="admin-tools">
+                                            <Link to={`/edit-product/${product._id}`} className="button">
+                                                <img src="/images/edit-icon.png" className="edit-icon" />
+                                            </Link>
+
+                                            <div className="button" onClick={() => deleteProduct(product._id)}>
+                                                <img src="/images/bin-icon.png" />
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

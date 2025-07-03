@@ -18,6 +18,7 @@ $website-white-to-black: brightness(0);
 $slide-in-modal: 100;
 $website-header-z: 5;
 $auto-complete-modal-z: 10;
+$crud-modal: 11;
 
 // ----- Padding -----
 $mobile-padding: 35px 10px;
@@ -249,6 +250,25 @@ $laptop-container-padding: 20px;
     }
 }
 
+// CSS for the small buttons (like a close / remove button)
+@mixin small-round-button($-width, $-height, $-imgw, $-imgh, $-bkgd-color, $-hover-color) {
+    @include flex-direction(unset, center, center, 0);
+    width: $-width;
+    height: $-height;
+    border-radius: 50%;
+    background-color: $-bkgd-color;
+
+    img {
+        width: $-imgw;
+        height: $-imgh;
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: $-hover-color;
+    }
+}
+
 // ----------------------------
 
 // ----- Modal Transitions -----
@@ -259,6 +279,24 @@ $laptop-container-padding: 20px;
     height: 100%;
     transition: transform 0.3s ease;
     z-index: $slide-in-modal;
+}
+
+@mixin pop-up-transition() {
+    pointer-events: none;
+    position: fixed;
+    background-color: $translucent;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    transform: scale(0);
+    transform-origin: center center;
+    opacity: 0;
+
+    &.active {
+        pointer-events: auto;
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 // -----------------------------
@@ -362,6 +400,7 @@ $laptop-container-padding: 20px;
         box-shadow: 0 0 10px 5px $translucent;
         position: sticky;
         top: 0;
+        z-index: 5;
 
         // Because bootstrap is messing up my stuff
         .theos-row {
@@ -412,11 +451,7 @@ $laptop-container-padding: 20px;
                     @include default-icon-size();
 
                     div {
-                        background-color: $website-red;
-                        width: 16px;
-                        height: 16px;
-                        @include flex-direction(unset, center, center, 0);
-                        border-radius: 50%;
+                        @include small-round-button(16px, 16px, 0, 0, $website-red, none);
                         position: absolute;
                         bottom: 15px;
                         left: 12px;
@@ -754,6 +789,31 @@ $laptop-container-padding: 20px;
             }
         }
 
+        .admin-tools {
+            width: 100%;
+            @include flex-direction(row, flex-end, center, 5px);
+
+            button {
+                width: auto;
+                height: 25px;
+                border: thin solid $website-black;
+                border-radius: 1px;
+                @include flex-direction(unset, center, center, 0);
+                padding: 0 10px;
+                font-size: 14px;
+                background-color: $website-white;
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: $website-light-gray;
+                }
+
+                &:active {
+                    background-color: $website-gray;
+                }
+            }
+        }
+
         .filter-tools {
             @include flex-direction(row, space-between, center, 0);
 
@@ -859,6 +919,35 @@ $laptop-container-padding: 20px;
                                 height: auto;
                             }
                         }
+
+                        .admin-tools {
+                            @include flex-direction(row, flex-end, center, 5px);
+
+                            .button {
+                                @include flex-direction(unset, center, center, 0);
+                                width: 25px;
+                                height: 25px;
+                                border: thin solid $website-black;
+
+                                &:hover {
+                                    cursor: pointer;
+                                    background-color: $website-light-gray;
+                                }
+
+                                &:active {
+                                    background-color: $website-gray;
+                                }
+
+                                img {
+                                    width: 20px;
+                                    height: auto;
+                                }
+
+                                .edit-icon {
+                                    filter: invert(1);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -874,6 +963,56 @@ $laptop-container-padding: 20px;
         background-color: $main-content-color;
         padding: $mobile-container-padding;
         @include flex-direction(column, unset, unset, 15px);
+
+        .inaccessible {
+            filter: opacity(0.5);
+            cursor: not-allowed;
+
+            input {
+                pointer-events: none;
+            }
+
+            button {
+                pointer-events: none;
+            }
+        }
+
+        .text-and-number-inputs {
+            @include default-text-input();
+            padding: 0;
+            height: min-content;
+
+            &:hover {
+                background-color: $website-light-gray;
+            }
+        }
+
+        .admin-tools {
+            width: 100%;
+            @include flex-direction(row, flex-end, center, 5px);
+
+            .admin-button {
+                @include flex-direction(unset, center, center, 0);
+                width: auto;
+                height: 25px;
+                border: thin solid $website-black;
+                border-radius: 1px;
+                margin-bottom: -10px;
+                padding: 0 10px;
+                text-decoration: none;
+                color: $website-black;
+                font-size: 14px;
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: $website-light-gray;
+                }
+
+                &:active {
+                    background-color: $website-gray;
+                }
+            }
+        }
 
         .image-carousel-container {
             @include flex-direction(column, unset, center, 5px);
@@ -896,9 +1035,10 @@ $laptop-container-padding: 20px;
                     border-left: thin solid $website-black;
                     border-right: thin solid $website-black;
 
-                    div {
+                    img {
                         flex: 0 0 100%;
-                        width: auto;
+                        width: 100%;
+                        height: 100%;
                         scroll-snap-align: start;
                         background-size: 100% 100%;
                     }
@@ -917,10 +1057,44 @@ $laptop-container-padding: 20px;
             }
         }
 
+        .edit-product-images-container {
+            @include flex-direction(row, unset, unset, 20px);
+            overflow-x: scroll;
+            scrollbar-width: none;
+            width: 100%;
+            height: 250px;
+
+            .image-container {
+                position: relative;
+                height: inherit;
+                width: auto;
+                background-color: $website-light-gray;
+
+                img {
+                    width: auto;
+                    height: inherit;
+                }
+
+                .remove-button {
+                    @include flex-direction(unset, center, center, 0);
+                    position: absolute;
+                    @include small-round-button(20px, 20px, 15px, 15px, $website-red, $website-light-gray);
+                    left: 97%;
+                }
+            }
+        }
+
+        .add-image-button {
+            width: 100px;
+            border: thin solid $website-black;
+            font-size: 14px;
+        }
+
         .product-details {
             @include flex-direction(column, unset, unset, 15px);
 
-            h4 {
+            .name-input {
+                font-size: 24px;
                 font-weight: bold;
             }
 
@@ -928,6 +1102,13 @@ $laptop-container-padding: 20px;
                 @include flex-direction(row, unset, center, 5px);
 
                 h5 {
+                    font-size: 24px;
+                    font-weight: bold;
+                    color: $website-red;
+                    margin-top: 1px;
+                }
+
+                .price-input {
                     font-size: 24px;
                     font-weight: bold;
                     color: $website-red;
@@ -979,6 +1160,7 @@ $laptop-container-padding: 20px;
             }
 
             .about-this-product {
+
                 h3 {
                     font-size: 24px;
                     font-weight: bold;
@@ -990,7 +1172,7 @@ $laptop-container-padding: 20px;
                     width: 100%;
 
                     .theos-row {
-                        width: 100%;
+                        width: 50%;
                         margin: 0;
                         @include flex-direction(row, space-between, flex-start, 0);
 
@@ -1005,6 +1187,19 @@ $laptop-container-padding: 20px;
                         .sold-detail {
                             color: $website-red;
                         }
+
+                        .radio-buttons {
+                            @include flex-direction(row, unset, center, 10px);
+
+                            label {
+                                @include flex-direction(row, unset, center, 5px);
+                            }
+                        }
+
+                        .quantity-input {
+                            width: 75px;
+                            text-align: right;
+                        }
                     }
                 }
             }
@@ -1015,6 +1210,48 @@ $laptop-container-padding: 20px;
                     font-size: 24px;
                     font-weight: bold;
                     margin-top: 5px;
+                }
+
+                .auto-growing-textarea {
+                    min-height: 2rem;
+                    padding: 0.5rem;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                    outline: none;
+                    padding: 0;
+
+                    &:hover {
+                        background-color: $website-light-gray;
+                    }
+                }
+
+            }
+
+            .other-details {
+                @include flex-direction(column, unset, unset, 5px);
+
+                h3 {
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+
+                .section {
+                    @include flex-direction(column, unset, unset, 2px);
+
+                    .categories {
+                        @include flex-direction(row, unset, center, 10px);
+                        flex-wrap: wrap;
+
+                        label {
+                            @include flex-direction(row, unset, center, 5px);
+                        }
+                    }
+
+                    .discount-input {
+                        border-radius: 5px;
+                        padding: 0 10px;
+                        border: thin solid $website-black;
+                    }
                 }
             }
         }
@@ -1091,9 +1328,19 @@ $laptop-container-padding: 20px;
             border-radius: 6px;
             box-shadow: 0 4px 10px $translucent;
 
-            h3 {
-                font-weight: bold;
-                font-size: 24px;
+            .top-section {
+                @include flex-direction(row, space-between, center, 0);
+
+                h3 {
+                    font-weight: bold;
+                    font-size: 24px;
+                }
+
+                .link {
+                    text-decoration: none;
+                    color: $link-color;
+                    font-size: 14px;
+                }
             }
 
             .inputs-container {
@@ -1563,6 +1810,198 @@ $laptop-container-padding: 20px;
             button {
                 background-color: $website-white;
                 border: thin solid $website-black;
+            }
+        }
+    }
+
+    .edit-product-page {
+        padding: $mobile-container-padding;
+        background-color: $main-content-color;
+    }
+
+    .crud-modal {
+        @include pop-up-transition();
+        @include flex-direction(unset, center, center, 0);
+        z-index: $crud-modal;
+
+        .crud-modal-content {
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            background-color: $website-white;
+            scrollbar-width: none;
+
+            .header {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                text-wrap: nowrap;
+                align-items: center;
+                border-bottom: thin solid $website-light-gray;
+                position: sticky;
+                top: 0;
+                background-color: $website-white;
+                padding: 5px 15px;
+                z-index: 100;
+
+                .close {
+                    padding: 5px;
+                    @include small-round-button(30px, 30px, 20px, 20px, none, $website-light-gray);
+
+                    img {
+                        filter: invert(1);
+                    }
+                }
+
+                h4 {
+                    font-size: 18px;
+                    text-align: center;
+                }
+
+                .submit {
+                    @include flex-direction(unset, flex-end, center, 0);
+
+                    button {
+                        border: thin solid $website-black;
+                        border-radius: 2px;
+                        font-size: 14px;
+                        padding: 1px 10px;
+                    }
+                }
+            }
+
+            form {
+                @include flex-direction(column, unset, unset, 10px);
+                margin-top: 10px;
+                padding: 15px;
+
+                .input-container {
+                    @include flex-direction(column, unset, unset, 0px);
+
+                    b {
+                        font-size: 14px;
+                    }
+
+                    .images-container {
+                        @include flex-direction(row, unset, unset, 15px);
+                        width: auto;
+                        overflow-x: scroll;
+                        scrollbar-width: none;
+                        margin-top: 5px;
+                        margin-bottom: 5px;
+
+                        div {
+                            width: 150px;
+                            height: 150px;
+                            flex-shrink: 0;
+                        }
+
+                        .image {
+                            position: relative;
+                            background-color: $website-light-gray;
+                            @include flex-direction(unset, center, center, 0);
+
+                            img {
+                                max-width: 150px;
+                                max-height: 150px;
+                            }
+
+                            .remove-button {
+                                @include small-round-button(20px, 20px, 16px, 16px, $website-white, $website-red);
+                                position: absolute;
+                                padding: 3px;
+                                left: 93%;
+                                top: 0;
+
+                                img {
+                                    filter: invert(1);
+                                }
+
+                                &:hover {
+
+                                    img {
+                                        filter: invert(0);
+                                    }
+                                }
+                            }
+                        }
+
+                        .add-image-button {
+                            @include flex-direction(unset, center, center, 0);
+                            border: 2px solid $website-gray;
+                            border-radius: 5px;
+
+                            &:hover {
+                                cursor: pointer;
+                                border-color: $website-black;
+
+                                img {
+                                    filter: invert(1);
+                                }
+                            }
+
+                            img {
+                                width: 50px;
+                                height: 50px;
+                                filter: invert(.5);
+                            }
+                        }
+                    }
+
+                    .image-notice {
+                        @include flex-direction(row, space-between, center, 0);
+                    }
+                }
+
+                .text-input {
+                    @include default-text-input();
+                    border: thin solid $website-black;
+                    border-radius: 5px;
+                    font-size: 14px;
+                }
+
+                .number-input {
+                    @include default-text-input();
+                    border: thin solid $website-black;
+                    border-radius: 5px;
+                    font-size: 14px;
+                }
+
+                textarea {
+                    @include default-text-input();
+                    border: thin solid $website-black;
+                    padding-top: 5px;
+                    border-radius: 5px;
+                    height: auto;
+                    font-size: 14px;
+                }
+
+                .categories-container {
+                    @include flex-direction(row, unset, center, 10px);
+                    flex-wrap: wrap;
+                    font-size: 14px;
+
+                    label {
+                        @include flex-direction(row, unset, center, 5px);
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+
+                        input {
+                            border-radius: 50%;
+                            border: thin solid $website-black;
+                        }
+                    }
+                }
+
+                .radio-container {
+                    @include flex-direction(row, unset, center, 10px);
+                    font-size: 14px;
+
+                    div {
+                        @include flex-direction(row, unset, center, 5px);
+                    }
+                }
             }
         }
     }
