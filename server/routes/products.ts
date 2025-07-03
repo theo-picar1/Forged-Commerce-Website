@@ -79,13 +79,13 @@ router.post('/products', upload.array('product_images'), async (req: Request, re
     } = req.body
 
     // turn categories back into an array
-    const categories = JSON.parse(req.body.categories)
+    const category = JSON.parse(req.body.categories)
 
     const newProduct = await productsModel.create({
       product_images,
       product_name,
       description,
-      categories,
+      category,
       price,
       stock_quantity,
       brand_new,
@@ -106,6 +106,38 @@ router.post('/products', upload.array('product_images'), async (req: Request, re
   catch (error) {
     res.status(500).json({ errorMessage: `Server error: Failed to add product - ${error}` })
 
+    return
+  }
+})
+
+router.put('/products/:id', upload.array('uploaded_images'), async (req: Request, res: Response): Promise<void> => {
+  console.log(req.body)
+  try {
+    // Get all uploaded files (not the existing url's in the product)
+    const files = req.files as Express.Multer.File[]
+    const uploaded_images = files.map(file => file.filename)
+
+    // Also get the web images that I originally set at start of project
+    const web_images = JSON.parse(req.body.web_images)
+
+    // Then I put the two as one array for saving to the MongoDB
+    const product_images = [...uploaded_images, ...web_images]
+
+    const category = JSON.parse(req.body.categories)
+
+    const { id } = req.params
+
+    // Find the product to update and update the fields passed in. Ignoring other fields that were not included in request body
+    await productsModel.findByIdAndUpdate(id, {
+      ...req.body,
+      product_images,
+      category
+    })
+
+    res.status(200).json({ message: "All new changes successfully saved for product" })
+  }
+  catch(error) {
+    res.status(500).json({errorMessage: "Unexpected edit product error: ", error})
     return
   }
 })

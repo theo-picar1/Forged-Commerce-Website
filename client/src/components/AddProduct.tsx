@@ -17,9 +17,6 @@ const AddProduct: React.FC<AddProductProps> = ({
     categories,
     capitiliseString
 }) => {
-    // State variables
-    const [productToAdd, setProductToAdd] = useState<Product | null>(null)
-
     // Input state variables
     const [productName, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")

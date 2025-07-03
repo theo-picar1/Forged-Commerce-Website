@@ -128,24 +128,28 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
 
     return product ? (
         <div className="view-product-page-container">
-            { localStorage.accessLevel >= ACCESS_LEVEL_ADMIN ? (
+            {localStorage.accessLevel >= ACCESS_LEVEL_ADMIN ? (
                 <div className="admin-tools">
                     <Link to={`/edit-product/${id}`} className="edit admin-button">
                         <p>Edit product</p>
                     </Link>
-                    
+
                     <div className="delete admin-button">
                         <p>Delete product</p>
                     </div>
                 </div>
-            ) : null }
+            ) : null}
 
             <div className="image-carousel-container">
                 <div className="image-carousel">
                     <div className="image-container">
-                        {product.product_images.map((url, i) => (
-                            <img key={i} src={`${SERVER_HOST}/uploads/${url}`}/>
-                        ))}
+                        {product.product_images.map((url, i) => {
+                            // Logic to take into account url's that were just copy and pasted from the web by me
+                            const isFullUrl = url.startsWith('http://') || url.startsWith('https://')
+                            const src = isFullUrl ? url : `${SERVER_HOST}/uploads/${url}`
+
+                            return <img key={i} src={src} />
+                        })}
                     </div>
                 </div>
 

@@ -362,8 +362,18 @@ const Products: React.FC<ProductsProps> = ({
                     {productsToShow.map(product =>
                         <div className="product" key={product._id}>
                             <Link to={`/product/${product._id}`} className="product-image-container">
-                                <img id="product-image" src={`${SERVER_HOST}/uploads/${product["product_images"][0]}`} />
+                                <img
+                                    id="product-image"
+                                    src={
+                                        // Check if URL was copy and pasted from the web
+                                        product.product_images[0].startsWith('http://') ||
+                                            product.product_images[0].startsWith('https://')
+                                            ? product.product_images[0]
+                                            : `${SERVER_HOST}/uploads/${product.product_images[0]}`
+                                    }
+                                />
                             </Link>
+
 
                             <div className="product-details">
                                 <p className="product-name">{product["product_name"]}</p>
@@ -388,11 +398,11 @@ const Products: React.FC<ProductsProps> = ({
                                         </div>
                                     ) : (
                                         <div className="admin-tools">
-                                            <div>
+                                            <Link to={`/edit-product/${product._id}`} className="button">
                                                 <img src="/images/edit-icon.png" className="edit-icon" />
-                                            </div>
+                                            </Link>
 
-                                            <div>
+                                            <div className="button">
                                                 <img src="/images/bin-icon.png" />
                                             </div>
                                         </div>

@@ -508,7 +508,10 @@ const AppContent: React.FC = () => {
                 } />
 
                 <Route path="edit-product/:id" element={
-                    <EditProduct />
+                    <EditProduct 
+                        categories={categories}
+                        capitiliseString={capitiliseString}
+                    />
                 } />
             </Route>
 

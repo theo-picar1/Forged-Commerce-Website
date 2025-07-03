@@ -923,10 +923,20 @@ $laptop-container-padding: 20px;
                         .admin-tools {
                             @include flex-direction(row, flex-end, center, 5px);
 
-                            div {
+                            .button {
+                                @include flex-direction(unset, center, center, 0);
                                 width: 25px;
                                 height: 25px;
                                 border: thin solid $website-black;
+
+                                &:hover {
+                                    cursor: pointer;
+                                    background-color: $website-light-gray;
+                                }
+
+                                &:active {
+                                    background-color: $website-gray;
+                                }
 
                                 img {
                                     width: 20px;
@@ -953,6 +963,29 @@ $laptop-container-padding: 20px;
         background-color: $main-content-color;
         padding: $mobile-container-padding;
         @include flex-direction(column, unset, unset, 15px);
+
+        .inaccessible {
+            filter: opacity(0.5);
+            cursor: not-allowed;
+
+            input {
+                pointer-events: none;
+            }
+
+            button {
+                pointer-events: none;
+            }
+        }
+
+        .text-and-number-inputs {
+            @include default-text-input();
+            padding: 0;
+            height: min-content;
+
+            &:hover {
+                background-color: $website-light-gray;
+            }
+        }
 
         .admin-tools {
             width: 100%;
@@ -1002,9 +1035,9 @@ $laptop-container-padding: 20px;
                     border-left: thin solid $website-black;
                     border-right: thin solid $website-black;
 
-                    div {
+                    img {
                         flex: 0 0 100%;
-                        width: inherit;
+                        width: 100%;
                         height: 100%;
                         scroll-snap-align: start;
                         background-size: 100% 100%;
@@ -1024,10 +1057,44 @@ $laptop-container-padding: 20px;
             }
         }
 
+        .edit-product-images-container {
+            @include flex-direction(row, unset, unset, 20px);
+            overflow-x: scroll;
+            scrollbar-width: none;
+            width: 100%;
+            height: 250px;
+
+            .image-container {
+                position: relative;
+                height: inherit;
+                width: auto;
+                background-color: $website-light-gray;
+
+                img {
+                    width: auto;
+                    height: inherit;
+                }
+
+                .remove-button {
+                    @include flex-direction(unset, center, center, 0);
+                    position: absolute;
+                    @include small-round-button(20px, 20px, 15px, 15px, $website-red, $website-light-gray);
+                    left: 97%;
+                }
+            }
+        }
+
+        .add-image-button {
+            width: 100px;
+            border: thin solid $website-black;
+            font-size: 14px;
+        }
+
         .product-details {
             @include flex-direction(column, unset, unset, 15px);
 
-            h4 {
+            .name-input {
+                font-size: 24px;
                 font-weight: bold;
             }
 
@@ -1035,6 +1102,13 @@ $laptop-container-padding: 20px;
                 @include flex-direction(row, unset, center, 5px);
 
                 h5 {
+                    font-size: 24px;
+                    font-weight: bold;
+                    color: $website-red;
+                    margin-top: 1px;
+                }
+
+                .price-input {
                     font-size: 24px;
                     font-weight: bold;
                     color: $website-red;
@@ -1086,6 +1160,7 @@ $laptop-container-padding: 20px;
             }
 
             .about-this-product {
+
                 h3 {
                     font-size: 24px;
                     font-weight: bold;
@@ -1097,7 +1172,7 @@ $laptop-container-padding: 20px;
                     width: 100%;
 
                     .theos-row {
-                        width: 100%;
+                        width: 50%;
                         margin: 0;
                         @include flex-direction(row, space-between, flex-start, 0);
 
@@ -1112,6 +1187,19 @@ $laptop-container-padding: 20px;
                         .sold-detail {
                             color: $website-red;
                         }
+
+                        .radio-buttons {
+                            @include flex-direction(row, unset, center, 10px);
+
+                            label {
+                                @include flex-direction(row, unset, center, 5px);
+                            }
+                        }
+
+                        .quantity-input {
+                            width: 75px;
+                            text-align: right;
+                        }
                     }
                 }
             }
@@ -1122,6 +1210,48 @@ $laptop-container-padding: 20px;
                     font-size: 24px;
                     font-weight: bold;
                     margin-top: 5px;
+                }
+
+                .auto-growing-textarea {
+                    min-height: 2rem;
+                    padding: 0.5rem;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                    outline: none;
+                    padding: 0;
+
+                    &:hover {
+                        background-color: $website-light-gray;
+                    }
+                }
+
+            }
+
+            .other-details {
+                @include flex-direction(column, unset, unset, 5px);
+
+                h3 {
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+
+                .section {
+                    @include flex-direction(column, unset, unset, 2px);
+
+                    .categories {
+                        @include flex-direction(row, unset, center, 10px);
+                        flex-wrap: wrap;
+
+                        label {
+                            @include flex-direction(row, unset, center, 5px);
+                        }
+                    }
+
+                    .discount-input {
+                        border-radius: 5px;
+                        padding: 0 10px;
+                        border: thin solid $website-black;
+                    }
                 }
             }
         }
@@ -1729,7 +1859,7 @@ $laptop-container-padding: 20px;
 
                 .submit {
                     @include flex-direction(unset, flex-end, center, 0);
-                    
+
                     button {
                         border: thin solid $website-black;
                         border-radius: 2px;

@@ -221,7 +221,16 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                             <div className="product-details">
                                 <div className="left">
                                     <div className="image-container">
-                                        <img src={`${SERVER_HOST}/uploads/${cartProduct.product.product_images[0]}`} alt="" />
+                                        <img
+                                            src={
+                                                // Check to see if image url was one from the web or not
+                                                cartProduct.product.product_images[0].startsWith('http://') ||
+                                                    cartProduct.product.product_images[0].startsWith('https://')
+                                                    ? cartProduct.product.product_images[0]
+                                                    : `${SERVER_HOST}/uploads/${cartProduct.product.product_images[0]}`
+                                            }
+                                            alt=""
+                                        />
                                     </div>
                                 </div>
 
