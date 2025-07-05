@@ -1270,6 +1270,8 @@ $laptop-container-padding: 20px;
         }
     }
 
+    // ---------------------------------------
+
     #mobile-footer-content {
         padding: $mobile-container-padding;
         padding-bottom: 5px;
@@ -2005,6 +2007,64 @@ $laptop-container-padding: 20px;
             }
         }
     }
+
+    // ---------- User Manager Page ----------
+    .user-manager-page {
+        padding: $mobile-container-padding;
+        background-color: $main-content-color;
+
+        h3 {
+            font-weight: bold;
+        }
+
+        .users {
+            margin-top: 15px;
+            @include flex-direction(column, unset, center, 20px);
+
+            .user {
+                background-color: $website-white;
+                padding: 10px;
+                @include flex-direction(column, unset, unset, 15px);
+                box-shadow: 0 0 5px $website-black;
+
+                img {
+                    width: 100%;
+                }
+
+                .placeholder-image {
+                    width: 80%;
+                    margin: auto;
+                }
+
+                .user-details {
+                    margin: auto;
+                    text-align: center;
+
+                    h4 {
+                        font-weight: bold;
+                    }
+                }
+
+                .action-buttons {
+                    @include flex-direction(row, unset, center, 5px);
+
+                    .button {
+                        width: 50%;
+                        @include flex-direction(row, center, center, 8px);
+                        border: thin solid $website-black;
+                        box-shadow: 0 0 2px $website-black;
+
+                        img {
+                            width: 18px;
+                            height: 18px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ----------------------------------------
 }
 
 @media screen AND (min-width: 375px) {

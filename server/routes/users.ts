@@ -160,4 +160,27 @@ router.post(`/users/logout`, (req: Request, res: Response) => {
     }
 })
 
+// To get all users
+router.get('/users', async (req: Request, res: Response) => {
+    try {
+        const users = await usersModel.find()
+
+        if(!users) {
+            res.status(404).json({ errorMessage: "Failed to retrieve users!" })
+        }
+        else {
+            res.json({
+                users, 
+                message: "Successfully retrieved all available users!"
+            })
+        }
+
+        return
+    }
+    catch(error) {
+        res.status(500).json({ errorMessage: "Get all users error: ", error })
+        return
+    }
+})
+
 export default router

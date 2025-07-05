@@ -79,15 +79,15 @@ const Menu: React.FC<MenuProps> = ({
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
-                                <div>
-                                    <p>User Dashboard</p>
-                                </div>
+                                <Link to={"/users"} className="link">
+                                    <p>Users Manager</p>
+                                </Link>
 
-                                <div>
-                                    <p>Product Page</p>
-                                </div>
+                                <Link to={"/products"} className="link">
+                                    <p>Products Manager</p>
+                                </Link>
 
-                                <div>
+                                <div className="link">
                                     <p>Categories Manager</p>
                                 </div>
                             </React.Fragment>

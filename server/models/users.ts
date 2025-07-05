@@ -18,7 +18,7 @@ const usersSchema = new Schema<IUser>({
   email: { type: String, required: true, unique: true },
   accessLevel: { type: Number, required: false },
   password: { type: String, required: true },
-  profile_picture: { type: String, required: false },
+  profile_picture: { type: String, required: false, default: "" },
   houseAddress: { type: String, required: false },
   telephoneNo: { type: String, required: false }
 },
