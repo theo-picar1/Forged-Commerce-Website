@@ -1916,7 +1916,9 @@
     justify-content: center;
     align-items: center;
     gap: 0;
-    z-index: 11;
+    z-index: 100;
+    position: fixed;
+    top: 0;
   }
   .crud-modal.active {
     pointer-events: auto;
@@ -1990,6 +1992,33 @@
     gap: 10px;
     margin-top: 10px;
     padding: 15px;
+  }
+  .crud-modal .crud-modal-content form .profile-picture {
+    border: thin solid #000000;
+    width: 50%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    margin: auto;
+  }
+  .crud-modal .crud-modal-content form .add-profile-picture {
+    display: flex;
+    flex-direction: unset;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    width: 50%;
+    aspect-ratio: 1/1;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+    margin: auto;
+  }
+  .crud-modal .crud-modal-content form .add-profile-picture img {
+    width: 100px;
+    height: auto;
+  }
+  .crud-modal .crud-modal-content form .add-profile-picture:hover {
+    cursor: pointer;
   }
   .crud-modal .crud-modal-content form .input-container {
     display: flex;
@@ -2187,6 +2216,83 @@
     justify-content: unset;
     align-items: center;
     gap: 5px;
+  }
+  .user-manager-page {
+    padding: 20px 10px;
+    background-color: #F3F3F3;
+  }
+  .user-manager-page h3 {
+    font-weight: bold;
+  }
+  .user-manager-page .user-manager-tools {
+    margin-top: 15px;
+  }
+  .user-manager-page .user-manager-tools .button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border: thin solid #000000;
+    box-shadow: 0 0 2px #000000;
+    width: 125px;
+    background-color: #FFFFFF;
+  }
+  .user-manager-page .user-manager-tools .button img {
+    filter: invert(1);
+  }
+  .user-manager-page .users {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: center;
+    gap: 20px;
+  }
+  .user-manager-page .users .user {
+    background-color: #FFFFFF;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+    gap: 15px;
+    box-shadow: 0 0 5px #000000;
+  }
+  .user-manager-page .users .user img {
+    width: 100%;
+  }
+  .user-manager-page .users .user .placeholder-image {
+    width: 80%;
+    margin: auto;
+  }
+  .user-manager-page .users .user .user-details {
+    margin: auto;
+    text-align: center;
+  }
+  .user-manager-page .users .user .user-details h4 {
+    font-weight: bold;
+  }
+  .user-manager-page .users .user .action-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: unset;
+    align-items: center;
+    gap: 5px;
+  }
+  .user-manager-page .users .user .action-buttons .button {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border: thin solid #000000;
+    box-shadow: 0 0 2px #000000;
+  }
+  .user-manager-page .users .user .action-buttons .button img {
+    width: 18px;
+    height: 18px;
   }
 }
 @media screen and (min-width: 375px) {

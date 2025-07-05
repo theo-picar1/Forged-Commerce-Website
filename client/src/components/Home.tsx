@@ -6,6 +6,7 @@ import Header from "./Header.tsx"
 import Footer from "./Footer.tsx"
 import EditProduct from "./EditProduct.tsx"
 import AddProduct from "./AddProduct.tsx"
+import AddUser from "./AddUser.tsx"
 
 // NOTE: THIS COMPONENT SERVES MAINLY AS A PAGE NAVIGATOR NOW FOR MAIN CONTENT OF THE WEBSITE. ALL LOGIC IS NOW IN APP.TSX
 

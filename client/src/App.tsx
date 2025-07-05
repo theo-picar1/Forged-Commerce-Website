@@ -8,13 +8,14 @@ import { SERVER_HOST } from "./config/global_constants.ts"
 import "bootstrap/dist/css/bootstrap.css"
 import "./css/styles.css"
 
+// All individual pages
 import Home from "./components/Home.tsx"
 import NoPageFound from "./components/NoPageFound.tsx"
 import Login from "./components/Login.tsx"
 import Register from "./components/Register.tsx"
 import ForgotPassword from "./components/ForgotPassword.tsx"
 
-// All pages for the Home Component
+// All pages/ views for the Home Component
 import HomeProducts from "./components/HomeProducts.tsx"
 import ShoppingCart from "./components/ShoppingCart.tsx"
 import Products from "./components/Products.tsx"
@@ -22,12 +23,14 @@ import ViewProduct from "./components/ViewProduct.tsx"
 import PurchaseHistory from "./components/PurchaseHistory.tsx"
 import Favourites from "./components/Favourites.tsx"
 import AdminLogin from "./components/AdminLogin.tsx"
+import EditProduct from "./components/EditProduct.tsx"
+import Users from "./components/Users.tsx"
 
+// Types
 import { Product } from "./types/Product.ts"
 import { Cart } from "./types/Cart.ts"
 import { History } from "./types/Purchases.ts"
 import { Favourite } from "./types/Favourite.ts"
-import EditProduct from "./components/EditProduct.tsx"
 
 if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.accessLevel === undefined) {
     localStorage.accessLevel = ACCESS_LEVEL_GUEST
@@ -438,11 +441,13 @@ const AppContent: React.FC = () => {
 
     return (
         <Routes>
+            {/* Authentication Pages */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/admin-login" element={<AdminLogin />} />
 
+            {/* Home Pages */}
             <Route path="/" element={
                 <Home
                     categories={categories}
@@ -511,6 +516,13 @@ const AppContent: React.FC = () => {
                     <EditProduct 
                         categories={categories}
                         capitiliseString={capitiliseString}
+                    />
+                } />
+
+                <Route path="users" element={
+                    <Users 
+                        openSlideInModal={openSlideInModal}
+                        closeSlideInModal={closeSlideInModal}
                     />
                 } />
             </Route>
