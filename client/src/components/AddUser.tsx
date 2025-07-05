@@ -3,9 +3,12 @@ import React, { useReducer, useRef, useState } from "react"
 import { SERVER_HOST } from "../config/global_constants"
 import axios from "axios"
 
+import { User } from "../types/User"
+
 // Props
 interface AddUserProps {
     closeSlideInModal: (modalToClose: string) => void
+    updateUsers: (user: User) => void
 }
 
 // *** IMPORTANT: Component uses useReducer. Explanation comments are in here ***
@@ -26,7 +29,8 @@ type FormAction =
     | { type: 'RESET_FORM' }
 
 const AddUser: React.FC<AddUserProps> = ({
-    closeSlideInModal
+    closeSlideInModal,
+    updateUsers
 }) => {
     // Separate state variables
     const [profile_picture, setPicture] = useState<File | null>(null)
@@ -128,6 +132,9 @@ const AddUser: React.FC<AddUserProps> = ({
                 console.log(res.data.errorMessage)
             }
             else {
+                // Update the state in the 'Users.tsx' component immediately
+                updateUsers(res.data.newUser)
+
                 alert(res.data.message)
 
                 // Putting all state variables to their default values

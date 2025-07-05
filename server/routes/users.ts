@@ -246,7 +246,10 @@ router.post('/users/add', upload.single('profile_picture'), validateFields(regis
             res.status(404).json({ errorMessage: "Failed to add new user!" })
         }
         else {
-            res.status(200).json({ message: "Successfully added new user!" })
+            res.status(200).json({ 
+                newUser,
+                message: "Successfully added new user!" 
+            })
         }
 
         return

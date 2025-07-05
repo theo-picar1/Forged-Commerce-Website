@@ -1916,7 +1916,9 @@
     justify-content: center;
     align-items: center;
     gap: 0;
-    z-index: 11;
+    z-index: 100;
+    position: fixed;
+    top: 0;
   }
   .crud-modal.active {
     pointer-events: auto;

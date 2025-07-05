@@ -18,7 +18,7 @@ $website-white-to-black: brightness(0);
 $slide-in-modal: 100;
 $website-header-z: 5;
 $auto-complete-modal-z: 10;
-$crud-modal: 11;
+$crud-modal: 100;
 
 // ----- Padding -----
 $mobile-padding: 35px 10px;
@@ -1826,6 +1826,8 @@ $laptop-container-padding: 20px;
         @include pop-up-transition();
         @include flex-direction(unset, center, center, 0);
         z-index: $crud-modal;
+        position: fixed;
+        top: 0;
 
         .crud-modal-content {
             width: 100%;

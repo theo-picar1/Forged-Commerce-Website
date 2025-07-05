@@ -52,10 +52,6 @@ const Home: React.FC<HomeProps> = ({
                 capitiliseString={capitiliseString}
             />
 
-            <AddUser 
-                closeSlideInModal={closeSlideInModal}
-            />
-
             <Header
                 categories={categories}
                 capitiliseString={capitiliseString}
