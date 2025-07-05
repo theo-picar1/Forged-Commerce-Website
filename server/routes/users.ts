@@ -1,5 +1,8 @@
 import express, { Request, Response } from 'express'
+
 import bcrypt from 'bcryptjs'
+import multer from "multer"
+
 import usersModel from '../models/users.ts'
 
 import { validateFields } from '../middleware/validations.ts'
@@ -20,6 +23,18 @@ const router = express.Router()
 
 const registerFields: any[] = ['email', 'password', 'firstName', 'lastName', 'telephoneNo', 'houseAddress', 'accessLevel']
 const loginFields: string[] = ['email', 'password']
+
+// For being able to upload files to a folder for later access
+const userStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/users/')
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname)
+  }
+})
+
+const upload = multer({ storage: userStorage })
 
 // Registering a new user i.e. Adding
 router.post('/users/register', validateFields(registerFields), async (req: Request, res: Response) => {
@@ -49,20 +64,21 @@ router.post('/users/register', validateFields(registerFields), async (req: Reque
 
         // Create new user with all the fields
         const newUser = await usersModel.create({
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            telephoneNo: telephoneNo,
-            houseAddress: houseAddress,
+            firstName,
+            lastName,
+            email,
+            telephoneNo,
+            houseAddress,
             password: hashedPassword,
-            accessLevel: accessLevel
+            accessLevel
         })
         res.status(201).json({ successMessage: 'User successfully registered with ID: ', userId: newUser._id })
 
         return
     }
     catch (error) {
-        res.status(500).json({ errorMessage: 'Internal server error' })
+        res.status(500).json({ errorMessage: 'Register user error: ', error })
+        console.error("Register user error: ", error)
 
         return
     }
@@ -82,7 +98,7 @@ router.post('/users/login', validateFields(loginFields), async (req: Request, re
             const correctPassword: boolean = await bcrypt.compare(password, matchedUser.password)
 
             // If they password matches, 
-            if(correctPassword) {
+            if (correctPassword) {
                 res.json({
                     firstName: matchedUser.firstName,
                     accessLevel: matchedUser.accessLevel,
@@ -106,7 +122,8 @@ router.post('/users/login', validateFields(loginFields), async (req: Request, re
         }
     }
     catch (error) {
-        res.status(500).json({ errorMessage: 'Internal server error' })
+        res.status(500).json({ errorMessage: 'User login error: ', error })
+        console.error("Login user error: ", error)
 
         return
     }
@@ -119,10 +136,10 @@ router.post('/users/admin/login', validateFields(loginFields), async (req: Reque
 
         const admin = await usersModel.findOne({ email: process.env.ADMIN_EMAIL })
 
-        if(admin && email === admin.email) {
+        if (admin && email === admin.email) {
             const valid = await bcrypt.compare(password, admin.password)
 
-            if(valid) {
+            if (valid) {
                 res.status(200).json({
                     accessLevel: 2,
                     message: "Successfully logged in as administrator",
@@ -141,20 +158,24 @@ router.post('/users/admin/login', validateFields(loginFields), async (req: Reque
             return
         }
     }
-    catch(error) {
-        res.status(500).json({ errorMessage: "Server error: ", error })
+    catch (error) {
+        res.status(500).json({ errorMessage: "Admin login error: ", error })
+        console.error("Admin login error: ", error)
+
+        return
     }
 })
 
 // For logging out a user. Don't need async because I am not using await inside the method
-router.post(`/users/logout`, (req: Request, res: Response) => {       
+router.post(`/users/logout`, (req: Request, res: Response) => {
     try {
         res.status(200).json({ message: "Successfully logged out!" })
 
         return
     }
-    catch(error) {
-        res.status(500).json({ errorMessage: "Server error: ", error })
+    catch (error) {
+        res.status(500).json({ errorMessage: "Logout error: ", error })
+        console.error("Logout user error: ", error)
 
         return
     }
@@ -165,20 +186,99 @@ router.get('/users', async (req: Request, res: Response) => {
     try {
         const users = await usersModel.find()
 
-        if(!users) {
+        if (!users) {
             res.status(404).json({ errorMessage: "Failed to retrieve users!" })
         }
         else {
             res.json({
-                users, 
+                users,
                 message: "Successfully retrieved all available users!"
             })
         }
 
         return
     }
-    catch(error) {
+    catch (error) {
         res.status(500).json({ errorMessage: "Get all users error: ", error })
+        console.error("Get all user error: ", error)
+
+        return
+    }
+})
+
+// To add a new user to the database
+router.post('/users/add', upload.single('profile_picture'), validateFields(registerFields), async (req: Request, res: Response) => {
+    try {
+        // Get profile picture that was chosen
+        const image = req.file?.filename
+
+        // Variables
+        const {
+            firstName,
+            lastName,
+            email,
+            houseAddress,
+            telephoneNo,
+            password
+        } = req.body
+
+        // Turn accessLevel back to an int
+        const accessLevel = parseInt(req.body.accessLevel)
+
+        // Hash the password with the salt rounds defined in the .env file
+        const saltRounds = parseInt(process.env.PASSWORD_HASH_SALT_ROUNDS || '3')
+        const hashedPassword = await bcrypt.hash(password, saltRounds)
+
+        // Create new user with all the fields
+        const newUser = await usersModel.create({
+            firstName,
+            lastName,
+            email,
+            telephoneNo,
+            houseAddress,
+            password: hashedPassword,
+            accessLevel,
+            profile_picture: image
+        })
+
+        // Check first if it was even created
+        if (!newUser) {
+            res.status(404).json({ errorMessage: "Failed to add new user!" })
+        }
+        else {
+            res.status(200).json({ message: "Successfully added new user!" })
+        }
+
+        return
+    }
+    catch (error) {
+        res.status(500).json({ errorMessage: "Add user error: ", error })
+        console.error("Add user error: ", error)
+
+        return
+    }
+})
+
+// Delete one user by their id
+router.delete('/users/:id', async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+
+        const deletedUser = await usersModel.findByIdAndDelete(id)
+
+        if(!deletedUser) {
+            res.status(404).json({ errorMessage: "Failed to delete the user!" })
+        }
+        else {
+            res.status(200).json({ errorMessage: "Successfully deleted user!" })
+        }
+
+        return
+    }
+    catch(error) {
+        res.status(500).json({ errorMessage: "Delete user error: ", error})
+        console.error("Delete user error: ", error)
+
         return
     }
 })

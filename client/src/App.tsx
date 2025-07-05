@@ -520,7 +520,9 @@ const AppContent: React.FC = () => {
                 } />
 
                 <Route path="users" element={
-                    <Users />
+                    <Users 
+                        openSlideInModal={openSlideInModal}
+                    />
                 } />
             </Route>
 

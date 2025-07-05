@@ -1821,6 +1821,7 @@ $laptop-container-padding: 20px;
         background-color: $main-content-color;
     }
 
+    // ---------- CRUD modals ----------
     .crud-modal {
         @include pop-up-transition();
         @include flex-direction(unset, center, center, 0);
@@ -1875,6 +1876,33 @@ $laptop-container-padding: 20px;
                 @include flex-direction(column, unset, unset, 10px);
                 margin-top: 10px;
                 padding: 15px;
+
+                .profile-picture {
+                    border: thin solid $website-black;
+                    width: 50%;
+                    aspect-ratio: 1/1;
+                    border-radius: 50%;
+                    margin: auto;
+                }
+
+                .add-profile-picture {
+                    @include flex-direction(unset, center, center, 0);
+                    width: 50%;
+                    aspect-ratio: 1 / 1;
+                    border: 2px solid $website-black;
+                    border-radius: 50%;
+                    background-color: $website-light-gray;
+                    margin: auto;
+
+                    img {
+                        width: 100px;
+                        height: auto;
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
 
                 .input-container {
                     @include flex-direction(column, unset, unset, 0px);
@@ -2007,6 +2035,7 @@ $laptop-container-padding: 20px;
             }
         }
     }
+    // ---------------------------------------
 
     // ---------- User Manager Page ----------
     .user-manager-page {
@@ -2015,6 +2044,22 @@ $laptop-container-padding: 20px;
 
         h3 {
             font-weight: bold;
+        }
+
+        .user-manager-tools {
+            margin-top: 15px;
+
+            .button {
+                @include flex-direction(row, center, center, 5px);
+                border: thin solid $website-black;
+                box-shadow: 0 0 2px $website-black;
+                width: 125px;
+                background-color: $website-white;
+
+                img {
+                    filter: invert(1);
+                }
+            }
         }
 
         .users {

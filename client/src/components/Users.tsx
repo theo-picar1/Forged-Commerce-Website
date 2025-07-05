@@ -5,7 +5,13 @@ import { SERVER_HOST } from "../config/global_constants"
 
 import { User } from "../types/User"
 
-const Users: React.FC = () => {
+interface UsersProps {
+    openSlideInModal: (modalToOpen: string) => void
+}
+
+const Users: React.FC<UsersProps> = ({
+    openSlideInModal
+}) => {
     // State variables
     const [users, setUsers] = useState<User[] | []>([])
 
@@ -46,13 +52,21 @@ const Users: React.FC = () => {
         <div className="user-manager-page">
             <h3>Users Manager</h3>
 
+            <div className="user-manager-tools">
+                <div className="button">
+                    <img src="/images/add-icon.png" onClick={() => openSlideInModal("add-user-modal")}/>
+
+                    <p>Add user</p>
+                </div>
+            </div>
+
             <div className="users">
                 {users
                     // Ignore admin accounts
                     .filter(user => user.accessLevel < 2).map(user => (
                         <div className="user" key={user._id}>
                             {user.profile_picture && user.profile_picture !== "" ? (
-                                <img src={user.profile_picture} className="user-profile"/>
+                                <img src={`${SERVER_HOST}/uploads/users/${user.profile_picture}`} className="user-profile"/>
                             ) : (
                                 <img src="/images/high-res-user-plcaholder.png" className="placeholder-image"/>
                             )}
