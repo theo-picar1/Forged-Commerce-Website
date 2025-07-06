@@ -1,21 +1,23 @@
 import React, { useState, useRef, useEffect } from "react"
 
+// axios
 import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants"
 
+// types
 import { Product } from "../types/Product"
+
+// fuctions
+import { capitiliseString } from "../utils/string-utils"
+import { closeSlideInModal } from "../utils/dom-utils"
 
 // Props being passed to this component
 interface AddProductProps {
-    closeSlideInModal: (modalToClose: string) => void
     categories: string[]
-    capitiliseString: (string: string) => string
 }
 
 const AddProduct: React.FC<AddProductProps> = ({
-    closeSlideInModal,
     categories,
-    capitiliseString
 }) => {
     // Input state variables
     const [productName, setName] = useState<string>("")

@@ -1,19 +1,19 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import axios from "axios"
 
+// axios
+import axios from "axios"
 import { ACCESS_LEVEL_GUEST, ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../config/global_constants.ts"
+
+import { capitiliseString } from "../utils/string-utils.ts"
+import { closeSlideInModal } from "../utils/dom-utils.ts"
 
 interface MenuProps {
     categories: string[]
-    capitiliseString: (input: string) => string
-    closeSlideInModal: (modalToToggle: string) => void
 }
 
 const Menu: React.FC<MenuProps> = ({
-    categories,
-    capitiliseString,
-    closeSlideInModal
+    categories
 }) => {
     // WHen user logs out, it removes clears the access level and user id in localStorage
     const logout = async (): Promise<void> => {

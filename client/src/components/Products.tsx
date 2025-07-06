@@ -1,21 +1,22 @@
 import React, { useState, useEffect, JSX } from "react"
-
-import { Product } from "../types/Product"
 import { Link } from "react-router-dom"
 
+// types
+import { Product } from "../types/Product"
+
+// axios 
 import { ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../config/global_constants"
 import axios from "axios"
+
+// functions
+import { capitiliseString } from "../utils/string-utils"
+import { openSlideInModal, closeSlideInModal } from "../utils/dom-utils"
 
 // Interface is for the props being passed to this component
 interface ProductsProps {
     originalProducts: Product[]
     filteredProducts: Product[]
-    switchProductViewImage: (view: string) => void
-    currentView: string
-    openSlideInModal: (modalToToggle: string) => void
-    closeSlideInModal: (modalToToggle: string) => void
     categories: string[]
-    capitiliseString: (string: string) => string
     counterMap: Map<string, number>
     addProductToCart: (product: Product) => void
 }
@@ -31,12 +32,7 @@ function createStarsForProduct(rating: number): JSX.Element[] {
 const Products: React.FC<ProductsProps> = ({
     originalProducts,
     filteredProducts,
-    switchProductViewImage,
-    currentView,
-    openSlideInModal,
-    closeSlideInModal,
     categories,
-    capitiliseString,
     counterMap,
     addProductToCart
 }) => {
@@ -143,8 +139,6 @@ const Products: React.FC<ProductsProps> = ({
     }
 
     useEffect(() => {
-        switchProductViewImage(currentView) // This is so that when Products is mounted again later when it was originally in list view, it won't revert back to a grid view with the icon not changing either
-
         // This is just to make the filtering functionality less complicated by removing the categroies in the header
         let bottomWrapper = document.querySelector(".bottom-wrapper") as HTMLElement
         bottomWrapper.style.height = "0"
@@ -369,7 +363,7 @@ const Products: React.FC<ProductsProps> = ({
                         <option>Newest Products</option>
                     </select>
 
-                    {currentView === "grid" && (
+                    {/* {currentView === "grid" && (
                         <img src="/images/list-icon.png" alt="Change to list view icon" onClick={() => {
                             switchProductViewImage("list")
                         }} />
@@ -379,7 +373,7 @@ const Products: React.FC<ProductsProps> = ({
                         <img src="/images/grid-icon.png" alt="Change to grid view icon" onClick={() => {
                             switchProductViewImage("grid")
                         }} />
-                    )}
+                    )} */}
                 </div>
             </div>
 

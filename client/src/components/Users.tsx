@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from "react"
 
+// axios
 import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants"
 
+// types
 import { User } from "../types/User"
 
+// components
 import AddUser from "./AddUser"
 
-interface UsersProps {
-    openSlideInModal: (modalToOpen: string) => void
-    closeSlideInModal: (modalToClose: string) => void
-}
+// functions
+import { openSlideInModal, closeSlideInModal } from "../utils/dom-utils"
 
-const Users: React.FC<UsersProps> = ({
-    openSlideInModal,
-    closeSlideInModal
-}) => {
+const Users: React.FC = () => {
     // State variables
     const [users, setUsers] = useState<User[] | []>([])
 
@@ -59,7 +57,6 @@ const Users: React.FC<UsersProps> = ({
     return (
         <React.Fragment>
             <AddUser
-                closeSlideInModal={closeSlideInModal}
                 updateUsers={updateUsers}
             />
 

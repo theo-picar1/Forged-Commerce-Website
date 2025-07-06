@@ -1,13 +1,18 @@
 import React, { useReducer, useRef, useState } from "react"
 
+// axios
 import { SERVER_HOST } from "../config/global_constants"
 import axios from "axios"
 
+// types
 import { User } from "../types/User"
+
+// functions
+import { capitiliseString } from "../utils/string-utils"
+import { closeSlideInModal } from "../utils/dom-utils"
 
 // Props
 interface AddUserProps {
-    closeSlideInModal: (modalToClose: string) => void
     updateUsers: (user: User) => void
 }
 
@@ -29,7 +34,6 @@ type FormAction =
     | { type: 'RESET_FORM' }
 
 const AddUser: React.FC<AddUserProps> = ({
-    closeSlideInModal,
     updateUsers
 }) => {
     // Separate state variables

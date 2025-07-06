@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
+// axios
 import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants"
 
+// types
 import { Cart } from "../types/Cart"
 import { Product } from "../types/Product"
 
 interface ShoppingCartProps {
-    categories: string[]
-    capitiliseString: (input: string) => string
-    cartLength: number
     updateCartLength: (newLength: number) => void
 }
 
@@ -22,9 +21,6 @@ interface ShoppingCartProps {
 // }
 
 const ShoppingCart: React.FC<ShoppingCartProps> = ({
-    categories,
-    capitiliseString,
-    cartLength,
     updateCartLength
 }) => {
     const [cart, setCart] = useState<Cart | null>(null)

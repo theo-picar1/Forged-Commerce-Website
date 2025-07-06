@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Link, useParams } from "react-router-dom"
 
+// axios
 import axios from "axios"
 import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../config/global_constants"
 
+// types
 import { Product } from "../types/Product"
+
+import { capitiliseString } from "../utils/string-utils"
 
 interface EditProductProps {
     categories: string[]
-    capitiliseString: (string: string) => string
 }
 
 const EditProduct: React.FC<EditProductProps> = ({
-    categories,
-    capitiliseString
+    categories
 }) => {
     // For the id that is in the URL for EditProduct
     const { id } = useParams<{ id: string }>()

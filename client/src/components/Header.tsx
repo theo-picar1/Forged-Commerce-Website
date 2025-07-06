@@ -1,14 +1,18 @@
 import React, { useRef, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
+// axios || constants
 import { ACCESS_LEVEL_ADMIN } from "../config/global_constants"
 
+// types
 import { Product } from "../types/Product"
+
+// functions
+import { capitiliseString } from "../utils/string-utils"
+import { openSlideInModal } from "../utils/dom-utils"
 
 interface HeaderProps {
     categories: string[]
-    capitiliseString: (input: string) => string
-    openSlideInModal: (modalToToggle: string) => void
     displayAutocompleteSuggestions: (e: React.ChangeEvent<HTMLInputElement>) => void
     productSearchValue: string
     suggestions: Product[]
@@ -20,8 +24,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
     categories,
-    capitiliseString,
-    openSlideInModal,
     displayAutocompleteSuggestions,
     productSearchValue,
     suggestions,
