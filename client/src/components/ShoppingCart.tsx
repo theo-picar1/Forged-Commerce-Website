@@ -6,7 +6,7 @@ import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants"
 
 // types
-import { Cart } from "../types/Cart"
+import { Cart } from "../types/Cart.ts"
 import { Product } from "../types/Product"
 
 interface ShoppingCartProps {
@@ -30,42 +30,38 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
 
     // Function that acts as both a data retriever and an updater
     const fetchCart = async (): Promise<void> => {
-        // For getting the user's cart items only if the user has logged in
-        if (localStorage.id != null || localStorage.id != undefined) {
-            try {
-                const res = await axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
+        try {
+            const res = await axios.get<Cart>(`${SERVER_HOST}/cart/${localStorage.id}`)
 
-                if (!res.data || res.data == null) {
-                    alert("No matching cart for user found!")
-                    return
+            console.log("Cart data: ", res.data)
+
+            localStorage.cartId = res.data._id
+
+            let total: number = 0
+
+            // Get the total by foreaching every product and adding (product's price * quantity) to total
+            res.data.products.forEach(product => {
+                if (product.product && product.product.price != null) {
+                    total += product.product.price * product.quantity
                 }
+            })
 
-                localStorage.cartId = res.data._id
+            // So that it is always two decimal places
+            total = parseFloat(total.toFixed(2))
 
-                let total: number = 0
-
-                // Get the total by foreaching every product and adding (product's price * quantity) to total
-                res.data.products.forEach(product => {
-                    total += (product.product.price * product.quantity)
-                })
-
-                // So that it is always two decimal places
-                total = parseFloat(total.toFixed(2))
-
-                setCart(res.data)
-                setOriginalCart(res.data)
-                setTotalPrice(total)
-            }
-            catch (error) {
-                console.error("Id is not defined, I think? ", error)
-            }
+            setCart(res.data)
+            setOriginalCart(res.data)
+            setTotalPrice(total)
+        }
+        catch (error) {
+            console.error(error)
         }
     }
 
     // Get cart data first
     useEffect(() => {
         fetchCart()
-    }, [cart])
+    }, [])
 
     // Self-explanatory
     const deleteProductFromCart = async (productId: string): Promise<void> => {
@@ -157,30 +153,28 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
 
     // To post all items the user has in their cart to their purchase history
     const checkoutItems = async (): Promise<void> => {
-        if (localStorage.cartId && localStorage.cartId !== undefined) {
-            try {
-                const res = await axios.post(`${SERVER_HOST}/purchases/${localStorage.id}`, { cartId: localStorage.cartId, totalPrice: totalPrice })
+        try {
+            const res = await axios.post(`${SERVER_HOST}/purchases/${localStorage.id}`, { cartId: localStorage.cartId, totalPrice: totalPrice })
 
-                if (res) {
-                    alert("Successfully checked out")
+            if (res) {
+                alert("Successfully checked out")
 
-                    fetchCart()
-                    updateCartLength(0)
+                fetchCart()
+                updateCartLength(0)
 
-                    return
-                }
-                else {
-                    alert("Failed to check out items!")
-                    return
-                }
+                return
             }
-            catch (error: any) {
-                if (error.response.data.errorMessage) {
-                    console.log(error.response.data.errorMessage)
-                }
-                else {
-                    console.error("Unexpected error:", error)
-                }
+            else {
+                alert("Failed to check out items!")
+                return
+            }
+        }
+        catch (error: any) {
+            if (error.response.data.errorMessage) {
+                console.log(error.response.data.errorMessage)
+            }
+            else {
+                console.error("Unexpected error:", error)
             }
         }
     }

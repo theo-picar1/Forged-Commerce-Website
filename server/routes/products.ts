@@ -1,8 +1,11 @@
 import express, { Request, Response } from 'express'
 import multer from "multer"
 
+// models
 import productsModel from '../models/products.ts'
+import cartModel from '../models/cart.ts'
 
+// functions
 import { validateFields } from '../middleware/validations.ts'
 
 const router = express.Router()
@@ -137,8 +140,8 @@ router.put('/products/:id', upload.array('uploaded_images'), async (req: Request
 
     res.status(200).json({ message: "All new changes successfully saved for product" })
   }
-  catch(error) {
-    res.status(500).json({errorMessage: "Unexpected edit product error: ", error})
+  catch (error) {
+    res.status(500).json({ errorMessage: "Unexpected edit product error: ", error })
     return
   }
 })
@@ -150,17 +153,23 @@ router.delete('/products/:id', async (req: Request, res: Response) => {
 
     const deletedProduct = await productsModel.findByIdAndDelete(id)
 
-    if(!deletedProduct) {
+    if (!deletedProduct) {
       res.status(404).json({ errorMessage: "Could not find and delete product" })
     }
     else {
+      // Delete that product in everyone's cart
+      await cartModel.updateMany(
+        {}, // All carts
+        { $pull: { products: { product: id } } } 
+      )
+
       res.status(200).json({ message: "Product was successfully deleted!" })
     }
 
     return
   }
-  catch(error) {
-    res.status(500).json({errorMessage: "Unexpected delete product error: ", error})
+  catch (error) {
+    res.status(500).json({ errorMessage: "Unexpected delete product error: ", error })
   }
 })
 

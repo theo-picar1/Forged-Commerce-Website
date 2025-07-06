@@ -11,150 +11,57 @@ import axios from "axios"
 // functions
 import { capitiliseString } from "../utils/string-utils"
 import { openSlideInModal, closeSlideInModal } from "../utils/dom-utils"
+import { createStarsForProduct } from "../utils/product-utils.tsx"
+
+// components
+import ProductFilters from "./modals/ProductFilters"
 
 // Interface is for the props being passed to this component
 interface ProductsProps {
-    originalProducts: Product[]
-    filteredProducts: Product[]
     categories: string[]
     counterMap: Map<string, number>
     addProductToCart: (product: Product) => void
 }
 
-function createStarsForProduct(rating: number): JSX.Element[] {
-    // Because JSX doesn't allow for-loops, use Array.from that runs 'product_rating rounded down' times to create a star image
-    // Condition '_' is there because I'm not accessing a particular element
-    return Array.from({ length: Math.floor(rating) }, (_, i) => (
-        <img key={i} src="/images/filled-star-icon.png" alt="" />
-    ))
-}
-
 const Products: React.FC<ProductsProps> = ({
-    originalProducts,
-    filteredProducts,
     categories,
     counterMap,
     addProductToCart
 }) => {
-    const [minPrice, setMinPrice] = useState<number>(0)
-    const [maxPrice, setMaxPrice] = useState<number>(1000)
-    const [minLimit, setMinLimit] = useState<number>(0)
-    const [maxLimit, setMaxLimit] = useState<number>(1000)
-    const [minRating, setMinRating] = useState<number>(1)
-    const [maxRating, setMaxRating] = useState<number>(5)
-    const [checkedCategories, setCheckedCategories] = useState<string[]>([])
-    const [checkedConditions, setCheckedConditions] = useState<string[]>([])
-    const [productsToShow, setProductsToShow] = useState<Product[]>(originalProducts)
+    // State variables
+    const [products, setProducts] = useState<Product[]>([])
+    const [filteredProducts, setFiltered] = useState<Product[]>([])
 
-    // ---------- ChatGPT Slide Code Logic ----------
-    // This is so that right thumb can't go any lower than left thumb
-    const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        // Just to make sure that it is a number
-        const inputValue = Number(e.target.value)
-
-        // Ensure inputValue is a valid number before comparing
-        if (!isNaN(inputValue)) {
-            const newMin = Math.min(inputValue, maxPrice - 1)
-
-            setMinPrice(newMin)
-        }
-    }
-
-    // Same logic as above but for the left thumb to not go above right thumb
-    const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const inputValue = Number(e.target.value)
-
-        if (!isNaN(inputValue)) {
-            const newMax = Math.max(inputValue, minPrice + 1)
-
-            setMaxPrice(newMax)
-        }
-    }
-    // -----------------------------------------------
-
-    const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const { name } = e.target
-        let val: number = Number(e.target.value)
-
-        switch (name) {
-            case "minRating": setMinRating(val); break
-            case "maxRating": setMaxRating(val); break
-        }
-    }
-
-    const handleCategoryChange = (): void => {
-        let checkboxes = Array.from(document.getElementsByClassName("advanced-filter-product-checkbox")) as HTMLInputElement[]
-        let initCategories: string[] = []
-
-        checkboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                initCategories.push(checkbox.value)
-            }
-        })
-
-        setCheckedCategories(initCategories)
-    }
-
-    // Brand new or used products
-    const handleConditionChange = (): void => {
-        let checkboxes = Array.from(document.getElementsByClassName("advanced-filter-condition-checkbox")) as HTMLInputElement[]
-        let initConditions: string[] = []
-
-        checkboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                initConditions.push(checkbox.value)
-            }
-        })
-
-        setCheckedConditions(initConditions)
-    }
-
-    function applyFilters(): void {
-        let advancedFilteredProducts = originalProducts.filter(product => {
-            // Only get products that has atleast one of the tags that the user selected.
-            let matchedCategories = checkedCategories.some(checkedValue => product["category"].map(category => category.toLowerCase()).includes(checkedValue.toLowerCase()))
-
-            // Same logic but with conditions and it handle booleans.
-            let productCondition
-            if (product["brand_new"]) {
-                productCondition = "new"
-            }
-            else {
-                productCondition = "used"
-            }
-
-            let matchedConditions = checkedConditions.some(checkedValue => productCondition.toLowerCase() === checkedValue.toLowerCase())
-
-            let matchedRating = product["product_rating"] >= minRating && product["product_rating"] <= maxRating
-
-            let matchedPrice = product["price"] >= minPrice && product["price"] <= maxPrice
-
-            // Only return the product that has some of the selected categories and has rating between given range
-            if (matchedCategories && matchedRating && matchedPrice && matchedConditions) {
-                return product
-            }
-        })
-
-        setProductsToShow(advancedFilteredProducts)
-    }
-
+    // Fetch products from the database again for filtering and crud operations
     useEffect(() => {
-        // This is just to make the filtering functionality less complicated by removing the categroies in the header
-        let bottomWrapper = document.querySelector(".bottom-wrapper") as HTMLElement
-        bottomWrapper.style.height = "0"
+        const fetchProducts = async (): Promise<void> => {
+            try {
+                const res = await axios.get(`${SERVER_HOST}/products`)
 
-        setProductsToShow(filteredProducts)
+                if(!res || !res.data) {
+                    console.log(res.data.errorMessage)
+                }
+                else {
+                    setProducts(res.data)
+                    setFiltered(res.data)
+                }
 
-        handleCategoryChange()
-        handleConditionChange()
+                return
+            }
+            catch(error: any) {
+                if(error.response.data.errorMessage) {
+                    console.log(error.response.data.errorMessage)
+                }
+                else {
+                    console.log(error)
+                }
 
-        // IMPORTANT: this is the 'componentWillUnmount' equivalent
-        return () => {
-            // And just make it appear again later on
-            let bottomWrapper = document.querySelector(".bottom-wrapper") as HTMLElement
-            bottomWrapper.style.height = "auto"
+                return
+            }
         }
-    }, [productsToShow])
+
+        fetchProducts()
+    }, [])
 
     // Function to delete one single product by its id 
     const deleteProduct = async (id: string): Promise<void> => {
@@ -165,7 +72,6 @@ const Products: React.FC<ProductsProps> = ({
                 alert(res.data.errorMessage)
             }
             else {
-                setProductsToShow(prev => prev.filter(p => p._id !== id))
                 alert(res.data.message)
             }
 
@@ -181,161 +87,19 @@ const Products: React.FC<ProductsProps> = ({
         }
     }
 
+    // Update filteredProducts when applying filters in ProductFilters
+    const filterProducts = (products: Product[]) => {
+        setFiltered(products)
+    }
+
     return (
         <div className="products-page-container">
-            <div className="slide-in-modal" id="advanced-product-filters-modal">
-                <div className="slide-in-modal-content" id="advanced-product-filters-modal-content">
-                    <header>
-                        <h5>Filters</h5>
-
-                        <img src="/images/close-icon.png" alt="Close button icon" onClick={() => closeSlideInModal("advanced-product-filters-modal")} />
-                    </header>
-
-                    <main>
-                        <div className="section">
-                            <div className="title">
-                                <h5>Categories</h5>
-                            </div>
-
-                            <div className="content">
-                                {categories.map(category =>
-                                    <div className="checkbox-container" key={category}>
-                                        <label key={category}>
-                                            <input type="checkbox" value={category} className="advanced-filter-product-checkbox checkbox" onChange={handleCategoryChange} />
-
-                                            <p>{capitiliseString(category)}</p>
-                                        </label>
-
-                                        <p>{counterMap.get(category)}</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="section">
-                            <div className="title">
-                                <h5>Price (€)</h5>
-                            </div>
-
-                            <div className="content">
-                                <div className="min-max-inputs-container">
-                                    <label className="min">
-                                        <p>Min</p>
-
-                                        <input type="number" id="min-price-value" autoComplete="off" min={minLimit} value={minPrice} onChange={handleMinChange} />
-                                    </label>
-
-                                    <p className="dash">-</p>
-
-                                    <label className="max">
-                                        <p>Max</p>
-
-                                        <input type="number" id="max-price-value" max={maxLimit} autoComplete="on" value={maxPrice} onChange={handleMaxChange} />
-                                    </label>
-                                </div>
-
-                                {/* Slider with double thumbs made by ChatGPT */}
-                                <div className="slider-container">
-                                    <div className="slider">
-                                        <input
-                                            type="range"
-                                            min={minLimit}
-                                            max={maxLimit}
-                                            value={minPrice}
-                                            onChange={handleMinChange}
-                                            className="thumb thumb-left"
-                                        />
-
-                                        <input
-                                            type="range"
-                                            min={minLimit}
-                                            max={maxLimit}
-                                            value={maxPrice}
-                                            onChange={handleMaxChange}
-                                            className="thumb thumb-right"
-                                        />
-
-                                        <div className="slider-track" />
-
-                                        <div
-                                            className="slider-range"
-                                            style={{
-                                                left: `${(minPrice / maxLimit) * 100}%`,
-                                                width: `${((maxPrice - minPrice) / maxLimit) * 100}%`,
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="section">
-                            <div className="title">
-                                <h5>Rating</h5>
-                            </div>
-
-                            <div className="content">
-                                <div className="min-max-inputs-container">
-                                    <label className="min">
-                                        <p>Min</p>
-
-                                        <input type="number" name="minRating" id="min-rating-value" autoComplete="off" min="0" max={maxRating} value={minRating} onChange={handleRatingChange} />
-                                    </label>
-
-                                    <p className="dash">-</p>
-
-                                    <label className="max">
-                                        <p>Max</p>
-
-                                        <input type="number" name="maxRating" id="max-rating-value" min={minRating} max="5" autoComplete="off" value={maxRating} onChange={handleRatingChange} />
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="section">
-                            <div className="title">
-                                <h5>Condition</h5>
-                            </div>
-
-                            <div className="content">
-                                <div className="checkbox-container">
-                                    <label>
-                                        <input type="checkbox" value="new" className="advanced-filter-condition-checkbox checkbox" onChange={handleConditionChange} />
-
-                                        <p>New</p>
-                                    </label>
-
-                                    <p>{counterMap.get("new")}</p>
-                                </div>
-
-                                <div className="checkbox-container">
-                                    <label>
-                                        <input type="checkbox" value="used" className="advanced-filter-condition-checkbox checkbox" onChange={handleConditionChange} />
-
-                                        <p>Used</p>
-                                    </label>
-
-                                    <p>{counterMap.get("used")}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-
-                    <footer>
-                        <div id="clear-all-filters-button">
-                            <p>Clear All</p>
-                        </div>
-
-                        <div id="apply-filters-button" onClick={() => {
-                            closeSlideInModal("advanced-product-filters-modal")
-                            applyFilters()
-                        }}>
-                            <p>Apply Filters</p>
-                        </div>
-                    </footer>
-                </div>
-            </div>
+            <ProductFilters 
+                categories={categories}
+                counterMap={counterMap}
+                products={products}
+                filterProducts={filterProducts}
+            />
 
             {localStorage.accessLevel == ACCESS_LEVEL_ADMIN ? (
                 <div className="admin-tools">
@@ -377,9 +141,9 @@ const Products: React.FC<ProductsProps> = ({
                 </div>
             </div>
 
-            {productsToShow.length > 0 ? (
+            {filteredProducts && filteredProducts.length > 0 ? (
                 <main id="products-section">
-                    {productsToShow.map(product =>
+                    {filteredProducts?.map(product =>
                         <div className="product" key={product._id}>
                             <Link to={`/product/${product._id}`} className="product-image-container">
                                 <img
@@ -433,7 +197,7 @@ const Products: React.FC<ProductsProps> = ({
                     )}
                 </main>
             ) : (
-                <h3 className="no-matching-products">No matching products found!</h3>
+                <h3 className="no-matching-products">No results. Please adjust your selected changes</h3>
             )}
         </div>
     )

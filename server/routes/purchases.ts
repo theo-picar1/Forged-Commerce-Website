@@ -34,7 +34,7 @@ router.post('/purchases/:userId', async (req: Request, res: Response): Promise<v
         const userId = req.params.userId
 
         // Find the cart being posted to purchase history for reference
-        const cart = await cartModel.findById(cartId).populate('products.product')  // adjust if your schema differs
+        const cart = await cartModel.findById(cartId).populate('products.product')  
 
         if (!cart) {
             res.status(404).json({ errorMessage: 'Cart not found' })

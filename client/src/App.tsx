@@ -9,22 +9,22 @@ import "bootstrap/dist/css/bootstrap.css"
 import "./css/styles.css"
 
 // All individual pages
-import Home from "./components/Home.tsx"
-import NoPageFound from "./components/NoPageFound.tsx"
-import Login from "./components/Login.tsx"
-import Register from "./components/Register.tsx"
-import ForgotPassword from "./components/ForgotPassword.tsx"
+import Home from "./components/Home"
+import NoPageFound from "./components/NoPageFound"
+import Login from "./components/Login"
+import Register from "./components/Register"
+import ForgotPassword from "./components/ForgotPassword"
 
 // All pages/ views for the Home Component
-import HomeProducts from "./components/HomeProducts.tsx"
-import ShoppingCart from "./components/ShoppingCart.tsx"
-import Products from "./components/Products.tsx"
-import ViewProduct from "./components/ViewProduct.tsx"
-import PurchaseHistory from "./components/PurchaseHistory.tsx"
-import Favourites from "./components/Favourites.tsx"
-import AdminLogin from "./components/AdminLogin.tsx"
-import EditProduct from "./components/EditProduct.tsx"
-import Users from "./components/Users.tsx"
+import HomeProducts from "./components/HomeProducts"
+import ShoppingCart from "./components/ShoppingCart"
+import Products from "./components/Products"
+import ViewProduct from "./components/ViewProduct"
+import PurchaseHistory from "./components/PurchaseHistory"
+import Favourites from "./components/Favourites"
+import AdminLogin from "./components/AdminLogin"
+import EditProduct from "./components/EditProduct"
+import Users from "./components/Users"
 
 // Types
 import { Product } from "./types/Product.ts"
@@ -32,206 +32,128 @@ import { Cart } from "./types/Cart.ts"
 import { History } from "./types/Purchases.ts"
 import { Favourite } from "./types/Favourite.ts"
 
+// Functions 
+import { countCategoriesAndConditions, getCategories } from "./utils/product-utils.tsx"
+
+// To prevent errors relating to checking user's access level
 if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.accessLevel === undefined) {
     localStorage.accessLevel = ACCESS_LEVEL_GUEST
 }
 
-// --------------- MODAL LOGIC ---------------
-function openSlideInModal(modalToToggle: string): void {
-    const modal = document.getElementById(modalToToggle)
-    console.log("hello")
-
-    if (modal) {
-        modal.classList.add("active")
-    } 
-    else {
-        console.log("Modal with ID ", modalToToggle, "was not found!")
-    }
-}
-
-function closeSlideInModal(modalToToggle: string): void {
-    const modal = document.getElementById(modalToToggle)
-
-    if (modal) {
-        modal.classList.remove("active")
-    } else {
-        alert(`Modal with ID '${modalToToggle}' was not found!`)
-    }
-}
-// -----------------------------------------------------
-
-// --------------- PRODUCTS.JS FUNCTIONS ---------------
-const switchProductView = (view: string): void => {
-    let products = document.getElementById("products-section")
-    if (products) {
-        let cards = Array.from(document.getElementsByClassName("product")) as HTMLElement[]
-        let imageContainers = Array.from(document.getElementsByClassName("product-image-container")) as any[]
-        let addToCartBtn = Array.from(document.getElementsByClassName("add-to-shopping-cart-button")) as HTMLElement[]
-
-        if (view === "list") {
-            products.style.display = "flex"
-            products.style.flexDirection = "column"
-            products.style.gap = "10px"
-
-            cards.forEach(card => {
-                card.style.display = "flex"
-                card.style.flexDirection = "row"
-                card.style.gap = "15px"
-                card.style.backgroundColor = "#ffffff"
-                card.style.padding = "15px"
-            })
-
-            imageContainers.forEach(container => {
-                container.style.borderRadius = "0"
-                container.style.width = "150px"
-                container.style.height = "inherit"
-                container.style.aspectRatio = null
-
-                let image = container.querySelector("img") as HTMLImageElement
-
-                image.style.width = "100%"
-                image.style.maxHeight = "100%"
-            })
-
-            addToCartBtn.forEach(button => {
-                button.style.borderRadius = "50%"
-                button.style.width = "40px"
-                button.style.height = "40px"
-                button.style.padding = "0"
-            })
-        } else if (view === "grid") {
-            products.style.display = "grid"
-
-            cards.forEach(card => {
-                card.style.flexDirection = "column"
-                card.style.gap = "5px"
-                card.style.backgroundColor = "#f3f3f3"
-                card.style.padding = "0"
-            })
-
-            imageContainers.forEach(container => {
-                container.style.borderRadius = "10px"
-                container.style.aspectRatio = "145 / 150"
-                container.style.height = "auto"
-                container.style.width = "100%"
-
-                let image = container.querySelector("img") as HTMLImageElement
-
-                image.style.width = "100%"
-                image.style.maxHeight = "100%"
-            })
-
-            addToCartBtn.forEach(button => {
-                button.style.borderRadius = "5px"
-                button.style.width = "50px"
-                button.style.height = "auto"
-                button.style.padding = "5px 0"
-            })
-        }
-    }
-}
-
-function capitiliseString(string: string): string {
-    return string.substring(0, 1).toUpperCase() + string.substring(1)
-}
-
 const AppContent: React.FC = () => {
+    // For navigation purposes
     const navigate = useNavigate()
 
+    // State variables
     const [products, setProducts] = useState<any[]>([])
     const [filteredProducts, setFilteredProducts] = useState<any[]>([])
     const [categories, setCategories] = useState<string[]>([])
     const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<any[]>([])
     const [productSearchValue, setProductSearchValue] = useState<string>("")
-    const [currentView, setCurrentView] = useState<string>("")
     const [counterMap, setCounterMap] = useState<Map<string, number>>(new Map())
     const [cartLength, setCartLength] = useState<number>(0)
     const [quantityToAdd, setQuantityToAdd] = useState<number>(1)
     const [userFavourites, setFavourites] = useState<Favourite | null>(null)
 
-    // ----- TO FETCH PRODUCTS -----
-
+    // Fetching products from the database
     useEffect(() => {
-        const fetchProducts = async () => {
-            const initCategories: string[] = []
-            const initMap = new Map<string, number>([
-                ['new', 0],
-                ['used', 0],
-            ])
-
+        const fetchProducts = async (): Promise<void> => {
             try {
-                const res = await axios.get<Product[]>(`${SERVER_HOST}/products`)
-                const data = res.data
+                const res = await axios.get(`${SERVER_HOST}/products`)
 
-                if (!data || data.length === 0) {
-                    console.log('No products found')
+                if (!res.data || res.data.length === 0) {
+                    console.log(res.data.errorMessage)
                     return
                 }
 
-                data.forEach(product => {
-                    if (product.category && product.category.length > 0) {
-                        initCategories.push(...product.category)
-                        product.category.forEach(category => {
-                            initMap.set(category, (initMap.get(category) || 0) + 1)
-                        })
-                    }
+                // Calling functions to populate map and categories with data
+                const map: Map<string, number> = countCategoriesAndConditions(res.data) 
+                const categories: string[] = getCategories(res.data)
 
-                    if ('brand_new' in product) {
-                        const condition = product.brand_new ? 'new' : 'used'
-                        initMap.set(condition, (initMap.get(condition) || 0) + 1)
-                    }
-                })
+                setProducts(res.data)
+                setFilteredProducts(res.data)
+                setCategories([...new Set(categories)])
+                setCounterMap(map)
 
-                setProducts(data)
-                setFilteredProducts(data)
-                setCategories([...new Set(initCategories)])
-                setCounterMap(initMap)
+                return
             }
-            catch (err) {
-                console.error('Error fetching products:', err)
+            catch (error: any) {
+                if(error.response.data.errorMessage) {
+                    console.log(error.response.data.errorMessage)
+                }
+                else {
+                    console.log(error)
+                }
+
+                return
             }
         }
 
         fetchProducts()
     }, [])
-    // --------------------------------
 
-    // ----- TO FETCH USER'S CART -----
+    // Fetching the user's cart based on the id in the localStorage. Don't run if user is not signed in 
     useEffect(() => {
-        const userId = localStorage.getItem('id')
-        if (!userId) return
+        if(localStorage.accessLevel < 1) return // End early if not signed in
 
-        const fetchCart = async () => {
+        const userId = localStorage.getItem('id')
+        if (!userId) console.log("User's id was not saved in localStorage!")
+
+        const fetchCart = async (): Promise<void> => {
             try {
-                const res = await axios.get<Cart>(`${SERVER_HOST}/cart/${userId}`)
-                if (res.data) {
-                    setCartLength(res.data.products.length)
-                } else {
-                    alert('Unable to retrieve cart from the database!')
+                const res = await axios.get(`${SERVER_HOST}/cart/${userId}`)
+
+                if(!res || !res.data) {
+                    console.log(res.data.errorMessage)
                 }
-            } catch (err) {
-                console.error('Error fetching cart:', err)
+                else {
+                    setCartLength(res.data.products.length) // Update the cart length for th eheader component
+                }
+
+                return
+            } 
+            catch (error: any) {
+                if(error.response.data.errorMessage) {
+                    console.log(error.response.data.errorMessage)
+                }
+                else {
+                    console.log(error)
+                }
+
+                return
             }
         }
 
         fetchCart()
     }, [])
 
-    // ----- TO FETCH USER'S PURCHASE HISTORY -----
+    // Fetch user's purchase history based by their id
     useEffect(() => {
+        if(localStorage.accessLevel < 1) return // End early if not signed in
+
         const userId = localStorage.getItem('id')
         if (!userId) return
 
-        const fetchHistory = async () => {
+        const fetchHistory = async (): Promise<void> => {
             try {
-                const res = await axios.get<History>(`${SERVER_HOST}/purchases/${userId}`)
-                if (res.data) {
+                const res = await axios.get(`${SERVER_HOST}/purchases/${userId}`)
+
+                if (!res || !res.data) {
+                    console.log('Unable to retrieve purchase history from the database!')
+                } 
+                else {
                     console.log('Successfully retrieved purchase history')
-                } else {
-                    alert('Unable to retrieve purchase history from the database!')
                 }
-            } catch (err) {
-                console.error('Error fetching purchase history:', err)
+            } 
+            catch (error: any) {
+                if(error.response.data.errorMessage) {
+                    console.log(error.response.data.errorMessage)
+                }
+                else {
+                    console.log(error)
+                }
+
+                return
             }
         }
 
@@ -270,7 +192,6 @@ const AppContent: React.FC = () => {
             })
 
             setFilteredProducts(matched)
-            switchProductView(currentView)
             navigate("/products")
         }
     }
@@ -283,7 +204,6 @@ const AppContent: React.FC = () => {
         if (value === "") {
             setFilteredProducts(products)
             navigate('/products')
-            switchProductView(currentView)
         } else {
             products.forEach(product => {
                 if (product["category"].includes(value)) {
@@ -293,7 +213,6 @@ const AppContent: React.FC = () => {
 
             setFilteredProducts(matched)
             navigate('/products')
-            switchProductView(currentView)
         }
     }
 
@@ -346,13 +265,6 @@ const AppContent: React.FC = () => {
         setCartLength(newLength)
     }
     // ----------------------------------------------
-
-    // ---------- FUNCTIONS FOR PRODUCT.JS ----------
-    const switchProductViewImage = (view: string): void => {
-        setCurrentView(view)
-        switchProductView(view)
-    }
-    // ---------------------------------------------
 
     // ---------- FAVOURITING FUNCTIONALITY ----------
     useEffect(() => {
@@ -451,7 +363,6 @@ const AppContent: React.FC = () => {
             <Route path="/" element={
                 <Home
                     categories={categories}
-                    capitiliseString={capitiliseString}
                     suggestions={autocompleteSuggestions}
                     productSearchValue={productSearchValue}
                     displayAutocompleteSuggestions={displayAutocompleteSuggestions}
@@ -459,31 +370,19 @@ const AppContent: React.FC = () => {
                     filterProductsBySearchValue={filterProductsBySearchValue}
                     filterProductsByHeaderCategory={filterProductsByHeaderCategory}
                     cartLength={cartLength}
-                    closeSlideInModal={closeSlideInModal}
-                    openSlideInModal={openSlideInModal}
                 />
             }>
                 <Route index element={<HomeProducts products={products} />} />
 
                 <Route path="cart" element={
                     <ShoppingCart
-                        cartLength={cartLength}
-                        categories={categories}
-                        capitiliseString={capitiliseString}
                         updateCartLength={updateCartLength}
                     />
                 } />
 
                 <Route path="products" element={
                     <Products
-                        originalProducts={products}
-                        filteredProducts={filteredProducts}
-                        switchProductViewImage={switchProductViewImage}
-                        currentView={currentView}
-                        openSlideInModal={openSlideInModal}
-                        closeSlideInModal={closeSlideInModal}
                         categories={categories}
-                        capitiliseString={capitiliseString}
                         counterMap={counterMap}
                         addProductToCart={addProductToCart}
                     />
@@ -515,15 +414,11 @@ const AppContent: React.FC = () => {
                 <Route path="edit-product/:id" element={
                     <EditProduct 
                         categories={categories}
-                        capitiliseString={capitiliseString}
                     />
                 } />
 
                 <Route path="users" element={
-                    <Users 
-                        openSlideInModal={openSlideInModal}
-                        closeSlideInModal={closeSlideInModal}
-                    />
+                    <Users />
                 } />
             </Route>
 
