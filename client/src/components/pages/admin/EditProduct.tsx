@@ -3,12 +3,12 @@ import { Link, useParams } from "react-router-dom"
 
 // axios
 import axios from "axios"
-import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../config/global_constants"
+import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../../../config/global_constants"
 
 // types
-import { Product } from "../types/Product"
+import { Product } from "../../../types/Product"
 
-import { capitiliseString } from "../utils/string-utils"
+import { capitiliseString } from "../../../utils/string-utils"
 
 interface EditProductProps {
     categories: string[]

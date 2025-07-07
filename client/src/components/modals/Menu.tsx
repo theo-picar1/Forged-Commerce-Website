@@ -3,10 +3,10 @@ import { Link } from "react-router-dom"
 
 // axios
 import axios from "axios"
-import { ACCESS_LEVEL_GUEST, ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../config/global_constants.ts"
+import { ACCESS_LEVEL_GUEST, ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../../config/global_constants.ts"
 
-import { capitiliseString } from "../utils/string-utils.ts"
-import { closeSlideInModal } from "../utils/dom-utils.ts"
+import { capitiliseString } from "../../utils/string-utils.ts"
+import { closeSlideInModal } from "../../utils/dom-utils.ts"
 
 interface MenuProps {
     categories: string[]

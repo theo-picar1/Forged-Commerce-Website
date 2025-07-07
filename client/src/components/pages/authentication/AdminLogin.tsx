@@ -1,17 +1,18 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
+// axios
 import axios from "axios"
-import { SERVER_HOST } from "../config/global_constants"
+import { SERVER_HOST } from "../../../config/global_constants"
 
 const AdminLogin: React.FC = () => {
-    // Same thing as this.state
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [invalidEmail, setInvalidEmail] = useState(false)
-    const [invalidPassword, setInvalidPassword] = useState(false)
-    const [emailErrorMessage, setEmailErrorMessage] = useState("")
+    // State variables
+    const [email, setEmail] = useState<string>("")
+    const [password, setPassword] = useState<string>("")
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+    const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
+    const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
+    const [emailErrorMessage, setEmailErrorMessage] = useState<string>("")
 
     // Handling all changes done to the input fields for Login component
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

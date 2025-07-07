@@ -2,14 +2,14 @@ import React, { useRef, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
 // axios || constants
-import { ACCESS_LEVEL_ADMIN } from "../config/global_constants"
+import { ACCESS_LEVEL_ADMIN } from "../../config/global_constants"
 
 // types
-import { Product } from "../types/Product"
+import { Product } from "../../types/Product"
 
 // functions
-import { capitiliseString } from "../utils/string-utils"
-import { openSlideInModal } from "../utils/dom-utils"
+import { capitiliseString } from "../../utils/string-utils"
+import { openSlideInModal } from "../../utils/dom-utils"
 
 interface HeaderProps {
     categories: string[]

@@ -1,52 +1,82 @@
-import React, { useState } from "react"
+import React, { useReducer, useState } from "react"
 import { Link } from "react-router-dom"
 
-import { SERVER_HOST } from "../config/global_constants.ts"
+// axios
+import { SERVER_HOST } from "../../../config/global_constants.ts"
 import axios from "axios"
 
+// functions 
+import { validateEmail, validatePassword } from "../../../utils/validation-utils.ts"
+import { changeStyle, showMessage } from "../../../utils/dom-utils.ts"
+
+// Define state variables for useReducer
+type FormState = {
+    email: string
+    password: string
+}
+
+// useReducer actions
+type FormAction = | { type: 'UPDATE_FIELD'; field: keyof FormState; value: string | number } | { type: 'RESET_FORM' }
+
+// component
 const Login: React.FC = () => {
-    // Same thing as this.state
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [invalidEmail, setInvalidEmail] = useState(false)
-    const [invalidPassword, setInvalidPassword] = useState(false)
-    const [emailErrorMessage, setEmailErrorMessage] = useState("")
-    const [firstName, setFirstName] = useState("")
+    // Initial state variables
+    const initialState: FormState = {
+        email: '',
+        password: ''
+    }
+
+    // Standard useState variables
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+    const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
+    const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
+    const [emailErrorMessage, setEmailErrorMessage] = useState<string>('')
+    const [firstName, setFirstName] = useState<string>('')
+
+    // Handle updates or resets to the state variables
+    const formReducer = (state: FormState, action: FormAction): FormState => {
+        switch (action.type) {
+            // Update field that user is typing in
+            case 'UPDATE_FIELD':
+                return {
+                    ...state,
+                    [action.field]: action.value
+                }
+            // Reset to intiial values
+            case 'RESET_FORM':
+                return initialState
+            default:
+                return state
+        }
+    }
+
+    // To be able to use it, where state is the field and dispatch is the action
+    const [state, dispatch] = useReducer(formReducer, initialState)
 
     // Handling all changes done to the input fields for Login component
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const { name, value } = e.currentTarget
+        const { name, value } = e.target
 
-        if (name === "email") {
-            setEmail(value)
-        } 
-        else if (name === "password") {
-            setPassword(value)
-        }
+        // Update state based on e.target.name
+        dispatch({
+            type: 'UPDATE_FIELD',
+            field: name as keyof FormState,
+            value: value
+        })
     }
 
-    // Validating email. Return true if valid and false if invalid
-    const validateEmail = (): boolean => {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setEmailErrorMessage("Invalid email")
-            return false
-        }
-        return true
-    }
-
-    // Same logic
-    const validatePassword = (): boolean => {
-        return password.length >= 8
-    }
-
-    // Called before sending to axios. All invalid fields have to be false in order to proceed
+    // Called before sending to axios. All invalid fields have to be false (not invalid) in order to proceed
     const validInputs = (): boolean => {
-        const invalidEmailResult = !validateEmail()
-        const invalidPasswordResult = !validatePassword()
+        const invalidEmailResult = !validateEmail(state.email)
+        const invalidPasswordResult = !validatePassword(state.password)
 
-        setInvalidEmail(invalidEmailResult)
-        setInvalidPassword(invalidPasswordResult)
+        if (invalidEmailResult) {
+            setInvalidEmail(invalidEmailResult)
+            setEmailErrorMessage("Invalid email format")
+        }
+        if (invalidPassword) {
+            setInvalidPassword(invalidPasswordResult)
+        }
 
         // All result fields must be false (not invalid) in order to return true
         return !(invalidEmailResult || invalidPasswordResult)
@@ -60,46 +90,39 @@ const Login: React.FC = () => {
         if (!validInputs()) return
 
         const inputs = {
-            email,
-            password
+            email: state.email,
+            password: state.password
         }
 
         try {
             const res = await axios.post(`${SERVER_HOST}/users/login`, inputs)
             if (res.data.errorMessage) {
                 return
-            } 
-            else if (res.data) {
+            }
+            else {
                 localStorage.accessLevel = res.data.accessLevel
                 localStorage.id = res.data.id
 
                 setIsLoggedIn(true)
                 setFirstName(res.data.firstName)
-            } 
-            else {
-                alert("Registration failed")
             }
-        } 
+        }
         catch (error: any) {
-            if (error.response?.data?.errorMessage) {
+            const errorMessage = error.response.data.errorMessage
+
+            // Highlight incorrect input and show error message sent from backend
+            if (errorMessage && errorMessage.includes("email")) {
                 setEmailErrorMessage(error.response.data.errorMessage)
                 setInvalidEmail(true)
-            } 
+            }
+            else if (errorMessage && errorMessage.includes("password")) {
+                setInvalidPassword(true)
+            }
             else {
                 console.error("Unexpected error:", error)
             }
         }
     }
-
-    // Helper function to conditionally set input border color
-    const changeStyle = (invalid: boolean) => ({
-        borderColor: invalid ? "#FE0404" : "#808080"
-    })
-
-    // Helper function to conditionally show error messages
-    const showMessage = (invalid: boolean) => ({
-        display: invalid ? "block" : "none"
-    })
 
     return (
         <div className="authentication-page-container">
@@ -129,7 +152,7 @@ const Login: React.FC = () => {
 
                     <div className="inputs-container">
                         <div className="input-section">
-                            <p>Email</p>
+                            <p>email</p>
 
                             <div>
                                 <input
@@ -138,7 +161,7 @@ const Login: React.FC = () => {
                                     onChange={handleInputChange}
                                     style={changeStyle(invalidEmail)}
                                     autoComplete="email"
-                                    value={email}
+                                    value={state.email}
                                 />
                                 <p className="error-message" style={showMessage(invalidEmail)}>
                                     {emailErrorMessage}
@@ -148,7 +171,7 @@ const Login: React.FC = () => {
 
                         <div className="input-section">
                             <div className="forgot-password">
-                                <p>Password</p>
+                                <p>password</p>
                                 <Link to={"/forgot-password"} className="prompt">
                                     Forgot password?
                                 </Link>
@@ -160,7 +183,7 @@ const Login: React.FC = () => {
                                     name="password"
                                     onChange={handleInputChange}
                                     style={changeStyle(invalidPassword)}
-                                    value={password}
+                                    value={state.password}
                                 />
                                 <p className="error-message" style={showMessage(invalidPassword)}>
                                     Invalid password

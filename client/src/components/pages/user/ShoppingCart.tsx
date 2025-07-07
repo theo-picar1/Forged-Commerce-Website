@@ -3,11 +3,11 @@ import { Link } from "react-router-dom"
 
 // axios
 import axios from "axios"
-import { SERVER_HOST } from "../config/global_constants"
+import { SERVER_HOST } from "../../../config/global_constants.ts"
 
 // types
-import { Cart } from "../types/Cart.ts"
-import { Product } from "../types/Product"
+import { Cart } from "../../../types/Cart.ts"
+import { Product } from "../../../types/Product.ts"
 
 interface ShoppingCartProps {
     updateCartLength: (newLength: number) => void

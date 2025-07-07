@@ -2,14 +2,11 @@ import React, { useState, useRef, useEffect } from "react"
 
 // axios
 import axios from "axios"
-import { SERVER_HOST } from "../config/global_constants"
-
-// types
-import { Product } from "../types/Product"
+import { SERVER_HOST } from "../../config/global_constants"
 
 // fuctions
-import { capitiliseString } from "../utils/string-utils"
-import { closeSlideInModal } from "../utils/dom-utils"
+import { capitiliseString } from "../../utils/string-utils"
+import { closeSlideInModal } from "../../utils/dom-utils"
 
 // Props being passed to this component
 interface AddProductProps {

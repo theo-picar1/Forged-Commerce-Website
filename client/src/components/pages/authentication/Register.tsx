@@ -1,75 +1,113 @@
-import React, { useState } from "react"
+import React, { useReducer, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+
+// axios
 import axios from "axios"
-import { SERVER_HOST, ACCESS_LEVEL_NORMAL_USER } from "../config/global_constants.ts"
+import { SERVER_HOST, ACCESS_LEVEL_NORMAL_USER } from "../../../config/global_constants.ts"
+
+// functions 
+import { changeStyle, showMessage } from "../../../utils/dom-utils.ts"
+import { validateEmail, validatePassword, validateFirstName, validateLastName, validateConfirmPassword, validateEircode, validatePhone } from "../../../utils/validation-utils.ts"
+
+// Form state variables
+type FormState = {
+    firstName: string
+    lastName: string
+    email: string
+    telephoneNo: string
+    houseAddress: string
+    password: string
+    confirmPassword: string
+}
+
+// Defines updates for this form. UPDATE_FIELD is the same as 'setSomething', RESET_FORM just resets fields to intial values
+type FormAction = | { type: 'UPDATE_FIELD'; field: keyof FormState; value: string | number } | { type: 'RESET_FORM' }
 
 const Register: React.FC = () => {
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [email, setEmail] = useState("")
-    const [telephoneNo, setTelephoneNo] = useState("")
-    const [houseAddress, setHouseAddress] = useState("")
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
-    const [isRegistered, setIsRegistered] = useState(false)
-    const [invalidEmail, setInvalidEmail] = useState(false)
-    const [invalidPassword, setInvalidPassword] = useState(false)
-    const [invalidFirst, setInvalidFirst] = useState(false)
-    const [invalidLast, setInvalidLast] = useState(false)
-    const [invalidPhone, setInvalidPhone] = useState(false)
-    const [invalidAddress, setInvalidAddress] = useState(false)
-    const [invalidConfirm, setInvalidConfirm] = useState(false)
-    const [firstNameError, setFirstNameError] = useState("")
-    const [secondNameError, setSecondNameError] = useState("")
-    const [emailErrorMessage, setEmailErrorMessage] = useState("")
+    // Initial form state variables
+    const initialState: FormState = {
+        firstName: "",
+        lastName: "",
+        email: "",
+        telephoneNo: "",
+        houseAddress: "",
+        password: "",
+        confirmPassword: ''
+    }
 
+    // useState variables
+    const [isRegistered, setIsRegistered] = useState<boolean>(false)
+    const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
+    const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
+    const [invalidFirst, setInvalidFirst] = useState<boolean>(false)
+    const [invalidLast, setInvalidLast] = useState<boolean>(false)
+    const [invalidPhone, setInvalidPhone] = useState<boolean>(false)
+    const [invalidAddress, setInvalidAddress] = useState<boolean>(false)
+    const [invalidConfirm, setInvalidConfirm] = useState<boolean>(false)
+    const [emailErrorMessage, setEmailErrorMessage] = useState<string>("")
+
+    // Navigation
     const navigate = useNavigate()
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-
-        switch (name) {
-            case "firstName": setFirstName(value); break
-            case "lastName": setLastName(value); break
-            case "email": setEmail(value); break
-            case "telephoneNo": setTelephoneNo(value); break
-            case "houseAddress": setHouseAddress(value); break
-            case "password": setPassword(value); break
-            case "confirmPassword": setConfirmPassword(value); break
+    // For handling all state variables defined in FormState. 
+    const formReducer = (state: FormState, action: FormAction): FormState => {
+        switch (action.type) {
+            // Update field that user is typing in
+            case 'UPDATE_FIELD':
+                return {
+                    ...state,
+                    [action.field]: action.value
+                }
+            // Reset to intiial values
+            case 'RESET_FORM':
+                return initialState
+            default:
+                return state
         }
     }
 
+    // To be able to use it, where state is the field and dispatch is the action
+    const [state, dispatch] = useReducer(formReducer, initialState)
+
+    // Handle all input chnges in form with useReducer
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+
+        // Update state variable based on name
+        dispatch({ 
+            type: 'UPDATE_FIELD', 
+            field: name as keyof FormState, 
+            value: value 
+        })
+    }
+
+    // Validate all inputs and submit form
     const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         if (!validInputs()) return
 
         const inputs = {
-            firstName,
-            lastName,
-            email,
-            telephoneNo,
-            houseAddress,
-            password,
+            firstName: state.firstName,
+            lastName: state.lastName,
+            email: state.email,
+            telephoneNo: state.telephoneNo,
+            houseAddress: state.houseAddress,
+            password: state.password,
             accessLevel: ACCESS_LEVEL_NORMAL_USER
         }
 
         try {
             const res = await axios.post(`${SERVER_HOST}/users/register`, inputs)
             if (res.data?.errorMessage) {
-                setEmailErrorMessage(res.data.errorMessage)
-                setInvalidEmail(true)
+                return
             }
             else if (res.data) {
                 setIsRegistered(true)
             }
-            else {
-                alert("Registration failed")
-            }
         }
         catch (error: any) {
-            if (error.response?.data?.errorMessage) {
-                setEmailErrorMessage(error.response.data.errorMessage)
-                setInvalidEmail(true)
+            if (error.response.data.errorMessage) {
+                console.log(error.response.data.errorMessage)
             }
             else {
                 console.error("Unexpected error:", error)
@@ -78,13 +116,17 @@ const Register: React.FC = () => {
     }
 
     const validInputs = () => {
-        const invalidEmail = !validateEmail()
-        const invalidPassword = !validatePassword()
-        const invalidPhone = !validatePhone()
-        const invalidAddress = !validateEircode()
-        const invalidFirst = !validateFirstName()
-        const invalidLast = !validateLastName()
-        const invalidConfirm = !validateConfirmPassword()
+        const invalidEmail = !validateEmail(state.email)
+        const invalidPassword = !validatePassword(state.password)
+        const invalidPhone = !validatePhone(state.telephoneNo)
+        const invalidAddress = !validateEircode(state.houseAddress)
+        const invalidFirst = !validateFirstName(state.firstName)
+        const invalidLast = !validateLastName(state.lastName)
+        const invalidConfirm = !validateConfirmPassword(state.confirmPassword, state.password)
+
+        if(invalidEmail) {
+            setEmailErrorMessage("Invalid email format")
+        }
 
         setInvalidEmail(invalidEmail)
         setInvalidPassword(invalidPassword)
@@ -104,45 +146,6 @@ const Register: React.FC = () => {
             invalidConfirm
         )
     }
-
-    const validateEmail = () => {
-        const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-        if (!valid) setEmailErrorMessage("Invalid email")
-        return valid
-    }
-
-    const validatePassword = () => password.length >= 8
-
-    const validateFirstName = () => {
-        if (firstName.length >= 30) {
-            setFirstNameError("Name must be less than 30 characters")
-            return false
-        }
-        if (firstName.length <= 0 || !/^[A-Za-z]+$/.test(firstName)) {
-            setFirstNameError("Invalid name")
-            return false
-        }
-        return true
-    }
-
-    const validateLastName = () => {
-        if (lastName.length >= 40) {
-            setSecondNameError("Name must be less than 40 characters")
-            return false
-        }
-        if (lastName.length <= 0 || !/^[A-Za-z]+$/.test(lastName)) {
-            setSecondNameError("Invalid name")
-            return false
-        }
-        return true
-    }
-
-    const validatePhone = () => /^(?:\+353|0)8[3-9]\d{7}$/.test(telephoneNo)
-    const validateEircode = () => /^[A-Za-z]\d{2}\s?[A-Za-z0-9]{4}$/.test(houseAddress.trim())
-    const validateConfirmPassword = () => confirmPassword === password
-
-    const changeStyle = (invalid: boolean) => ({ borderColor: invalid ? '#FE0404' : '#808080' })
-    const showMessage = (invalid: boolean) => ({ display: invalid ? 'block' : 'none' })
 
     if (isRegistered) navigate("/")
 
@@ -167,13 +170,14 @@ const Register: React.FC = () => {
                                 <input
                                     type="text"
                                     name="firstName"
-                                    value={firstName}
+                                    value={state.firstName}
                                     onChange={handleInputChange}
                                     className="input-field"
                                     style={changeStyle(invalidFirst)}
                                     autoComplete="off"
+                                    placeholder="30 character max"
                                 />
-                                <p className="error-message" style={showMessage(invalidFirst)}>{firstNameError}</p>
+                                <p className="error-message" style={showMessage(invalidFirst)}>Invalid name</p>
                             </div>
                         </div>
 
@@ -183,13 +187,14 @@ const Register: React.FC = () => {
                                 <input
                                     type="text"
                                     name="lastName"
-                                    value={lastName}
+                                    value={state.lastName}
                                     onChange={handleInputChange}
                                     className="input-field"
                                     style={changeStyle(invalidLast)}
                                     autoComplete="off"
+                                    placeholder="40 characters max"
                                 />
-                                <p className="error-message" style={showMessage(invalidLast)}>{secondNameError}</p>
+                                <p className="error-message" style={showMessage(invalidLast)}>Invalid surname</p>
                             </div>
                         </div>
                     </div>
@@ -200,7 +205,7 @@ const Register: React.FC = () => {
                             <input
                                 type="email"
                                 name="email"
-                                value={email}
+                                value={state.email}
                                 onChange={handleInputChange}
                                 className="input-field"
                                 style={changeStyle(invalidEmail)}
@@ -216,7 +221,7 @@ const Register: React.FC = () => {
                             <input
                                 type="text"
                                 name="telephoneNo"
-                                value={telephoneNo}
+                                value={state.telephoneNo}
                                 onChange={handleInputChange}
                                 className="input-field"
                                 style={changeStyle(invalidPhone)}
@@ -232,7 +237,7 @@ const Register: React.FC = () => {
                             <input
                                 type="text"
                                 name="houseAddress"
-                                value={houseAddress}
+                                value={state.houseAddress}
                                 onChange={handleInputChange}
                                 className="input-field"
                                 style={changeStyle(invalidAddress)}
@@ -249,7 +254,7 @@ const Register: React.FC = () => {
                                 <input
                                     type="password"
                                     name="password"
-                                    value={password}
+                                    value={state.password}
                                     onChange={handleInputChange}
                                     className="input-field"
                                     style={changeStyle(invalidPassword)}
@@ -265,7 +270,7 @@ const Register: React.FC = () => {
                                 <input
                                     type="password"
                                     name="confirmPassword"
-                                    value={confirmPassword}
+                                    value={state.confirmPassword}
                                     onChange={handleInputChange}
                                     className="input-field"
                                     style={changeStyle(invalidConfirm)}

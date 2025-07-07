@@ -1,11 +1,15 @@
 import React, { useState, useEffect, JSX } from "react"
 import { Link, useParams } from "react-router-dom"
 
+// axios
 import axios from "axios"
-import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../config/global_constants"
+import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../../../config/global_constants"
 
-import { Product } from "../types/Product"
-import { Favourite } from "../types/Favourite"
+// types
+import { Product } from "../../../types/Product"
+import { Favourite } from "../../../types/Favourite"
+
+import { createImageIndexes, discountedPrice } from "../../../utils/product-utils"
 
 interface ViewProductsProps {
     products: Product[]
@@ -58,21 +62,6 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                 console.log("Unexpected server error: ", error)
             }
         }
-    }
-
-    // the little circles just below the product image depending on ow many images that product has
-    function createImageIndexes(noOfImages: number): JSX.Element[] {
-        return Array.from({ length: noOfImages }, (_, i) => (
-            <div className="index" key={i}></div>
-        ))
-    }
-
-    // To calculate discounted price and also return it rounded to two d.p
-    function discountedPrice(price: number, discount: number): number {
-        let originalPrice = price
-        let convertedDiscount = discount / 100
-
-        return Number((originalPrice - price * convertedDiscount).toFixed(2))
     }
 
     // Findall products where the first category of the product is the same as product we're viewing

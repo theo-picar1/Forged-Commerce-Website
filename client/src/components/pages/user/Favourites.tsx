@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
 import axios from "axios"
-import { SERVER_HOST } from "../config/global_constants"
+import { SERVER_HOST } from "../../../config/global_constants"
 
-import { Favourite } from "../types/Favourite"
+import { Favourite } from "../../../types/Favourite"
 
 interface FavouriteProps {
     userFavourites: Favourite | null

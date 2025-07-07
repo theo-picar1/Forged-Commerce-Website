@@ -9,26 +9,25 @@ import "bootstrap/dist/css/bootstrap.css"
 import "./css/styles.css"
 
 // All individual pages
-import Home from "./components/Home"
-import NoPageFound from "./components/NoPageFound"
-import Login from "./components/Login"
-import Register from "./components/Register"
-import ForgotPassword from "./components/ForgotPassword"
+import Home from "./components/layouts/Home.tsx"
+import NoPageFound from "./components/pages/NoPageFound.tsx"
+import Login from "./components/pages/authentication/Login.tsx"
+import Register from "./components/pages/authentication/Register.tsx"
+import ForgotPassword from "./components/pages/authentication/ForgotPassword.tsx"
 
 // All pages/ views for the Home Component
-import HomeProducts from "./components/HomeProducts"
-import ShoppingCart from "./components/ShoppingCart"
-import Products from "./components/Products"
-import ViewProduct from "./components/ViewProduct"
-import PurchaseHistory from "./components/PurchaseHistory"
-import Favourites from "./components/Favourites"
-import AdminLogin from "./components/AdminLogin"
-import EditProduct from "./components/EditProduct"
-import Users from "./components/Users"
+import HomeProducts from "./components/pages/user/HomeProducts.tsx"
+import ShoppingCart from "./components/pages/user/ShoppingCart.tsx"
+import Products from "./components/pages/user/Products.tsx"
+import ViewProduct from "./components/pages/user/ViewProduct"
+import PurchaseHistory from "./components/pages/user/PurchaseHistory.tsx"
+import Favourites from "./components/pages/user/Favourites.tsx"
+import AdminLogin from "./components/pages/authentication/AdminLogin.tsx"
+import EditProduct from "./components/pages/admin/EditProduct.tsx"
+import Users from "./components/pages/admin/Users.tsx"
 
 // Types
 import { Product } from "./types/Product.ts"
-import { Cart } from "./types/Cart.ts"
 import { History } from "./types/Purchases.ts"
 import { Favourite } from "./types/Favourite.ts"
 
@@ -46,7 +45,6 @@ const AppContent: React.FC = () => {
 
     // State variables
     const [products, setProducts] = useState<any[]>([])
-    const [filteredProducts, setFilteredProducts] = useState<any[]>([])
     const [categories, setCategories] = useState<string[]>([])
     const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<any[]>([])
     const [productSearchValue, setProductSearchValue] = useState<string>("")
@@ -71,7 +69,6 @@ const AppContent: React.FC = () => {
                 const categories: string[] = getCategories(res.data)
 
                 setProducts(res.data)
-                setFilteredProducts(res.data)
                 setCategories([...new Set(categories)])
                 setCounterMap(map)
 
@@ -191,7 +188,6 @@ const AppContent: React.FC = () => {
                 }
             })
 
-            setFilteredProducts(matched)
             navigate("/products")
         }
     }
@@ -202,16 +198,15 @@ const AppContent: React.FC = () => {
         let matched: Product[] = []
 
         if (value === "") {
-            setFilteredProducts(products)
             navigate('/products')
-        } else {
+        } 
+        else {
             products.forEach(product => {
                 if (product["category"].includes(value)) {
                     matched.push(product)
                 }
             })
 
-            setFilteredProducts(matched)
             navigate('/products')
         }
     }

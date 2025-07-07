@@ -2,10 +2,10 @@ import React from "react"
 import { Outlet } from "react-router-dom"
 
 // components
-import Menu from "./Menu.tsx"
+import Menu from "../modals/Menu.tsx"
 import Header from "./Header.tsx"
 import Footer from "./Footer.tsx"
-import AddProduct from "./AddProduct.tsx"
+import AddProduct from "../modals/AddProduct.tsx"
 
 interface HomeProps {
     categories: string[]

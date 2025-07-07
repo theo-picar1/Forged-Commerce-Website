@@ -2,19 +2,18 @@ import React, { useState, useEffect, JSX } from "react"
 import { Link } from "react-router-dom"
 
 // types
-import { Product } from "../types/Product"
+import { Product } from "../../../types/Product.ts"
 
 // axios 
-import { ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../config/global_constants"
+import { ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../../../config/global_constants.ts"
 import axios from "axios"
 
 // functions
-import { capitiliseString } from "../utils/string-utils"
-import { openSlideInModal, closeSlideInModal } from "../utils/dom-utils"
-import { createStarsForProduct } from "../utils/product-utils.tsx"
+import { openSlideInModal } from "../../../utils/dom-utils.ts"
+import { createStarsForProduct } from "../../../utils/product-utils.tsx"
 
 // components
-import ProductFilters from "./modals/ProductFilters"
+import ProductFilters from "../../modals/ProductFilters.tsx"
 
 // Interface is for the props being passed to this component
 interface ProductsProps {

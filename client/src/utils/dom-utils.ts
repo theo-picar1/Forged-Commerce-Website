@@ -22,3 +22,13 @@ export function closeSlideInModal(modalToToggle: string): void {
         alert(`Modal with ID '${modalToToggle}' was not found!`)
     }
 }
+
+// Helper function to conditionally set input border color
+export const changeStyle = (invalid: boolean) => ({
+    borderColor: invalid ? "#FE0404" : "#808080"
+})
+
+// Helper function to conditionally show error messages
+export const showMessage = (invalid: boolean) => ({
+    display: invalid ? "block" : "none"
+})

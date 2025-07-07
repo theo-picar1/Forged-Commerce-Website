@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
-import { SERVER_HOST } from "../config/global_constants.ts"
-import { History } from "../types/Purchases.ts"
+import { SERVER_HOST } from "../../../config/global_constants.ts"
+import { History } from "../../../types/Purchases.ts"
 
 /*
     Notes:
