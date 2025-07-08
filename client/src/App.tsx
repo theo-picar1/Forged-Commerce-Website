@@ -28,7 +28,6 @@ import Users from "./components/pages/admin/Users.tsx"
 
 // Types
 import { Product } from "./types/Product.ts"
-import { History } from "./types/Purchases.ts"
 import { Favourite } from "./types/Favourite.ts"
 
 // Functions 
@@ -46,8 +45,6 @@ const AppContent: React.FC = () => {
     // State variables
     const [products, setProducts] = useState<any[]>([])
     const [categories, setCategories] = useState<string[]>([])
-    const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<any[]>([])
-    const [productSearchValue, setProductSearchValue] = useState<string>("")
     const [counterMap, setCounterMap] = useState<Map<string, number>>(new Map())
     const [cartLength, setCartLength] = useState<number>(0)
     const [quantityToAdd, setQuantityToAdd] = useState<number>(1)
@@ -157,60 +154,6 @@ const AppContent: React.FC = () => {
         fetchHistory()
     }, [])
 
-    // --------------- SEARCH FUNCTIONALITY ---------------
-    const completeAutocomplete = (value: string): void => {
-        setProductSearchValue(value)
-        setAutocompleteSuggestions([])
-    }
-
-    const displayAutocompleteSuggestions = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        let suggestions: string[] = []
-
-        if (e.target.value !== "" && e.target.value.length > 0) {
-            products.forEach(product => {
-                if (product["product_name"].toLowerCase().startsWith(e.target.value.toLowerCase())) {
-                    suggestions.push(product)
-                }
-            })
-        }
-
-        setAutocompleteSuggestions(suggestions)
-        setProductSearchValue(e.target.value)
-    }
-
-    const filterProductsBySearchValue = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        if (e.key === 'Enter') {
-            let matched: Product[] = []
-
-            products.forEach(product => {
-                if (product["product_name"].startsWith(productSearchValue)) {
-                    matched.push(product)
-                }
-            })
-
-            navigate("/products")
-        }
-    }
-    // ----------------------------------------------------
-
-    // --------------- FILTER FUNCTIONALITY ---------------
-    const filterProductsByHeaderCategory = (value: string): void => {
-        let matched: Product[] = []
-
-        if (value === "") {
-            navigate('/products')
-        } 
-        else {
-            products.forEach(product => {
-                if (product["category"].includes(value)) {
-                    matched.push(product)
-                }
-            })
-
-            navigate('/products')
-        }
-    }
-
     const handleRequestedQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const quantity = Number(e.target.value)
         setQuantityToAdd(quantity)
@@ -292,10 +235,8 @@ const AppContent: React.FC = () => {
     const refreshFavourites = (productId: string, condition: string, productToAdd?: Product) => {
         if (condition === "remove") {
             setFavourites(prev => {
-                // This is if userFavourites is null
                 if (!prev) return prev
 
-                // Remove the removed favourited product in the state
                 const updated = {
                     ...prev,
                     favourites: prev.favourites.filter(favourite => favourite._id !== productId)
@@ -357,13 +298,8 @@ const AppContent: React.FC = () => {
             {/* Home Pages */}
             <Route path="/" element={
                 <Home
+                    products={products}
                     categories={categories}
-                    suggestions={autocompleteSuggestions}
-                    productSearchValue={productSearchValue}
-                    displayAutocompleteSuggestions={displayAutocompleteSuggestions}
-                    completeAutocomplete={completeAutocomplete}
-                    filterProductsBySearchValue={filterProductsBySearchValue}
-                    filterProductsByHeaderCategory={filterProductsByHeaderCategory}
                     cartLength={cartLength}
                 />
             }>
@@ -375,7 +311,7 @@ const AppContent: React.FC = () => {
                     />
                 } />
 
-                <Route path="products" element={
+                <Route path="products/:prefix?" element={
                     <Products
                         categories={categories}
                         counterMap={counterMap}
@@ -417,13 +353,14 @@ const AppContent: React.FC = () => {
                 } />
             </Route>
 
+            {/* Admin Pages */}
+
+            {/* Other */}
             <Route path="*" element={<NoPageFound />} />
         </Routes>
     )
 }
 
-// Need to separate as useNavigate only works inside components rendered within a router, like BrowserRouter
-// Before I had all logic in app, so useNavigate was defined outside BrowserRouter
 const App: React.FC = () => {
     return (
         <BrowserRouter>

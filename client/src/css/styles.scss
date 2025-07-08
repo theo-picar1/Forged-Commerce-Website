@@ -395,7 +395,7 @@ $laptop-container-padding: 20px;
         width: 100%;
         background-color: $website-blue;
         padding: $mobile-padding;
-        padding-bottom: 5px;
+        padding-bottom: 15px;
         color: $website-white;
         box-shadow: 0 0 10px 5px $translucent;
         position: sticky;
@@ -512,88 +512,6 @@ $laptop-container-padding: 20px;
 
                     img {
                         filter: $website-white-to-black;
-                    }
-                }
-            }
-        }
-
-        .bottom-wrapper {
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            margin: auto;
-            transition: all 0.3s ease;
-
-            &.hide {
-                transform: translateY(-100%);
-                opacity: 0;
-                pointer-events: none;
-                height: 0;
-            }
-
-            // This is the actual blur
-            &::before,
-            &::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                width: 20px; // slightly smaller for subtle effect
-                pointer-events: none;
-                z-index: 1;
-            }
-
-            &::before {
-                left: 0;
-                background: linear-gradient(to right, $website-blue 40%, transparent);
-                opacity: 1;
-                transition: opacity 0.3s;
-            }
-
-            &::after {
-                right: 0;
-                background: linear-gradient(to left, $website-blue 40%, transparent);
-                opacity: 1;
-                transition: opacity 0.3s;
-            }
-
-            &.at-start::before {
-                opacity: 0;
-            }
-
-            &.at-end::after {
-                opacity: 0;
-            }
-
-            .bottom {
-                overflow-x: auto;
-                display: flex;
-                gap: 15px;
-                flex-wrap: nowrap;
-                scrollbar-width: none;
-                width: 100%;
-                margin: auto;
-                position: relative;
-
-                &::-webkit-scrollbar {
-                    display: none;
-                }
-
-                .category-radio {
-                    position: relative;
-
-                    input {
-                        position: fixed;
-                        appearance: none;
-
-                        &:hover+p {
-                            color: $website-red;
-                            cursor: pointer;
-                        }
-                    }
-
-                    p {
-                        white-space: nowrap;
                     }
                 }
             }

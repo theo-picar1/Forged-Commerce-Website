@@ -41,7 +41,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
         try {
             const res = await axios.post(`${SERVER_HOST}/favourites/${localStorage.id}/${productId}`)
 
-            if (!res) {
+            if (!res || !res.data) {
                 alert("Unable to perform request at the moment!")
 
                 return
@@ -77,8 +77,8 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
         setSimilarProducts(similar)
     }
 
+    // Fetch product by id in URL
     useEffect(() => {
-        // Fetch the product to view with the help of the id in the url
         async function fetchProduct() {
             try {
                 const res = await axios.get<Product>(`${SERVER_HOST}/products/${id}`)
@@ -89,8 +89,12 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                 else {
                     alert("Failed to retrieve product")
                 }
-            } catch (error: any) {
+
+                return
+            } 
+            catch (error: any) {
                 console.error("Unexpected error:", error)
+                return
             }
         }
 
@@ -271,7 +275,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
             </div>
         </div>
     ) : (
-        <div>Error 404: Product not found</div>
+        <div>No matching product!</div>
     )
 }
 

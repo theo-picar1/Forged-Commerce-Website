@@ -7,25 +7,18 @@ import Header from "./Header.tsx"
 import Footer from "./Footer.tsx"
 import AddProduct from "../modals/AddProduct.tsx"
 
+// types
+import { Product } from "../../types/Product.ts"
+
 interface HomeProps {
+    products: Product[]
     categories: string[]
-    suggestions: any[]
-    productSearchValue: string
-    displayAutocompleteSuggestions: (e: React.ChangeEvent<HTMLInputElement>) => void
-    completeAutocomplete: (value: string) => void
-    filterProductsBySearchValue: (e: React.KeyboardEvent<HTMLInputElement>) => void
-    filterProductsByHeaderCategory: (value: string) => void
     cartLength: number
 }
 
 const Home: React.FC<HomeProps> = ({
+    products,
     categories,
-    suggestions,
-    productSearchValue,
-    displayAutocompleteSuggestions,
-    completeAutocomplete,
-    filterProductsBySearchValue,
-    filterProductsByHeaderCategory,
     cartLength
 }) => {
     // --------------------------------------------------------
@@ -40,13 +33,7 @@ const Home: React.FC<HomeProps> = ({
             />
 
             <Header
-                categories={categories}
-                displayAutocompleteSuggestions={displayAutocompleteSuggestions}
-                suggestions={suggestions}
-                productSearchValue={productSearchValue}
-                completeAutocomplete={completeAutocomplete}
-                filterProductsBySearchValue={filterProductsBySearchValue}
-                filterProductsByHeaderCategory={filterProductsByHeaderCategory}
+                products={products}
                 cartLength={cartLength}
             />
 

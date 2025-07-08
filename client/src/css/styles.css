@@ -91,7 +91,7 @@
     width: 100%;
     background-color: #2C3A57;
     padding: 35px 10px;
-    padding-bottom: 5px;
+    padding-bottom: 15px;
     color: #FFFFFF;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5215686275);
     position: sticky;
@@ -249,75 +249,6 @@
   }
   .website-header .middle #product-autocomplete-modal div img {
     filter: brightness(0);
-  }
-  .website-header .bottom-wrapper {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    margin: auto;
-    transition: all 0.3s ease;
-  }
-  .website-header .bottom-wrapper.hide {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-    height: 0;
-  }
-  .website-header .bottom-wrapper::before, .website-header .bottom-wrapper::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 20px;
-    pointer-events: none;
-    z-index: 1;
-  }
-  .website-header .bottom-wrapper::before {
-    left: 0;
-    background: linear-gradient(to right, #2C3A57 40%, transparent);
-    opacity: 1;
-    transition: opacity 0.3s;
-  }
-  .website-header .bottom-wrapper::after {
-    right: 0;
-    background: linear-gradient(to left, #2C3A57 40%, transparent);
-    opacity: 1;
-    transition: opacity 0.3s;
-  }
-  .website-header .bottom-wrapper.at-start::before {
-    opacity: 0;
-  }
-  .website-header .bottom-wrapper.at-end::after {
-    opacity: 0;
-  }
-  .website-header .bottom-wrapper .bottom {
-    overflow-x: auto;
-    display: flex;
-    gap: 15px;
-    flex-wrap: nowrap;
-    scrollbar-width: none;
-    width: 100%;
-    margin: auto;
-    position: relative;
-  }
-  .website-header .bottom-wrapper .bottom::-webkit-scrollbar {
-    display: none;
-  }
-  .website-header .bottom-wrapper .bottom .category-radio {
-    position: relative;
-  }
-  .website-header .bottom-wrapper .bottom .category-radio input {
-    position: fixed;
-    -webkit-appearance: none;
-       -moz-appearance: none;
-            appearance: none;
-  }
-  .website-header .bottom-wrapper .bottom .category-radio input:hover + p {
-    color: #FE0404;
-    cursor: pointer;
-  }
-  .website-header .bottom-wrapper .bottom .category-radio p {
-    white-space: nowrap;
   }
   .home-products-container {
     background-color: #F3F3F3;

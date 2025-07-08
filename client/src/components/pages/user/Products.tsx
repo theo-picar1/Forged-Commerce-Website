@@ -1,5 +1,5 @@
-import React, { useState, useEffect, JSX } from "react"
-import { Link } from "react-router-dom"
+import React, { useState, useEffect } from "react"
+import { Link, useParams } from "react-router-dom"
 
 // types
 import { Product } from "../../../types/Product.ts"
@@ -31,24 +31,28 @@ const Products: React.FC<ProductsProps> = ({
     const [products, setProducts] = useState<Product[]>([])
     const [filteredProducts, setFiltered] = useState<Product[]>([])
 
+    // URL Params
+    const { prefix } = useParams<{ prefix?: string }>()
+    const searchPrefix = prefix?.trim() || "" // Fallback for if prefix is undefined
+
     // Fetch products from the database again for filtering and crud operations
     useEffect(() => {
         const fetchProducts = async (): Promise<void> => {
             try {
-                const res = await axios.get(`${SERVER_HOST}/products`)
+                const res = await axios.get(`${SERVER_HOST}/products/search/${searchPrefix}`)
 
-                if(!res || !res.data) {
+                if (!res || !res.data) {
                     console.log(res.data.errorMessage)
                 }
                 else {
-                    setProducts(res.data)
-                    setFiltered(res.data)
+                    setProducts(res.data.products)
+                    setFiltered(res.data.products)
                 }
 
                 return
             }
-            catch(error: any) {
-                if(error.response.data.errorMessage) {
+            catch (error: any) {
+                if (error.response.data.errorMessage) {
                     console.log(error.response.data.errorMessage)
                 }
                 else {
@@ -60,14 +64,14 @@ const Products: React.FC<ProductsProps> = ({
         }
 
         fetchProducts()
-    }, [])
+    }, [prefix])
 
     // Function to delete one single product by its id 
     const deleteProduct = async (id: string): Promise<void> => {
         try {
-            const res = await axios.delete(`${SERVER_HOST}/products/${id}`)         
-            
-            if(!res || !res.data) {
+            const res = await axios.delete(`${SERVER_HOST}/products/${id}`)
+
+            if (!res || !res.data) {
                 alert(res.data.errorMessage)
             }
             else {
@@ -76,8 +80,8 @@ const Products: React.FC<ProductsProps> = ({
 
             return
         }
-        catch(error: any) {
-            if(error.response.data.errorMessage) {
+        catch (error: any) {
+            if (error.response.data.errorMessage) {
                 console.error(error.response.data.errorMessage)
             }
             else {
@@ -93,7 +97,7 @@ const Products: React.FC<ProductsProps> = ({
 
     return (
         <div className="products-page-container">
-            <ProductFilters 
+            <ProductFilters
                 categories={categories}
                 counterMap={counterMap}
                 products={products}

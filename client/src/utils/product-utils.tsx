@@ -97,3 +97,18 @@ export function discountedPrice(price: number, discount: number): number {
 
     return Number((originalPrice - price * convertedDiscount).toFixed(2))
 }
+
+// Find images starting with passed in prefix
+export function findProductsWithPrefix(prefix: string, products: Product[]): Product[] {
+    let matched: Product[] = []
+
+    if (prefix !== "" && prefix.length > 0) {
+        products.forEach(product => {
+            if (product["product_name"].toLowerCase().startsWith(prefix.toLowerCase())) {
+                matched.push(product)
+            }
+        })
+    }
+
+    return matched
+}
