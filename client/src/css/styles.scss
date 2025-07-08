@@ -592,6 +592,18 @@ $laptop-container-padding: 20px;
         padding: $mobile-container-padding;
         @include flex-direction(column, unset, unset, 15px);
 
+        .onmount-message {
+            @include flex-direction(unset, center, center, 0);
+            width: 100%;
+            height: 50vh;
+
+            p {
+                text-align: center;
+                font-weight: bold;
+                font-size: 24px;
+            }
+        }
+
         #search-results-text {
             display: none;
         }
@@ -871,9 +883,18 @@ $laptop-container-padding: 20px;
             }
         }
 
-        .no-matching-products {
+        .no-matching-products-message {
+            @include flex-direction(unset, center, center, 0);
+            width: 100%;
+            height: fit-content;
             text-align: center;
-            margin: 75px 0;
+            margin-top: 20px;
+            margin-bottom: 20px;
+
+            p {
+                font-size: 24px;
+                font-weight: bold;
+            }
         }
     }
 
@@ -1955,6 +1976,7 @@ $laptop-container-padding: 20px;
             }
         }
     }
+
     // ---------------------------------------
 
     // ---------- User Manager Page ----------

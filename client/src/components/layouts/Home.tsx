@@ -5,7 +5,6 @@ import { Outlet } from "react-router-dom"
 import Menu from "../modals/Menu.tsx"
 import Header from "./Header.tsx"
 import Footer from "./Footer.tsx"
-import AddProduct from "../modals/AddProduct.tsx"
 
 // types
 import { Product } from "../../types/Product.ts"
@@ -25,10 +24,6 @@ const Home: React.FC<HomeProps> = ({
     return (
         <React.Fragment>
             <Menu
-                categories={categories}
-            />
-
-            <AddProduct 
                 categories={categories}
             />
 

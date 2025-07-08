@@ -72,7 +72,11 @@ router.post('/users/register', validateFields(registerFields), async (req: Reque
             password: hashedPassword,
             accessLevel
         })
-        res.status(201).json({ successMessage: 'User successfully registered with ID: ', userId: newUser._id })
+
+        //Get updated users
+        const users = await usersModel.find()
+
+        res.status(201).json({ users, successMessage: 'User successfully registered with ID: ', userId: newUser._id })
 
         return
     }

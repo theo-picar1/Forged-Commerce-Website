@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
 
+// axios
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_GUEST } from "./config/global_constants.ts"
 import axios from "axios"
 import { SERVER_HOST } from "./config/global_constants.ts"
 
+// bootstrap
 import "bootstrap/dist/css/bootstrap.css"
 import "./css/styles.css"
 
@@ -28,10 +30,13 @@ import Users from "./components/pages/admin/Users.tsx"
 
 // Types
 import { Product } from "./types/Product.ts"
-import { Favourite } from "./types/Favourite.ts"
 
 // Functions 
 import { countCategoriesAndConditions, getCategories } from "./utils/product-utils.tsx"
+
+// hooks 
+import { useFetchProducts } from "./hooks/products/useFetchProducts.tsx"
+import { useFetchCart } from "./hooks/cart/useFetchCart.tsx"
 
 // To prevent errors relating to checking user's access level
 if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.accessLevel === undefined) {
@@ -42,125 +47,37 @@ const AppContent: React.FC = () => {
     // For navigation purposes
     const navigate = useNavigate()
 
+    // Hook state variables
+    const { products, loading, error } = useFetchProducts()
+    const { cart } = useFetchCart(localStorage.id)
+
     // State variables
-    const [products, setProducts] = useState<any[]>([])
     const [categories, setCategories] = useState<string[]>([])
     const [counterMap, setCounterMap] = useState<Map<string, number>>(new Map())
     const [cartLength, setCartLength] = useState<number>(0)
     const [quantityToAdd, setQuantityToAdd] = useState<number>(1)
-    const [userFavourites, setFavourites] = useState<Favourite | null>(null)
 
-    // Fetching products from the database
+    // Populating map and categories using fetched products
     useEffect(() => {
-        const fetchProducts = async (): Promise<void> => {
-            try {
-                const res = await axios.get(`${SERVER_HOST}/products`)
+        if (!loading && products.length > 0) {
+            const map: Map<string, number> = countCategoriesAndConditions(products)
+            const categories: string[] = getCategories(products)
 
-                if (!res.data || res.data.length === 0) {
-                    console.log(res.data.errorMessage)
-                    return
-                }
-
-                // Calling functions to populate map and categories with data
-                const map: Map<string, number> = countCategoriesAndConditions(res.data) 
-                const categories: string[] = getCategories(res.data)
-
-                setProducts(res.data)
-                setCategories([...new Set(categories)])
-                setCounterMap(map)
-
-                return
-            }
-            catch (error: any) {
-                if(error.response.data.errorMessage) {
-                    console.log(error.response.data.errorMessage)
-                }
-                else {
-                    console.log(error)
-                }
-
-                return
-            }
+            setCategories([...new Set(categories)])
+            setCounterMap(map)
         }
+    }, [loading, products])
 
-        fetchProducts()
-    }, [])
-
-    // Fetching the user's cart based on the id in the localStorage. Don't run if user is not signed in 
-    useEffect(() => {
-        if(localStorage.accessLevel < 1) return // End early if not signed in
-
-        const userId = localStorage.getItem('id')
-        if (!userId) console.log("User's id was not saved in localStorage!")
-
-        const fetchCart = async (): Promise<void> => {
-            try {
-                const res = await axios.get(`${SERVER_HOST}/cart/${userId}`)
-
-                if(!res || !res.data) {
-                    console.log(res.data.errorMessage)
-                }
-                else {
-                    setCartLength(res.data.products.length) // Update the cart length for th eheader component
-                }
-
-                return
-            } 
-            catch (error: any) {
-                if(error.response.data.errorMessage) {
-                    console.log(error.response.data.errorMessage)
-                }
-                else {
-                    console.log(error)
-                }
-
-                return
-            }
-        }
-
-        fetchCart()
-    }, [])
-
-    // Fetch user's purchase history based by their id
-    useEffect(() => {
-        if(localStorage.accessLevel < 1) return // End early if not signed in
-
-        const userId = localStorage.getItem('id')
-        if (!userId) return
-
-        const fetchHistory = async (): Promise<void> => {
-            try {
-                const res = await axios.get(`${SERVER_HOST}/purchases/${userId}`)
-
-                if (!res || !res.data) {
-                    console.log('Unable to retrieve purchase history from the database!')
-                } 
-                else {
-                    console.log('Successfully retrieved purchase history')
-                }
-            } 
-            catch (error: any) {
-                if(error.response.data.errorMessage) {
-                    console.log(error.response.data.errorMessage)
-                }
-                else {
-                    console.log(error)
-                }
-
-                return
-            }
-        }
-
-        fetchHistory()
-    }, [])
+    // Update cart length whenever user id changes or the cart does
+    useEffect(() => (
+        setCartLength(cart.length)
+    ), [localStorage.id, cart]) // Update if either cart or user changes
 
     const handleRequestedQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const quantity = Number(e.target.value)
         setQuantityToAdd(quantity)
     }
-    // ----------------------------------------
 
-    // ---------- CART FUNCTIONALITY ----------
     const addProductToCart = async (product: Product): Promise<void> => {
         // If user is not logged in, redirect them to login page
         if (localStorage.accessLevel < ACCESS_LEVEL_GUEST) {
@@ -202,90 +119,6 @@ const AppContent: React.FC = () => {
     const updateCartLength = (newLength: number) => {
         setCartLength(newLength)
     }
-    // ----------------------------------------------
-
-    // ---------- FAVOURITING FUNCTIONALITY ----------
-    useEffect(() => {
-        const fetchFavourites = async (): Promise<void> => {
-            try {
-                const res = await axios.get<Favourite>(`${SERVER_HOST}/favourites/${localStorage.id}`)
-
-                if (!res) {
-                    console.log("Unable to fetch products")
-
-                    return
-                }
-
-                setFavourites(res.data)
-            }
-            catch (error: any) {
-                if (error.response.data.errorMessage) {
-                    console.log(error.response.data.errorMessage)
-                }
-                else {
-                    console.log(error)
-                }
-            }
-        }
-
-        fetchFavourites()
-    }, [])
-
-    // Function so that UI also updates immediately when product is removed from favourites
-    const refreshFavourites = (productId: string, condition: string, productToAdd?: Product) => {
-        if (condition === "remove") {
-            setFavourites(prev => {
-                if (!prev) return prev
-
-                const updated = {
-                    ...prev,
-                    favourites: prev.favourites.filter(favourite => favourite._id !== productId)
-                }
-
-                return updated
-            })
-        }
-        else {
-            setFavourites(prev => {
-                // This is if userFavourites is null
-                if (!prev) return prev
-                if (!productToAdd) return prev
-
-                const updatedFavourites = [...prev.favourites, productToAdd]
-
-                return {
-                    ...prev,
-                    favourites: updatedFavourites
-                }
-            })
-        }
-    }
-
-    const removeFavourite = async (productId: string) => {
-        try {
-            const res = await axios.delete(`${SERVER_HOST}/favourites/${localStorage.id}/${productId}`)
-
-            if (!res.data || !res) {
-                alert(res.data.message)
-            }
-            else {
-                alert(res.data.message)
-
-                refreshFavourites(productId, "remove")
-            }
-
-            return
-        }
-        catch (error: any) {
-            if (error.response.data.errorMessage) {
-                console.error(error.response.data.errorMessage)
-            }
-            else {
-                console.error("Unexpected error: ", error)
-            }
-        }
-    }
-    // -----------------------------------------------
 
     return (
         <Routes>
@@ -321,13 +154,10 @@ const AppContent: React.FC = () => {
 
                 <Route path="product/:id" element={
                     <ViewProduct
-                        userFavourites={userFavourites}
                         products={products}
                         addProductToCart={addProductToCart}
                         handleRequestedQuantityChange={handleRequestedQuantityChange}
                         quantityToAdd={quantityToAdd}
-                        removeFavourite={removeFavourite}
-                        refreshFavourites={refreshFavourites}
                     />
                 } />
 
@@ -336,14 +166,11 @@ const AppContent: React.FC = () => {
                 } />
 
                 <Route path="favourites" element={
-                    <Favourites
-                        userFavourites={userFavourites}
-                        removeFavourite={removeFavourite}
-                    />
+                    <Favourites />
                 } />
 
                 <Route path="edit-product/:id" element={
-                    <EditProduct 
+                    <EditProduct
                         categories={categories}
                     />
                 } />

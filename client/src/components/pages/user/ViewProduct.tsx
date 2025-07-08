@@ -9,73 +9,38 @@ import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../../../config/global_constant
 import { Product } from "../../../types/Product"
 import { Favourite } from "../../../types/Favourite"
 
-import { createImageIndexes, discountedPrice } from "../../../utils/product-utils"
+// functions
+import { createImageIndexes, discountedPrice, findSimilarProducts } from "../../../utils/product-utils"
+
+// hooks
+import { useFetchFavourites } from "../../../hooks/favourites/useFetchFavourites"
+import { useRemoveFavourite } from "../../../hooks/favourites/useRemoveFavourite"
+import { useAddFavourite } from "../../../hooks/favourites/useAddFavourite"
 
 interface ViewProductsProps {
     products: Product[]
-    userFavourites: Favourite | null
     addProductToCart: (product: Product) => void
     handleRequestedQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     quantityToAdd: number
-    removeFavourite: (productId: string) => void
-    refreshFavourites: (productId: string, condition: string, productToAdd: Product) => void
 }
 
 const ViewProduct: React.FC<ViewProductsProps> = ({
     products,
-    userFavourites,
     addProductToCart,
     handleRequestedQuantityChange,
-    quantityToAdd,
-    removeFavourite,
-    refreshFavourites
+    quantityToAdd
 }) => {
     // For the id that is in the URL for ViewProduct
     const { id } = useParams<{ id: string }>()
 
+    // State variables
     const [product, setProduct] = useState<Product | null>(null)
     const [similarProducts, setSimilarProducts] = useState<Product[]>([])
-    const [favouriteProducts, setFavouritedProducts] = useState<string[]>([])
 
-    const addToFavourites = async (productId: string, productToAdd: Product): Promise<void> => {
-        try {
-            const res = await axios.post(`${SERVER_HOST}/favourites/${localStorage.id}/${productId}`)
-
-            if (!res || !res.data) {
-                alert("Unable to perform request at the moment!")
-
-                return
-            }
-            else {
-                alert(res.data.message)
-
-                refreshFavourites(productId, "add", productToAdd)
-
-                return
-            }
-        }
-        catch (error: any) {
-            if (error.response.data.errorMessage) {
-                alert(error.response.data.errorMessage)
-            }
-            else {
-                console.log("Unexpected server error: ", error)
-            }
-        }
-    }
-
-    // Findall products where the first category of the product is the same as product we're viewing
-    function findSimilarProducts() {
-        let similar: Product[] = []
-
-        products.forEach((p) => {
-            if (p.category[0] === product?.category[0] && p._id !== product?._id) {
-                similar.push(p)
-            }
-        })
-
-        setSimilarProducts(similar)
-    }
+    // Hook state variables 
+    const { favourites, loading, error, fetchFavourites } = useFetchFavourites(localStorage.id)
+    const { favourites: updatedFavourites, removeFromFavourites } = useRemoveFavourite()
+    const { favourites: addedFavourites, addToFavourites } = useAddFavourite()
 
     // Fetch product by id in URL
     useEffect(() => {
@@ -91,7 +56,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                 }
 
                 return
-            } 
+            }
             catch (error: any) {
                 console.error("Unexpected error:", error)
                 return
@@ -101,23 +66,38 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
         fetchProduct()
     }, [id]) // Whenever id changes, run this again. Pretty much reload component
 
-    // Also findSimilarProducts whenever product or products change when component mounts
+    // Find all similar products on mount and when id changes
     useEffect(() => {
         if (product) {
-            findSimilarProducts()
+            const similar = findSimilarProducts(products, product)
+
+            setSimilarProducts(similar)
         }
     }, [id])
 
-    // To find all products that are favourited for UI purposes
-    useEffect(() => {
-        let favourited: string[] = []
+    // Remove product from user's favourites and update
+    const removeAndUpdateFavourites = async (productId: string) => {
+        try {
+            await removeFromFavourites(localStorage.id, productId)
 
-        userFavourites?.favourites.forEach(favourite => {
-            favourited.push(favourite._id)
-        })
+            await fetchFavourites() // Update state
+        }
+        catch {
+            alert("Failed to remove from favourites")
+        }
+    }
 
-        setFavouritedProducts(favourited)
-    }, [userFavourites])
+    // Add product to favoruites and update
+    const addAndUpdateFavourites = async (productId: string) => {
+        try {
+            await addToFavourites(localStorage.id, productId)
+
+            await fetchFavourites() // Update state
+        }
+        catch {
+            alert("Failed to add product to favourites")
+        }
+    }
 
     return product ? (
         <div className="view-product-page-container">
@@ -179,14 +159,15 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                         Add to basket
                     </button>
 
-                    {favouriteProducts.includes(product._id) ? (
-                        <div id="add-to-favourites" className="button favourited" onClick={() => removeFavourite(product._id)}>
+                    {/* Checking if viewed product is in user's favourites */}
+                    {favourites.some(fav => fav._id === product._id) ? (
+                        <div id="add-to-favourites" className="button favourited" onClick={() => removeAndUpdateFavourites(product._id)}>
                             <img src="/images/favourite-icon.png" />
 
                             <p>Remove from favourites</p>
                         </div>
                     ) : (
-                        <div id="add-to-favourites" className="button not-favourited" onClick={() => addToFavourites(product._id, product)}>
+                        <div id="add-to-favourites" className="button not-favourited" onClick={() => addAndUpdateFavourites(product._id)}>
                             <img src="/images/favourite-icon.png" />
 
                             <p>Add to favourites</p>
@@ -240,13 +221,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                 <div className="products">
                     {similarProducts.length > 0 ? (
                         similarProducts.map((product) => (
-                            <div
-                                className="product"
-                                key={product._id}
-                                onClick={() => {
-                                    findSimilarProducts()
-                                }}
-                            >
+                            <div className="product" key={product._id}>
                                 <div className="product-image-container">
                                     <img src={product.product_images[0]} alt="" />
                                 </div>

@@ -1,21 +1,29 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import axios from "axios"
-import { SERVER_HOST } from "../../../config/global_constants"
+// hooks
+import { useFetchFavourites } from "../../../hooks/favourites/useFetchFavourites"
+import { useRemoveFavourite } from "../../../hooks/favourites/useRemoveFavourite"
 
-import { Favourite } from "../../../types/Favourite"
-
-interface FavouriteProps {
-    userFavourites: Favourite | null
-    removeFavourite: (productId: string) => void
-}
-
-const Favourites: React.FC<FavouriteProps> = ({
-    userFavourites,
-    removeFavourite
-}) => {
+const Favourites: React.FC = () => {
+    // Navigation
     const navigate = useNavigate()
+
+    // Hook state variables
+    const { favourites, loading, error, fetchFavourites } = useFetchFavourites(localStorage.id)
+    const { favourites: updatedFavourites, loading: loadingUpdatedFavourites, removeFromFavourites } = useRemoveFavourite()
+
+    // To delete a product from the favoruite table
+    const removeAndUpdateFavourites = async (productId: string) => {
+        try {
+            await removeFromFavourites(localStorage.id, productId)
+
+            await fetchFavourites() // Update products in favourites
+        }
+        catch {
+            alert("Failed to delete product")
+        }
+    }
 
     return (
         <div className="favourites-page">
@@ -30,9 +38,9 @@ const Favourites: React.FC<FavouriteProps> = ({
             </div>
 
             <div className="favourited-products">
-                {userFavourites && userFavourites.favourites.length > 0 ? (
-                    userFavourites?.favourites.map(favourite =>
-                        <div className="product">
+                {favourites && favourites.length > 0 ? (
+                    favourites.map(favourite =>
+                        <div className="product" key={favourite._id}>
                             <div className="images-container">
                                 <div className="images-scroll-container">
                                     {favourite.product_images.map(image =>
@@ -62,7 +70,7 @@ const Favourites: React.FC<FavouriteProps> = ({
 
                                 <button
                                     className="remove-from-favourites"
-                                    onClick={() => removeFavourite(favourite._id)}
+                                    onClick={() => removeAndUpdateFavourites(favourite._id)}
                                 >Remove From Favourites</button>
                             </div>
                         </div>

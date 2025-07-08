@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, useReducer } from "react"
 
 // axios
 import axios from "axios"
@@ -8,29 +8,84 @@ import { SERVER_HOST } from "../../config/global_constants"
 import { capitiliseString } from "../../utils/string-utils"
 import { closeSlideInModal } from "../../utils/dom-utils"
 
+// Form state 
+type FormState = {
+    product_name: string
+    description: string
+    price: number
+    discount: number
+    stock_quantity: number
+    brand_new: boolean
+}
+
+// Define form actions
+type FormAction = | {
+    type: 'UPDATE_FIELD'; field: keyof FormState; value: string | number | boolean
+} | {
+    type: 'RESET_FORM'
+}
+
 // Props being passed to this component
 interface AddProductProps {
     categories: string[]
+    addAndUpdateProducts: (formData: FormData) => Promise<void>
 }
 
 const AddProduct: React.FC<AddProductProps> = ({
     categories,
+    addAndUpdateProducts
 }) => {
-    // Input state variables
-    const [productName, setName] = useState<string>("")
-    const [description, setDescription] = useState<string>("")
+    // Initial values for FormState
+    const initialState: FormState = {
+        product_name: "",
+        description: "string",
+        price: 1,
+        discount: 0,
+        stock_quantity: 1,
+        brand_new: false
+    }
+
+    // Handle FormState variables
+    const formReducer = (state: FormState, action: FormAction): FormState => {
+        switch (action.type) {
+            // Update field that user is typing in
+            case 'UPDATE_FIELD':
+                return {
+                    ...state,
+                    [action.field]: action.value
+                }
+            // Reset to intiial values
+            case 'RESET_FORM':
+                return initialState
+            default:
+                return state
+        }
+    }
+
+    // Update states with this
+    const [state, dispatch] = useReducer(formReducer, initialState)
+
+    // Handle and update corresponding fields 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value, type } = e.target
+        const parsedValue = type === 'number' ? Number(value) : value
+
+        dispatch({
+            type: 'UPDATE_FIELD',
+            field: name as keyof FormState,
+            value: parsedValue
+        })
+    }
+
+    // Regular state variables
     const [selectedCategories, setCategories] = useState<string[]>([])
-    const [price, setPrice] = useState<number>(1)
-    const [discount, setDiscount] = useState<number>(0)
-    const [quantity, setQuantity] = useState<number>(1)
-    const [brandNew, setBrandNew] = useState<boolean>(true)
     const [addedImages, setImages] = useState<File[]>([])
 
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false) // To prevent losing progress from accidental progress
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false) // Warning for refreshing during changes
 
-    // For activating the notice that will tell users they will lose changes upon reload, only if changes were made 
+    // If any changes were made upon reload, warn users 
     useEffect(() => {
-        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent): void => {
             if (hasUnsavedChanges) {
                 e.preventDefault()
             }
@@ -44,22 +99,21 @@ const AddProduct: React.FC<AddProductProps> = ({
         }
     }, [hasUnsavedChanges])
 
-    // Set true or false on state everytime the images array is modified
+    // Changes if more than one image. 
     useEffect(() => {
         setHasUnsavedChanges(addedImages.length > 0)
     }, [addedImages])
 
-    // ---------- Image file uploading logic ----------
-    // For being able to access file input through some other DOM element
+    // File to open with matching ref value
     const fileInputRef = useRef<HTMLInputElement | null>(null)
 
-    // To open the file input when clicking on the corresponding DOM element
+    // Open file with ref on click
     const openFileInput = (): void => {
         fileInputRef.current?.click()
     }
 
     // To handle all file changes
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0]
 
@@ -84,87 +138,35 @@ const AddProduct: React.FC<AddProductProps> = ({
     }
 
     // To remove an image from the state based on its index
-    const removeImage = (index: number) => {
-        // Filter out the previous state so that image with the same index is not included
+    const removeImage = (index: number): void => {
         setImages(prev => prev.filter((_, i) => i !== index))
-    }
-    // ------------------------------------------------
-
-    // To handle both text and number input changes. 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-
-        // Determines which state to set based on e.target's name
-        switch (name) {
-            case "productName":
-                setName(value);
-                break
-            case "price":
-                setPrice(Number(value));
-                break
-            case "discount":
-                setDiscount(Number(value));
-                break
-            case "quantity":
-                setQuantity(Number(value));
-                break
-            case "brandNew":
-                setBrandNew(value === "yes");
-                break
-        }
-    }
-
-    // Textarea has to be separate because typescript says so
-    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const { value } = e.target
-
-        setDescription(value)
     }
 
     // To handle all changes relating to checkboxes
-    const handleCheckboxChange = (category: string) => {
-        // If the state array already has passed in value, remove it. Otherwise add it with the other previous elements
+    const handleCheckboxChange = (category: string): void => {
+        // Remove if in, add if not in
         setCategories(prev =>
             prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]
         )
     }
 
-    // When triggered, it will send all the product details to the backend via axios to upload it to database
-    const submitProduct = async () => {
-        try {
-            const formData = new FormData() // Since image files are being taken into account
+    // Create formData object to pass to prop
+    const sendFormData = (): void => {
+        const formData = new FormData() // To take in any files
 
-            addedImages.forEach(file => {
-                formData.append('product_images', file)
-            })
+        addedImages.forEach(file => {
+            formData.append('product_images', file)
+        })
 
-            formData.append('product_name', productName)
-            formData.append('description', description)
-            formData.append('categories', JSON.stringify(selectedCategories))
-            formData.append('price', price.toString())
-            formData.append('stock_quantity', quantity.toString())
-            formData.append('brand_new', brandNew.toString())
-            formData.append('discount', discount.toString())
+        formData.append('product_name', state.product_name)
+        formData.append('description', state.description)
+        formData.append('categories', JSON.stringify(selectedCategories))
+        formData.append('price', state.price.toString())
+        formData.append('stock_quantity', state.stock_quantity.toString())
+        formData.append('brand_new', state.brand_new.toString())
+        formData.append('discount', state.discount.toString())
 
-            const res = await axios.post(`${SERVER_HOST}/products`, formData)
-
-            if (!res || !res.data) {
-                console.log(res.data.errorMessage)
-            }
-            else {
-                alert(res.data.message)
-            }
-
-            return
-        }
-        catch (error: any) {
-            if (error.response.data.errorMessage) {
-                console.log(error.response.data.errorMessage)
-            }
-            else {
-                console.log("Add product error: ", error)
-            }
-        }
+        addAndUpdateProducts(formData)
     }
 
     return (
@@ -178,7 +180,7 @@ const AddProduct: React.FC<AddProductProps> = ({
                     <h4>Add Product</h4>
 
                     <div className="submit">
-                        <button onClick={() => submitProduct()}>Submit</button>
+                        <button onClick={() => sendFormData()}>Submit</button>
                     </div>
                 </div>
 
@@ -230,13 +232,13 @@ const AddProduct: React.FC<AddProductProps> = ({
                             type="text"
                             placeholder="50 characters max"
                             className="text-input"
-                            name="productName"
+                            name="product_name"
                             onChange={(e) => handleInputChange(e)}
-                            value={productName}
+                            value={state.product_name}
                             autoComplete="off"
                         />
 
-                        <p style={{ fontSize: "12px" }}>{productName.length} / 50</p>
+                        <p style={{ fontSize: "12px" }}>{state.product_name.length} / 50</p>
                     </div>
 
                     <div className="input-container">
@@ -245,11 +247,11 @@ const AddProduct: React.FC<AddProductProps> = ({
                         <textarea
                             required
                             placeholder="1000 characters max"
-                            onChange={(e) => handleDescriptionChange(e)}
+                            onChange={(e) => handleInputChange(e)}
                             autoComplete="off"
                         ></textarea>
 
-                        <p style={{ fontSize: "12px" }}>{description.length} / 1000</p>
+                        <p style={{ fontSize: "12px" }}>{state.description.length} / 1000</p>
                     </div>
 
                     <div className="input-container">
@@ -282,7 +284,7 @@ const AddProduct: React.FC<AddProductProps> = ({
                             className="number-input"
                             name="price"
                             onChange={(e) => handleInputChange(e)}
-                            value={price}
+                            value={state.price}
                             autoComplete="off"
                         />
                     </div>
@@ -299,7 +301,7 @@ const AddProduct: React.FC<AddProductProps> = ({
                             placeholder="Whole numbers only"
                             name="discount"
                             onChange={(e) => handleInputChange(e)}
-                            value={discount}
+                            value={state.discount}
                             autoComplete="off"
                         />
                     </div>
@@ -312,10 +314,10 @@ const AddProduct: React.FC<AddProductProps> = ({
                             type="number"
                             className="number-input"
                             min="1"
-                            placeholder="Minimum quantity of 1"
-                            name="quantity"
+                            placeholder="Minimum stock_quantity of 1"
+                            name="stock_quantity"
                             onChange={(e) => handleInputChange(e)}
-                            value={quantity}
+                            value={state.stock_quantity}
                             autoComplete="off"
                         />
                     </div>
@@ -329,9 +331,11 @@ const AddProduct: React.FC<AddProductProps> = ({
 
                                 <input
                                     type="radio"
-                                    name="brandNew"
-                                    value="yes"
-                                    onChange={(e) => handleInputChange(e)}
+                                    name="brand_new"
+                                    checked={state.brand_new === true}
+                                    onChange={() =>
+                                        dispatch({ type: 'UPDATE_FIELD', field: 'brand_new', value: true })
+                                    }
                                 />
                             </div>
 
@@ -340,9 +344,11 @@ const AddProduct: React.FC<AddProductProps> = ({
 
                                 <input
                                     type="radio"
-                                    name="brandNew"
-                                    value="no"
-                                    onChange={(e) => handleInputChange(e)}
+                                    name="brand_new"
+                                    checked={state.brand_new === true}
+                                    onChange={() =>
+                                        dispatch({ type: 'UPDATE_FIELD', field: 'brand_new', value: true })
+                                    }
                                 />
                             </div>
                         </div>

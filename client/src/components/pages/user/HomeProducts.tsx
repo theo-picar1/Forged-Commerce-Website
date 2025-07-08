@@ -1,42 +1,15 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
+// types
 import { Product } from "../../../types/Product"
+
+// functions
+import { createProductCard } from "../../../utils/product-utils"
 
 // Interface is mainly for props apparently 
 interface HomeProductsProps {
     products: Product[]
-}
-
-function discountedPrice(price: number, discount: number) {
-    let originalPrice = price
-    let convertedDiscount = discount / 100
-
-    return (originalPrice - (price * convertedDiscount)).toFixed(2)
-}
-
-// Function that just returns the html format of the product card so that I don't need to copy and paste this chunk of code multiple times
-function productCard(product: Product) {
-    return (
-        <div className="product" key={product["_id"]}>
-            <div className="product-image-container">
-                <img src={product["product_images"][0]} alt="" />
-            </div>
-
-            <div className="product-details">
-                <div className="product-name-container">
-                    <Link to={`/product/${product._id}`} className="product-name">{product["product_name"]}</Link>
-                </div>
-                {product["discount"] > 0 ? (
-                    <div className="discounted-price-container">
-                        <p className="product-price">€{discountedPrice(product["price"], product["discount"])}</p>
-                        <p className="original-price">€{product["price"]}</p>
-                    </div>
-                ) : <p className="product-price">€{product["price"]}</p>
-                }
-            </div>
-        </div>
-    )
 }
 
 const HomeProducts: React.FC<HomeProductsProps> = ({
@@ -49,7 +22,7 @@ const HomeProducts: React.FC<HomeProductsProps> = ({
 
                 <div className="best-sellers horizontal-product-scroll">
                     {products.map(product =>
-                        product["sold"] > 250 ? productCard(product) : null
+                        product["sold"] > 250 ? createProductCard(product) : null
                     )}
                 </div>
 
@@ -67,7 +40,7 @@ const HomeProducts: React.FC<HomeProductsProps> = ({
 
                 <div className="horizontal-product-scroll">
                     {products.map(product =>
-                        product["discount"] && product["discount"] > 0 ? productCard(product) : null
+                        product["discount"] && product["discount"] > 0 ? createProductCard(product) : null
                     )}
                 </div>
             </div>
@@ -77,7 +50,7 @@ const HomeProducts: React.FC<HomeProductsProps> = ({
 
                 <div className="horizontal-product-scroll">
                     {products.map(product =>
-                        product["brand_new"] ? productCard(product) : null
+                        product["brand_new"] ? createProductCard(product) : null
                     )}
                 </div>
             </div>

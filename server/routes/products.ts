@@ -5,13 +5,7 @@ import multer from "multer"
 import productsModel from '../models/products.ts'
 import cartModel from '../models/cart.ts'
 
-// functions
-import { validateFields } from '../middleware/validations.ts'
-
 const router = express.Router()
-
-// All product fields needed for validation 
-const productFields: string[] = ['product_name', 'product_description', 'price', 'stock_quantity', 'discount']
 
 // For storing file uploads
 const storage = multer.diskStorage({
@@ -58,14 +52,12 @@ router.get('/products/search/:prefix?', async (req: Request, res: Response): Pro
 			})
 		}
 
-		if (products.length > 0) {
-			res.status(200).json({
-				products,
-				message: "Successfully retrieved products"
-			})
+		// Send even if there are no matching products
+		if (products && products.length > 0) {
+			res.status(200).json({ products, message: "Successfully retrieved products" })
 		}
 		else {
-			res.status(404).json({ errorMessage: "No products that match prefix!" })
+			res.status(200).json({ products: [], message: "No matching products found with prefix" })
 		}
 
 		return
@@ -129,14 +121,15 @@ router.post('/products', upload.array('product_images'), async (req: Request, re
 			discount
 		})
 
+		// Get updated products
+		const products = await productsModel.find()
+
 		if (newProduct) {
-			res.status(201).json({ message: `Product '${product_name}' was successfully created` })
+			res.status(201).json({ products, message: `Product '${product_name}' was successfully created` })
 		}
 		else {
 			res.status(404).json({ errorMessage: `Product '${product_name}' was not created` })
 		}
-
-		console.log("Done")
 
 		return
 	}
@@ -197,7 +190,10 @@ router.delete('/products/:id', async (req: Request, res: Response) => {
 				{ $pull: { products: { product: id } } }
 			)
 
-			res.status(200).json({ message: "Product was successfully deleted!" })
+			// Fetch updated list of products after deletion
+			const products = await productsModel.find({})
+
+			res.status(200).json({ products, message: "Product was successfully deleted!" })
 		}
 
 		return

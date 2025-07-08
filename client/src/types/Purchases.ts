@@ -1,5 +1,4 @@
-import { Product } from "./Product"
-
+// Holds the user's products along with their quantity they bought
 export interface Items {
     _id: string
     price: number
@@ -8,6 +7,7 @@ export interface Items {
     product_images: string[]
 }
 
+// Purchases holds array of products along with their purchase data and total price
 export interface Purchases {
     _id: string
     items: Items[]
@@ -15,6 +15,7 @@ export interface Purchases {
     totalPrice: number
 }
 
+// Holds a user and all their purchases
 export interface History {
     _id: string
     user: string

@@ -11,53 +11,32 @@ import { User } from "../../../types/User"
 import AddUser from "../../modals/AddUser"
 
 // functions
-import { openSlideInModal, closeSlideInModal } from "../../../utils/dom-utils"
+import { openSlideInModal } from "../../../utils/dom-utils"
+
+// hooks
+import { useFetchUsers } from "../../../hooks/users/useFetchUsers"
+import { useAddUser } from "../../../hooks/users/useAddUser"
 
 const Users: React.FC = () => {
-    // State variables
-    const [users, setUsers] = useState<User[] | []>([])
+    const { users, loading, error, fetchUsers } = useFetchUsers()
+    const { loading: loadingAdd, addUser } = useAddUser()
 
-    // When component mounts, call function to get all users from the database to display it
-    useEffect(() => {
-        const fetchUsers = async (): Promise<void> => {
-            try {
-                const res = await axios.get(`${SERVER_HOST}/users`)
+    // To update users when a new user is added in AddUser component
+    const addAndUpdateUsers = async (formData: FormData): Promise<void> => {
+        try {
+            await addUser(formData)
 
-                if (!res || !res.data) {
-                    alert(res.data.errorMessage)
-                }
-                else {
-                    // Set users and let user know
-                    setUsers(res.data.users)
-                    console.log(res.data.message)
-                }
-
-                return
-            }
-            catch (error: any) {
-                if (error.response.data.errorMessage) {
-                    console.error(error.response.data.errorMessage)
-                }
-                else {
-                    console.error(error)
-                }
-
-                return
-            }
+            await fetchUsers()
         }
-
-        fetchUsers()
-    }, [])
-
-    // To update users when a new product is added in the modal
-    const updateUsers = (user: User): void => {
-        setUsers(prev => [...prev, user])
+        catch {
+            console.log("Failed to fetch users")
+        }
     }
 
     return (
         <React.Fragment>
             <AddUser
-                updateUsers={updateUsers}
+                addAndUpdateUsers={addAndUpdateUsers}
             />
 
             <div className="user-manager-page">

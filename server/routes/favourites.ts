@@ -51,7 +51,7 @@ router.post('/favourites/:userId/:productId', async (req: Request, res: Response
 
         await matchedFav.save()
 
-        res.status(200).json({ message: "Product successfully added to favourites" })
+        res.status(200).json({ favourites: matchedFav, message: "Product successfully added to favourites" })
 
         return
     }
@@ -87,7 +87,7 @@ router.delete('/favourites/:userId/:productId', async (req: Request, res: Respon
 
         await matchedFav.save()
 
-        res.status(200).json({ message: "Product successfully removed from favourites "})
+        res.status(200).json({ favourites: matchedFav.favourites, message: "Product successfully removed from favourites "})
 
         return
     }

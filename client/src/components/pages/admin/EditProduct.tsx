@@ -8,6 +8,7 @@ import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../../../config/global_constant
 // types
 import { Product } from "../../../types/Product"
 
+// functions
 import { capitiliseString } from "../../../utils/string-utils"
 
 interface EditProductProps {
@@ -51,7 +52,6 @@ const EditProduct: React.FC<EditProductProps> = ({
                     } = res.data
 
                     setProduct(res.data)
-                    // To prevent issue where null or 1 was set for edited product in fields that were not modified by user
                     setName(product_name)
                     setDescription(description)
                     setPrice(price)

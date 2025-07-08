@@ -1,19 +1,11 @@
 import React, { useReducer, useRef, useState } from "react"
 
-// axios
-import { SERVER_HOST } from "../../config/global_constants"
-import axios from "axios"
-
-// types
-import { User } from "../../types/User"
-
 // functions
-import { capitiliseString } from "../../utils/string-utils"
 import { closeSlideInModal } from "../../utils/dom-utils"
 
 // Props
 interface AddUserProps {
-    updateUsers: (user: User) => void
+    addAndUpdateUsers: (formData: FormData) => void
 }
 
 // *** IMPORTANT: Component uses useReducer. Explanation comments are in here ***
@@ -34,7 +26,7 @@ type FormAction =
     | { type: 'RESET_FORM' }
 
 const AddUser: React.FC<AddUserProps> = ({
-    updateUsers
+    addAndUpdateUsers
 }) => {
     // Separate state variables
     const [profile_picture, setPicture] = useState<File | null>(null)
@@ -115,49 +107,26 @@ const AddUser: React.FC<AddUserProps> = ({
         }
     }
 
-    const submitUser = async (): Promise<void> => {
-        try {
-            // Create formData object due to possible file upload
-            const formData = new FormData()
+    const sendFormData = (): void => {
+        // Create formData object due to possible file upload
+        const formData = new FormData()
 
-            for (const key in state) {
-                // Form data only accpets strings and blob? values, so everything is converted to string
-                formData.append(key, state[key as keyof FormState].toString())
-            }
-
-            // In case admin does not want a profile picture
-            if (profile_picture) {
-                formData.append('profile_picture', profile_picture)
-            }
-
-            const res = await axios.post(`${SERVER_HOST}/users/add`, formData)
-
-            if (!res || !res.data) {
-                console.log(res.data.errorMessage)
-            }
-            else {
-                // Update the state in the 'Users.tsx' component immediately
-                updateUsers(res.data.newUser)
-
-                alert(res.data.message)
-
-                // Putting all state variables to their default values
-                dispatch({ type: 'RESET_FORM' })
-
-                // And also setting uploaded image to be null
-                setPicture(null)
-            }
-
-            return
+        for (const key in state) {
+            // Form data only accpets strings and blob? values, so everything is converted to string
+            formData.append(key, state[key as keyof FormState].toString())
         }
-        catch (error: any) {
-            if (error.response.data.errorMessage) {
-                console.error(error.response.data.errorMessage)
-            }
-            else {
-                console.error(error)
-            }
+
+        // In case admin does not want a profile picture
+        if (profile_picture) {
+            formData.append('profile_picture', profile_picture)
         }
+
+        addAndUpdateUsers(formData)
+
+        // Putting all state variables to their default values
+        dispatch({ type: 'RESET_FORM' })
+
+        setPicture(null)
     }
 
     return (
@@ -171,7 +140,7 @@ const AddUser: React.FC<AddUserProps> = ({
                     <h4>Add User</h4>
 
                     <div className="submit">
-                        <button onClick={() => submitUser()}>Submit</button>
+                        <button onClick={() => sendFormData()}>Submit</button>
                     </div>
                 </div>
 
@@ -184,18 +153,18 @@ const AddUser: React.FC<AddUserProps> = ({
                     />
 
                     {profile_picture !== null ? (
-                        <img 
-                            src={URL.createObjectURL(profile_picture)} 
+                        <img
+                            src={URL.createObjectURL(profile_picture)}
                             className="profile-picture"
                             onLoad={e => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
                         />
                     ) : (
                         <div onClick={() => openFile()} className="add-profile-picture">
-                        <img
-                            src="/images/high-res-upload-image-icon.png"
-                            alt="Add photo button"
-                        />
-                    </div>
+                            <img
+                                src="/images/high-res-upload-image-icon.png"
+                                alt="Add photo button"
+                            />
+                        </div>
                     )}
 
                     <div className="input-container">

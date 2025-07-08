@@ -1,5 +1,6 @@
 // ********** For functions that are specifically related to 'Product' DB **********
 import React, { JSX } from "react"
+import { Link } from "react-router-dom"
 
 // types
 import { Product } from "../types/Product"
@@ -111,4 +112,41 @@ export function findProductsWithPrefix(prefix: string, products: Product[]): Pro
     }
 
     return matched
+}
+
+// Function that just returns the general HTML format of the product card in 
+export function createProductCard(product: Product) {
+    return (
+        <div className="product" key={product["_id"]}>
+            <div className="product-image-container">
+                <img src={product["product_images"][0]} alt="" />
+            </div>
+
+            <div className="product-details">
+                <div className="product-name-container">
+                    <Link to={`/product/${product._id}`} className="product-name">{product["product_name"]}</Link>
+                </div>
+                {product["discount"] > 0 ? (
+                    <div className="discounted-price-container">
+                        <p className="product-price">€{discountedPrice(product["price"], product["discount"])}</p>
+                        <p className="original-price">€{product["price"]}</p>
+                    </div>
+                ) : <p className="product-price">€{product["price"]}</p>
+                }
+            </div>
+        </div>
+    )
+}
+
+// Findall products where the first category of the product is the same as product we're viewing
+export function findSimilarProducts(products: Product[], currentProduct: Product | null): Product[] {
+    let similar: Product[] = []
+
+    products.forEach((p) => {
+        if (p.category[0] === currentProduct?.category[0] && p._id !== currentProduct._id) {
+            similar.push(p)
+        }
+    })
+
+    return similar
 }
