@@ -7,7 +7,6 @@ import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../../../config/global_constant
 
 // types
 import { Product } from "../../../types/Product"
-import { Favourite } from "../../../types/Favourite"
 
 // functions
 import { createImageIndexes, discountedPrice, findSimilarProducts } from "../../../utils/product-utils"
@@ -16,6 +15,7 @@ import { createImageIndexes, discountedPrice, findSimilarProducts } from "../../
 import { useFetchFavourites } from "../../../hooks/favourites/useFetchFavourites"
 import { useRemoveFavourite } from "../../../hooks/favourites/useRemoveFavourite"
 import { useAddFavourite } from "../../../hooks/favourites/useAddFavourite"
+import { useFetchOneProduct } from "../../../hooks/products/useFetchOneProduct"
 
 interface ViewProductsProps {
     products: Product[]
@@ -34,37 +34,13 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
     const { id } = useParams<{ id: string }>()
 
     // State variables
-    const [product, setProduct] = useState<Product | null>(null)
     const [similarProducts, setSimilarProducts] = useState<Product[]>([])
 
     // Hook state variables 
     const { favourites, loading, error, fetchFavourites } = useFetchFavourites(localStorage.id)
     const { favourites: updatedFavourites, removeFromFavourites } = useRemoveFavourite()
     const { favourites: addedFavourites, addToFavourites } = useAddFavourite()
-
-    // Fetch product by id in URL
-    useEffect(() => {
-        async function fetchProduct() {
-            try {
-                const res = await axios.get<Product>(`${SERVER_HOST}/products/${id}`)
-
-                if (res) {
-                    setProduct(res.data)
-                }
-                else {
-                    alert("Failed to retrieve product")
-                }
-
-                return
-            }
-            catch (error: any) {
-                console.error("Unexpected error:", error)
-                return
-            }
-        }
-
-        fetchProduct()
-    }, [id]) // Whenever id changes, run this again. Pretty much reload component
+    const { product } = useFetchOneProduct(id ?? "")
 
     // Find all similar products on mount and when id changes
     useEffect(() => {

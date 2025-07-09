@@ -345,9 +345,9 @@ const AddProduct: React.FC<AddProductProps> = ({
                                 <input
                                     type="radio"
                                     name="brand_new"
-                                    checked={state.brand_new === true}
+                                    checked={state.brand_new === false}
                                     onChange={() =>
-                                        dispatch({ type: 'UPDATE_FIELD', field: 'brand_new', value: true })
+                                        dispatch({ type: 'UPDATE_FIELD', field: 'brand_new', value: false })
                                     }
                                 />
                             </div>

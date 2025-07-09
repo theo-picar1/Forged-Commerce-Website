@@ -142,7 +142,6 @@ router.post('/products', upload.array('product_images'), async (req: Request, re
 
 // Edit a product
 router.put('/products/:id', upload.array('uploaded_images'), async (req: Request, res: Response): Promise<void> => {
-	console.log(req.body)
 	try {
 		// Get all uploaded files (not the existing url's in the product)
 		const files = req.files as Express.Multer.File[]
@@ -165,7 +164,10 @@ router.put('/products/:id', upload.array('uploaded_images'), async (req: Request
 			category
 		})
 
-		res.status(200).json({ message: "All new changes successfully saved for product" })
+		// Get newly updated product
+		const product = await productsModel.findById(id)
+
+		res.status(200).json({ product, message: "All new changes successfully saved for product" })
 	}
 	catch (error) {
 		res.status(500).json({ errorMessage: "Unexpected edit product error: ", error })

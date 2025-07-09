@@ -13,7 +13,7 @@ export const useDeleteProduct = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
 
-    const deleteProduct = useCallback(async (id: string): Promise<void> => {
+    const deleteProduct = async (id: string): Promise<void> => {
         if (!id) return
 
         setLoading(true)
@@ -44,7 +44,7 @@ export const useDeleteProduct = () => {
         finally {
             setLoading(false)
         }
-    }, [])
+    }
 
 
     return { products, loading, error, deleteProduct }

@@ -56,7 +56,7 @@ const Products: React.FC<ProductsProps> = ({
 
             await refetch()
 
-            alert("Successfully added product")
+            alert("Successfully deleted product")
         }
         catch (error) {
             console.error("Failed to delete and update products: ", error)

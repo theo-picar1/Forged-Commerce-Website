@@ -11,6 +11,10 @@ import { Product } from "../../../types/Product"
 // functions
 import { capitiliseString } from "../../../utils/string-utils"
 
+// hooks 
+import { useFetchOneProduct } from "../../../hooks/products/useFetchOneProduct"
+import { useEditProduct } from "../../../hooks/products/useEditProduct"
+
 interface EditProductProps {
     categories: string[]
 }
@@ -21,8 +25,9 @@ const EditProduct: React.FC<EditProductProps> = ({
     // For the id that is in the URL for EditProduct
     const { id } = useParams<{ id: string }>()
 
-    // State variables
-    const [product, setProduct] = useState<Product | null>(null)
+    // Hook variables
+    const { product, loading, error, fetchProduct } = useFetchOneProduct(id ?? "")
+    const { product: updatedProduct, editProduct } = useEditProduct()
 
     // Input state variables
     const [selectedCategories, setCategories] = useState<string[]>([])
@@ -34,43 +39,18 @@ const EditProduct: React.FC<EditProductProps> = ({
     const [stock_quantity, setQuantity] = useState<number>(1)
     const [brand_new, setBrandNew] = useState<boolean>(true)
 
-    // When component mounts, get the product that matches id in url
+    // Whenever product is fetched, get its data and set it to state
     useEffect(() => {
-        async function fetchProduct() {
-            try {
-                const res = await axios.get<Product>(`${SERVER_HOST}/products/${id}`)
-
-                if (res) {
-                    const {
-                        product_name,
-                        description,
-                        price,
-                        category,
-                        product_images,
-                        brand_new,
-                        stock_quantity
-                    } = res.data
-
-                    setProduct(res.data)
-                    setName(product_name)
-                    setDescription(description)
-                    setPrice(price)
-                    setCategories(category) 
-                    setImages(product_images) 
-                    setBrandNew(brand_new) 
-                    setQuantity(stock_quantity)
-                }
-                else {
-                    alert("Failed to retrieve product")
-                }
-            }
-            catch (error: any) {
-                console.error("Unexpected error:", error)
-            }
+        if (product) {
+            setName(product.product_name)
+            setDescription(product.description)
+            setPrice(product.price)
+            setCategories(product.category)
+            setImages(product.product_images)
+            setBrandNew(product.brand_new)
+            setQuantity(product.stock_quantity)
         }
-
-        fetchProduct()
-    }, [id]) // Whenever id changes, run this again. Pretty much reload component
+    }, [product])
 
     // For activating the notice that will tell users they will lose changes upon reload, even if no changes were made 
     useEffect(() => {
@@ -86,13 +66,51 @@ const EditProduct: React.FC<EditProductProps> = ({
         }
     }, [id])
 
-    // ---------- Image file uploading logic ----------
     // For being able to access file input through some other DOM element
     const fileInputRef = useRef<HTMLInputElement | null>(null)
 
     // To open the file input when clicking on the corresponding DOM element
     const openFileInput = (): void => {
         fileInputRef.current?.click()
+    }
+
+    // Send edited data and update the viewed product
+    const editAndUpdateProduct = async () => {
+        if (!product) return
+
+        try {
+            // For handling file uploads
+            const formData = new FormData()
+
+            selectedImages.forEach(image => {
+                // To avoid conflicts with images that were either uploaded or the original image URLs that I set
+                if (image instanceof File) {
+                    formData.append('uploaded_images', image) // Uploaded files
+                }
+            })
+
+            // Then get the regular web images
+            const webImageStrings = selectedImages.filter(img => !(img instanceof File)) as string[]
+            formData.append('web_images', JSON.stringify(webImageStrings))
+
+            // Other fields to append
+            formData.append('product_name', product_name)
+            formData.append('description', description)
+            formData.append('categories', JSON.stringify(selectedCategories))
+            formData.append('price', price.toString())
+            formData.append('stock_quantity', stock_quantity.toString())
+            formData.append('brand_new', brand_new.toString())
+            formData.append('discount', discount.toString())
+
+            await editProduct(product._id, formData)
+
+            await fetchProduct()
+
+            console.log("Successfully saved changes")
+        }
+        catch (error: any) {
+            console.log("Failed to update product")
+        }
     }
 
     // To handle all file changes
@@ -125,9 +143,7 @@ const EditProduct: React.FC<EditProductProps> = ({
         // Filter out the previous state so that image with the same index is not included
         setImages(prev => prev.filter((_, i) => i !== index))
     }
-    // ------------------------------------------------
 
-    // ---------- Input handlers ----------
     // To handle both text and number input changes. 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -161,61 +177,9 @@ const EditProduct: React.FC<EditProductProps> = ({
 
     // To handle all changes relating to checkboxes
     const handleCheckboxChange = (category: string) => {
-        // If the state array already has passed in value, remove it. Otherwise add it with the other previous elements
-
-        console.log(selectedCategories)
         setCategories(prev =>
             prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]
         )
-    }
-    // ----------------------------- 
-
-    const submitProduct = async () => {
-        try {
-            // For handling file uploads
-            const formData = new FormData()
-
-            selectedImages.forEach(image => {
-                // To avoid conflicts with images that were either uploaded or the original image URLs that I set
-                if (image instanceof File) {
-                    formData.append('uploaded_images', image) // Uploaded files
-                }
-            })
-
-            // Then get the regular web images
-            const webImageStrings = selectedImages.filter(img => !(img instanceof File)) as string[]
-            formData.append('web_images', JSON.stringify(webImageStrings))
-
-            // Other fields to append
-            formData.append('product_name', product_name)
-            formData.append('description', description)
-            formData.append('categories', JSON.stringify(selectedCategories))
-            formData.append('price', price.toString())
-            formData.append('stock_quantity', stock_quantity.toString())
-            formData.append('brand_new', brand_new.toString())
-            formData.append('discount', discount.toString())
-
-            const res = await axios.put(`${SERVER_HOST}/products/${product?._id}`, formData)
-
-            if (!res || !res.data) {
-                alert(res.data.errorMessage)
-            }
-            else {
-                alert(res.data.message)
-            }
-
-            return
-        }
-        catch (error: any) {
-            if (error.response.data.errorMessage) {
-                console.error(error.response.data.errorMessage)
-            }
-            else {
-                console.error(error)
-            }
-
-            return
-        }
     }
 
     // Same classNames as ViewProduct due to layout being very similar
@@ -227,7 +191,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                         <p>Cancel</p>
                     </Link>
 
-                    <div className="admin-button" onClick={() => submitProduct()}>
+                    <div className="admin-button" onClick={() => editAndUpdateProduct()}>
                         <p>Save</p>
                     </div>
                 </div>
