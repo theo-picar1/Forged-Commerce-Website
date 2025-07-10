@@ -12,6 +12,7 @@ import "./css/styles.css"
 
 // All individual pages
 import Home from "./components/layouts/Home.tsx"
+import Admin from "./components/layouts/Admin.tsx"
 import NoPageFound from "./components/pages/NoPageFound.tsx"
 import Login from "./components/pages/authentication/Login.tsx"
 import Register from "./components/pages/authentication/Register.tsx"
@@ -27,6 +28,9 @@ import Favourites from "./components/pages/user/Favourites.tsx"
 import AdminLogin from "./components/pages/authentication/AdminLogin.tsx"
 import EditProduct from "./components/pages/admin/EditProduct.tsx"
 import Users from "./components/pages/admin/Users.tsx"
+
+// All pages / views for Admin component
+import AddProduct from "./components/pages/admin/AddProduct.tsx"
 
 // Types
 import { Product } from "./types/Product.ts"
@@ -136,7 +140,11 @@ const AppContent: React.FC = () => {
                     cartLength={cartLength}
                 />
             }>
-                <Route index element={<HomeProducts products={products} />} />
+                <Route index element={
+                    <HomeProducts 
+                        products={products} 
+                    />} 
+                />
 
                 <Route path="cart" element={
                     <ShoppingCart
@@ -168,19 +176,36 @@ const AppContent: React.FC = () => {
                 <Route path="favourites" element={
                     <Favourites />
                 } />
+            </Route>
+
+            {/* Admin Pages */}
+            <Route path="/admin" element={
+                <Admin />
+            } >
+                <Route index element={
+                    <Users />
+                } />
+                
+                <Route path="products/:prefix?" element={
+                    <Products
+                        categories={categories}
+                        counterMap={counterMap}
+                        addProductToCart={addProductToCart}
+                    />
+                } />
+
+                <Route path="add-product" element={
+                    <AddProduct
+                        categories={categories}
+                    />
+                } />
 
                 <Route path="edit-product/:id" element={
                     <EditProduct
                         categories={categories}
                     />
                 } />
-
-                <Route path="users" element={
-                    <Users />
-                } />
             </Route>
-
-            {/* Admin Pages */}
 
             {/* Other */}
             <Route path="*" element={<NoPageFound />} />

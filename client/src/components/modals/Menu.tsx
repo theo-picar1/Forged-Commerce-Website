@@ -9,7 +9,7 @@ import { capitiliseString } from "../../utils/string-utils.ts"
 import { closeSlideInModal } from "../../utils/dom-utils.ts"
 
 interface MenuProps {
-    categories: string[]
+    categories?: string[]
 }
 
 const Menu: React.FC<MenuProps> = ({
@@ -81,13 +81,17 @@ const Menu: React.FC<MenuProps> = ({
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
-                                <Link to={"/users"} className="link">
-                                    <p>Users Manager</p>
-                                </Link>
+                                <div>
+                                    <Link to={"/admin"} className="link">
+                                        <p>Users Manager</p>
+                                    </Link>
+                                </div>
 
-                                <Link to={"/products"} className="link">
-                                    <p>Products Manager</p>
-                                </Link>
+                                <div>
+                                    <Link to={"products"} className="link">
+                                        <p>Products Manager</p>
+                                    </Link>
+                                </div>
 
                                 <div className="link">
                                     <p>Categories Manager</p>
@@ -100,23 +104,29 @@ const Menu: React.FC<MenuProps> = ({
                                 <p style={{ color: "red" }} onClick={() => logout()}>Sign out</p>
                             </div>
                         ) : (
-                            <Link className="link" to={"/login"}>
-                                <p>Sign in</p>
-                            </Link>
-                        )}
-                    </div>
-
-                    <div className="section">
-                        <div className="title">
-                            <h5>Categories</h5>
-                        </div>
-
-                        {categories.map(category =>
-                            <div key={category}>
-                                <p>{capitiliseString(category)}</p>
+                            <div>
+                                <Link className="link" to={"/login"}>
+                                    <p>Sign in</p>
+                                </Link>
                             </div>
                         )}
                     </div>
+
+                    {localStorage.accessLevel < ACCESS_LEVEL_ADMIN ? (
+                        <div className="section">
+                            <div className="title">
+                                <h5>Categories</h5>
+                            </div>
+
+                            {categories?.map(category =>
+                                <div key={category}>
+                                    <p>{capitiliseString(category)}</p>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        null
+                    )}
                 </main>
             </div>
         </div>

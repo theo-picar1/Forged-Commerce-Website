@@ -115,7 +115,7 @@ const AdminLogin: React.FC = () => {
                     <p style={{ textAlign: "center", fontWeight: "bold" }}>Welcome back Administrator!</p>
 
                     <div className="inputs-container">
-                        <Link to={"/"} className="submit-button link-button">
+                        <Link to={"/admin"} className="submit-button link-button">
                             Proceed to Forged
                         </Link>
                     </div>

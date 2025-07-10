@@ -40,18 +40,16 @@ const Header: React.FC<HeaderProps> = ({
                         </Link>
                     </div>
 
-                    {localStorage.accessLevel < ACCESS_LEVEL_ADMIN ? (
-                        <div className="right">
-                            <Link to="cart" className="link">
-                                <div className="shopping-cart">
-                                    <img src="/images/shopping-cart.png" alt="Shopping cart button" />
-                                    <div>
-                                        <p>{cartLength}</p>
-                                    </div>
+                    <div className="right">
+                        <Link to="cart" className="link">
+                            <div className="shopping-cart">
+                                <img src="/images/shopping-cart.png" alt="Shopping cart button" />
+                                <div>
+                                    <p>{cartLength}</p>
                                 </div>
-                            </Link>
-                        </div>
-                    ) : null}
+                            </div>
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="middle theos-row">

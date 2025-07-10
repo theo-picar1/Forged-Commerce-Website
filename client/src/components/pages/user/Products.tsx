@@ -13,7 +13,6 @@ import { createStarsForProduct } from "../../../utils/product-utils.tsx"
 
 // components
 import ProductFilters from "../../modals/ProductFilters.tsx"
-import AddProduct from "../../modals/AddProduct.tsx"
 
 // hooks
 import { useFetchProductsWithPrefix } from "../../../hooks/products/useFetchProductsWithPrefix.tsx"
@@ -42,7 +41,6 @@ const Products: React.FC<ProductsProps> = ({
     // Hooks 
     const { products, loading, error, refetch } = useFetchProductsWithPrefix(searchPrefix)
     const { loading: loadingDelete, deleteProduct } = useDeleteProduct()
-    const { loading: loadingAdd, addToProducts } = useAddProduct()
 
     // Keep copy of original products every time it changes
     useEffect(() => {
@@ -63,20 +61,6 @@ const Products: React.FC<ProductsProps> = ({
         }
     }
 
-    // Add product from AddProduct and update products
-    const addAndUpdateProducts = async (formData: FormData): Promise<void> => {
-        try {
-            await addToProducts(formData)
-
-            await refetch() // Update products state
-
-            console.log("Successfully added product")
-        }
-        catch (error) {
-            console.error("Failed to add product: ", error)
-        }
-    }
-
     // Update filteredProducts when applying filters in ProductFilters
     const filterProducts = (products: Product[]) => {
         setFiltered(products)
@@ -94,11 +78,6 @@ const Products: React.FC<ProductsProps> = ({
                 </div>
             ) : (
                 <React.Fragment>
-                    <AddProduct
-                        categories={categories}
-                        addAndUpdateProducts={addAndUpdateProducts}
-                    />
-
                     <ProductFilters
                         categories={categories}
                         counterMap={counterMap}

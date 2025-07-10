@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect, useReducer } from "react"
 
-// axios
-import axios from "axios"
-import { SERVER_HOST } from "../../config/global_constants"
-
 // fuctions
-import { capitiliseString } from "../../utils/string-utils"
-import { closeSlideInModal } from "../../utils/dom-utils"
+import { capitiliseString } from "../../../utils/string-utils"
+import { closeSlideInModal } from "../../../utils/dom-utils"
+
+// hooks
+import { useAddProduct } from "../../../hooks/products/useAddProduct"
 
 // Form state 
 type FormState = {
@@ -28,12 +27,10 @@ type FormAction = | {
 // Props being passed to this component
 interface AddProductProps {
     categories: string[]
-    addAndUpdateProducts: (formData: FormData) => Promise<void>
 }
 
 const AddProduct: React.FC<AddProductProps> = ({
-    categories,
-    addAndUpdateProducts
+    categories
 }) => {
     // Initial values for FormState
     const initialState: FormState = {
@@ -75,6 +72,21 @@ const AddProduct: React.FC<AddProductProps> = ({
             field: name as keyof FormState,
             value: parsedValue
         })
+    }
+
+    // Hook state variables
+    const { loading: loadingAdd, addToProducts } = useAddProduct()
+
+    // Add product from AddProduct and update products
+    const addAndUpdateProducts = async (formData: FormData): Promise<void> => {
+        try {
+            await addToProducts(formData)
+
+            console.log("Successfully added product")
+        }
+        catch (error) {
+            console.error("Failed to add product: ", error)
+        }
     }
 
     // Regular state variables

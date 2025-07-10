@@ -8,7 +8,7 @@ import { SERVER_HOST } from "../../../config/global_constants"
 import { User } from "../../../types/User"
 
 // components
-import AddUser from "../../modals/AddUser"
+import AddUser from "./AddUser"
 
 // functions
 import { openSlideInModal } from "../../../utils/dom-utils"

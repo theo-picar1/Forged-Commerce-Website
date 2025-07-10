@@ -5,16 +5,18 @@
 // Layouts
 @import 'layouts/footer';
 @import 'layouts/header';
+@import 'layouts/admin-header';
 
 // Modals
-@import 'modals/add-product';
-@import 'modals/add-user';
 @import 'modals/menu';
 @import 'modals/product-filters';
 
 // Admin pages
 @import 'pages/admin/user';
 @import 'pages/admin/edit-product';
+@import 'pages/admin/add-product';
+@import 'pages/admin/add-user';
+@import 'pages/admin/side-menu';
 
 // Authentication pages
 @import 'pages/authentication/admin-login';

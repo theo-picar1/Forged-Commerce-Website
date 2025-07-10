@@ -1,7 +1,7 @@
 import React, { useReducer, useRef, useState } from "react"
 
 // functions
-import { closeSlideInModal } from "../../utils/dom-utils"
+import { closeSlideInModal } from "../../../utils/dom-utils"
 
 // Props
 interface AddUserProps {
