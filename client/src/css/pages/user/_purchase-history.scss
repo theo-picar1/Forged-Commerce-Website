@@ -1,0 +1,78 @@
+@media screen AND (min-width: 0) {
+    .purchase-history-page {
+        padding: $mobile-container-padding;
+        background-color: $main-content-color;
+
+        .purchases {
+            @include flex-direction(column, unset, unset, 20px);
+
+            .purchase {
+                border: thin solid $website-black;
+
+                .header {
+                    background-color: $website-light-gray;
+                    padding: 10px;
+                    border-bottom: thin solid $website-black;
+
+                    .order-id {
+                        font-weight: bold;
+                    }
+
+                    .order-details {
+                        margin-top: 10px;
+                        @include flex-direction(row, unset, center, 30px);
+
+                        .detail {
+                            font-weight: 500;
+                        }
+                    }
+                }
+
+                .purchased-items {
+                    padding: $mobile-container-padding;
+                    background-color: $website-white;
+                    @include flex-direction(column, unset, unset, 15px);
+
+                    .purchased-item {
+                        @include flex-direction(row, unset, unset, 10px);
+
+                        .product-images {
+                            width: 125px;
+                            height: 125px;
+                            background-color: $website-light-gray;
+                            @include flex-direction(unset, center, center, 0);
+                            border: thin solid $website-light-gray;
+
+                            img {
+                                width: inherit;
+                                max-height: 125px;
+                            }
+                        }
+
+                        .product-details {
+                            @include flex-direction(column, space-between, unset, 5px);
+
+                            div {
+                                @include flex-direction(column, unset, unset, 2px);
+
+                                .price-and-quantity {
+                                    font-size: 20px;
+                                    color: $website-red;
+                                }
+                            }
+
+                            .view-product {
+                                border: thin solid black;
+                                border-radius: 2px;
+                                font-size: 14px;
+                                width: 115px;
+                                padding: 3px 0;
+                                margin-top: 10px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

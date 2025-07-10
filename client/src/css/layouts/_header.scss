@@ -1,0 +1,130 @@
+@media screen AND (min-width: 0) {
+    .website-header {
+        width: 100%;
+        background-color: $website-blue;
+        padding: $mobile-padding;
+        padding-bottom: 15px;
+        color: $website-white;
+        box-shadow: 0 0 10px 5px $translucent;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+
+        // Because bootstrap is messing up my stuff
+        .theos-row {
+            padding: 5px 0;
+            margin: 0;
+            flex-wrap: nowrap;
+            max-width: inherit;
+        }
+
+        .top {
+            @include flex-direction(row, space-between, center, 0);
+            transition: all 0.3s ease;
+
+            &.hide {
+                transform: translateY(-100%);
+                opacity: 0;
+                pointer-events: none;
+                height: 0;
+            }
+
+            .left {
+                @include flex-direction(row, unset, center, 10px);
+
+                .menu-icon {
+                    @include default-icon-size();
+                }
+
+                .website-title {
+                    @include flex-direction(row, unset, center, 8px);
+                    @include link-css($website-white);
+
+                    p {
+                        font-weight: bold;
+                        font-size: 24px;
+                    }
+
+                    img {
+                        width: 44px;
+                        height: auto;
+                    }
+                }
+            }
+
+            .right {
+
+                .shopping-cart {
+                    position: relative;
+                    @include flex-direction(row, top, flex-end, 0);
+                    @include default-icon-size();
+
+                    div {
+                        @include small-round-button(16px, 16px, 0, 0, $website-red, none);
+                        position: absolute;
+                        bottom: 15px;
+                        left: 12px;
+
+                        p {
+                            font-size: 12px;
+                            font-weight: bold;
+                            @include link-css($website-white);
+                        }
+                    }
+                }
+            }
+        }
+
+        .middle {
+            margin: auto;
+            position: relative;
+            width: inherit;
+
+            .searchbar-container {
+                width: 100%;
+                background-color: $website-white;
+                @include flex-direction(row, space-between, unset, 0);
+                height: auto;
+                border-radius: 12px;
+
+                input {
+                    @include default-text-input();
+                }
+
+                div {
+                    background-color: $website-red;
+                    @include flex-direction(unset, center, center, 0);
+                    border-radius: 0 12px 12px 0;
+                    width: 50px;
+                }
+            }
+
+            #product-autocomplete-modal {
+                position: absolute; // Fixed position won't take the parent's padding into account
+                background-color: $website-white;
+                width: inherit;
+                color: $website-black;
+                height: auto;
+                margin-top: 5px;
+                z-index: $auto-complete-modal-z;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 3px 10px 2px $translucent;
+
+                div {
+                    @include flex-direction(row, unset, center, 15px);
+                    padding: 6px 10px;
+
+                    &:hover {
+                        cursor: pointer;
+                        background-color: $website-light-gray;
+                    }
+
+                    img {
+                        filter: $website-white-to-black;
+                    }
+                }
+            }
+        }
+    }
+}

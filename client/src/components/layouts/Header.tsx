@@ -34,11 +34,9 @@ const Header: React.FC<HeaderProps> = ({
                     <div className="left">
                         <img src="/images/menu-icon.png" alt="Menu button" className="menu-icon" onClick={() => openSlideInModal("menu-modal")} />
 
-                        <Link to="" className="link">
-                            <div className="website-title">
-                                <img src="/images/app-logo.png" alt="" />
-                                <p>FORGED</p>
-                            </div>
+                        <Link to="" className="website-title">
+                            <img src="/images/app-logo.png" alt="" />
+                            <p>FORGED</p>
                         </Link>
                     </div>
 

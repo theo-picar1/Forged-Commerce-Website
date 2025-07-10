@@ -170,8 +170,8 @@ const AddProduct: React.FC<AddProductProps> = ({
     }
 
     return (
-        <div className="crud-modal" id="add-product-modal">
-            <div className="crud-modal-content">
+        <div className="pop-up-modal" id="add-product-modal">
+            <div className="pop-up-modal-content">
                 <div className="header">
                     <div className="close" onClick={() => closeSlideInModal("add-product-modal")}>
                         <img src="/images/close-icon.png" />

@@ -32,6 +32,7 @@ const Home: React.FC<HomeProps> = ({
                 cartLength={cartLength}
             />
 
+            {/* All nested Home routes here. Defined in App.tsx */}
             <Outlet />
 
             <Footer />

@@ -130,8 +130,8 @@ const AddUser: React.FC<AddUserProps> = ({
     }
 
     return (
-        <div className="crud-modal" id="add-user-modal">
-            <div className="crud-modal-content">
+        <div className="pop-up-modal" id="add-user-modal">
+            <div className="pop-up-modal-content">
                 <div className="header">
                     <div className="close" onClick={() => closeSlideInModal("add-user-modal")}>
                         <img src="/images/close-icon.png" />

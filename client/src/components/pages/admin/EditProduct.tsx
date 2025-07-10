@@ -2,11 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { Link, useParams } from "react-router-dom"
 
 // axios
-import axios from "axios"
 import { SERVER_HOST, ACCESS_LEVEL_ADMIN } from "../../../config/global_constants"
-
-// types
-import { Product } from "../../../types/Product"
 
 // functions
 import { capitiliseString } from "../../../utils/string-utils"
@@ -184,7 +180,7 @@ const EditProduct: React.FC<EditProductProps> = ({
 
     // Same classNames as ViewProduct due to layout being very similar
     return product ? (
-        <div className="view-product-page-container">
+        <div className="edit-product-page-container">
             {localStorage.accessLevel >= ACCESS_LEVEL_ADMIN ? (
                 <div className="admin-tools">
                     <Link to={`/product/${id}`} className="edit admin-button">

@@ -1,0 +1,50 @@
+@media screen AND (min-width: 0) {
+    #menu-modal {
+        @include slide-in-transition();
+        transform: translateX(-100%);
+        top: 0;
+
+        &.active {
+            transform: translateX(0);
+        }
+
+        #menu-modal-content {
+            overflow-y: scroll;
+            scrollbar-width: none;
+            background-color: $main-content-color;
+            height: 100%;
+            width: 75%;
+
+            header {
+                background-color: $website-blue;
+                color: $website-white;
+                @include flex-direction(row, space-between, center, 0);
+                padding: $mobile-container-padding;
+                position: relative;
+                z-index: 10;
+            }
+
+            main {
+                padding: $mobile-container-padding;
+                @include flex-direction(column, unset, unset, 5px);
+
+                .section {
+                    @include flex-direction(column, unset, unset, 3px);
+
+                    .title {
+                        border-bottom: thin solid $website-black;
+                        padding: 6px 0;
+                    }
+
+                    .link {
+                        @include link-css($website-black);
+                    }
+
+                    div {
+                        padding: 5px 0;
+                    }
+                }
+            }
+        }
+    }
+}

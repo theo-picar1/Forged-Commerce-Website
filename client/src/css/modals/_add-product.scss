@@ -1,0 +1,217 @@
+@media screen AND (min-width: 0) {
+    .pop-up-modal {
+        @include pop-up-transition();
+        @include flex-direction(unset, center, center, 0);
+        z-index: $crud-modal;
+        position: fixed;
+        top: 0;
+
+        .pop-up-modal-content {
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            background-color: $website-white;
+            scrollbar-width: none;
+
+            .header {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                text-wrap: nowrap;
+                align-items: center;
+                border-bottom: thin solid $website-light-gray;
+                position: sticky;
+                top: 0;
+                background-color: $website-white;
+                padding: 5px 15px;
+                z-index: 100;
+
+                .close {
+                    padding: 5px;
+                    @include small-round-button(30px, 30px, 20px, 20px, none, $website-light-gray);
+
+                    img {
+                        filter: invert(1);
+                    }
+                }
+
+                h4 {
+                    font-size: 18px;
+                    text-align: center;
+                }
+
+                .submit {
+                    @include flex-direction(unset, flex-end, center, 0);
+
+                    button {
+                        border: thin solid $website-black;
+                        border-radius: 2px;
+                        font-size: 14px;
+                        padding: 1px 10px;
+                    }
+                }
+            }
+
+            form {
+                @include flex-direction(column, unset, unset, 10px);
+                margin-top: 10px;
+                padding: 15px;
+
+                .profile-picture {
+                    border: thin solid $website-black;
+                    width: 50%;
+                    aspect-ratio: 1/1;
+                    border-radius: 50%;
+                    margin: auto;
+                }
+
+                .add-profile-picture {
+                    @include flex-direction(unset, center, center, 0);
+                    width: 50%;
+                    aspect-ratio: 1 / 1;
+                    border: 2px solid $website-black;
+                    border-radius: 50%;
+                    background-color: $website-light-gray;
+                    margin: auto;
+
+                    img {
+                        width: 100px;
+                        height: auto;
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                .input-container {
+                    @include flex-direction(column, unset, unset, 0px);
+
+                    b {
+                        font-size: 14px;
+                    }
+
+                    .images-container {
+                        @include flex-direction(row, unset, unset, 15px);
+                        width: auto;
+                        overflow-x: scroll;
+                        scrollbar-width: none;
+                        margin-top: 5px;
+                        margin-bottom: 5px;
+
+                        div {
+                            width: 150px;
+                            height: 150px;
+                            flex-shrink: 0;
+                        }
+
+                        .image {
+                            position: relative;
+                            background-color: $website-light-gray;
+                            @include flex-direction(unset, center, center, 0);
+
+                            img {
+                                max-width: 150px;
+                                max-height: 150px;
+                            }
+
+                            .remove-button {
+                                @include small-round-button(20px, 20px, 16px, 16px, $website-white, $website-red);
+                                position: absolute;
+                                padding: 3px;
+                                left: 93%;
+                                top: 0;
+
+                                img {
+                                    filter: invert(1);
+                                }
+
+                                &:hover {
+
+                                    img {
+                                        filter: invert(0);
+                                    }
+                                }
+                            }
+                        }
+
+                        .add-image-button {
+                            @include flex-direction(unset, center, center, 0);
+                            border: 2px solid $website-gray;
+                            border-radius: 5px;
+
+                            &:hover {
+                                cursor: pointer;
+                                border-color: $website-black;
+
+                                img {
+                                    filter: invert(1);
+                                }
+                            }
+
+                            img {
+                                width: 50px;
+                                height: 50px;
+                                filter: invert(.5);
+                            }
+                        }
+                    }
+
+                    .image-notice {
+                        @include flex-direction(row, space-between, center, 0);
+                    }
+                }
+
+                .text-input {
+                    @include default-text-input();
+                    border: thin solid $website-black;
+                    border-radius: 5px;
+                    font-size: 14px;
+                }
+
+                .number-input {
+                    @include default-text-input();
+                    border: thin solid $website-black;
+                    border-radius: 5px;
+                    font-size: 14px;
+                }
+
+                textarea {
+                    @include default-text-input();
+                    border: thin solid $website-black;
+                    padding-top: 5px;
+                    border-radius: 5px;
+                    height: auto;
+                    font-size: 14px;
+                }
+
+                .categories-container {
+                    @include flex-direction(row, unset, center, 10px);
+                    flex-wrap: wrap;
+                    font-size: 14px;
+
+                    label {
+                        @include flex-direction(row, unset, center, 5px);
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+
+                        input {
+                            border-radius: 50%;
+                            border: thin solid $website-black;
+                        }
+                    }
+                }
+
+                .radio-container {
+                    @include flex-direction(row, unset, center, 10px);
+                    font-size: 14px;
+
+                    div {
+                        @include flex-direction(row, unset, center, 5px);
+                    }
+                }
+            }
+        }
+    }
+}

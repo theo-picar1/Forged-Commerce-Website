@@ -1,0 +1,29 @@
+@media screen AND (min-width: 0px) {
+    #mobile-footer-content {
+        padding: $mobile-container-padding;
+        padding-bottom: 5px;
+
+        .link-grid-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+
+            .link {
+                text-decoration: none;
+                color: $website-white;
+                text-align: center;
+            }
+        }
+
+        .copyright-notice {
+            color: $website-white;
+            font-size: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    }
+
+    #laptop-footer-content {
+        display: none;
+    }
+}

@@ -1,0 +1,201 @@
+@media screen AND (min-width: 0) {
+    .products-page-container {
+        background-color: $main-content-color;
+        padding: $mobile-container-padding;
+        @include flex-direction(column, unset, unset, 15px);
+
+        .onmount-message {
+            @include flex-direction(unset, center, center, 0);
+            width: 100%;
+            height: 50vh;
+
+            p {
+                text-align: center;
+                font-weight: bold;
+                font-size: 24px;
+            }
+        }
+
+        #search-results-text {
+            display: none;
+        }
+
+        .admin-tools {
+            width: 100%;
+            @include flex-direction(row, flex-end, center, 5px);
+
+            button {
+                width: auto;
+                height: 25px;
+                border: thin solid $website-black;
+                border-radius: 1px;
+                @include flex-direction(unset, center, center, 0);
+                padding: 0 10px;
+                font-size: 14px;
+                background-color: $website-white;
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: $website-light-gray;
+                }
+
+                &:active {
+                    background-color: $website-gray;
+                }
+            }
+        }
+
+        .filter-tools {
+            @include flex-direction(row, space-between, center, 0);
+
+            .left {
+
+                .filter-button {
+                    @include flex-direction(row, unset, center, 5px);
+                    background-color: $website-red;
+                    padding: 5px 10px;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: bold;
+
+                    img {
+                        width: 18px;
+                        height: auto;
+                    }
+                }
+            }
+
+            .right {
+                @include flex-direction(row, space-between, center, 8px);
+
+                select {
+                    outline: none;
+                    padding: 5px;
+                }
+
+                img {
+                    width: 32px;
+                    height: auto;
+                }
+            }
+        }
+
+        #products-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+
+            .product {
+                width: 100%;
+
+                .product-image-container {
+                    aspect-ratio: 145/150;
+                    background-color: $website-light-gray;
+                    @include flex-direction(row, unset, center, 0);
+                    border-radius: 10px;
+
+                    #product-image {
+                        width: 100%;
+                        max-height: 100%;
+                    }
+                }
+
+                .product-details {
+                    @include flex-direction(column, unset, unset, 5px);
+                    width: 100%;
+
+                    .product-name {
+                        margin-top: 5px;
+                        line-height: 0.95;
+                        font-size: 14px;
+                        color: $link-color;
+                    }
+
+                    .product-rating {
+                        @include flex-direction(row, unset, center, 3px);
+
+                        img {
+                            width: 12px;
+                            height: auto;
+                        }
+
+                        p {
+                            font-size: 12px;
+                            color: $website-gray;
+                        }
+                    }
+
+                    .stock-notice {
+                        font-size: 12px;
+                        color: $website-red;
+                    }
+
+                    .product-bottom-section {
+                        @include flex-direction(row, space-between, flex-start, 0);
+
+                        p {
+                            color: $website-red;
+                            font-weight: bold;
+                        }
+
+                        .add-to-shopping-cart-button {
+                            width: 50px;
+                            padding: 5px 0;
+                            border-radius: 5px;
+                            background-color: $website-blue;
+                            @include flex-direction(unset, center, center, 0);
+
+                            img {
+                                width: 18px;
+                                height: auto;
+                            }
+                        }
+
+                        .admin-tools {
+                            @include flex-direction(row, flex-end, center, 5px);
+
+                            .button {
+                                @include flex-direction(unset, center, center, 0);
+                                width: 25px;
+                                height: 25px;
+                                border: thin solid $website-black;
+
+                                &:hover {
+                                    cursor: pointer;
+                                    background-color: $website-light-gray;
+                                }
+
+                                &:active {
+                                    background-color: $website-gray;
+                                }
+
+                                img {
+                                    width: 20px;
+                                    height: auto;
+                                }
+
+                                .edit-icon {
+                                    filter: invert(1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .no-matching-products-message {
+            @include flex-direction(unset, center, center, 0);
+            width: 100%;
+            height: fit-content;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+
+            p {
+                font-size: 24px;
+                font-weight: bold;
+            }
+        }
+    }
+}

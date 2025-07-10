@@ -55,15 +55,17 @@ const Menu: React.FC<MenuProps> = ({
 
                         {localStorage.accessLevel < ACCESS_LEVEL_ADMIN ? (
                             <React.Fragment>
-                                {localStorage.accessLevel > ACCESS_LEVEL_GUEST ? (
-                                    <Link to={"/edit-account"} className="link">
-                                        <p>Edit Account</p>
-                                    </Link>
-                                ) : (
-                                    <Link to={"/login"} className="link">
-                                        <p>Edit Account</p>
-                                    </Link>
-                                )}
+                                <div>
+                                    {localStorage.accessLevel > ACCESS_LEVEL_GUEST ? (
+                                        <Link to={"/edit-account"} className="link">
+                                            <p>Edit Account</p>
+                                        </Link>
+                                    ) : (
+                                        <Link to={"/login"} className="link">
+                                            <p>Edit Account</p>
+                                        </Link>
+                                    )}
+                                </div>
 
                                 <div>
                                     <Link to={"/purchase-history"} className="link">

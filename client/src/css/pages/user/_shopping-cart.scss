@@ -1,0 +1,172 @@
+@media screen AND (min-width: 0) {
+    .empty-shopping-cart {
+        background-color: $main-content-color;
+        padding: $mobile-container-padding;
+        @include flex-direction(column, unset, unset, 75px);
+
+        h4 {
+            text-align: center;
+        }
+
+        .look-for-items {
+            @include default-button-css();
+            text-decoration: none;
+            text-align: center;
+        }
+    }
+
+    .filled-shopping-cart {
+        background-color: $main-content-color;
+        padding: $mobile-container-padding;
+
+        .top-section {
+            padding-bottom: 10px;
+            border-bottom: thin solid $website-black;
+
+            h3 {
+                font-weight: bold;
+            }
+
+            .buttons-section {
+                @include flex-direction(row, space-between, center, 8px);
+                margin-top: 10px;
+
+                .proceed-to-checkout {
+                    background-color: $website-red;
+                    border: thin solid $invisible;
+                    color: $website-white;
+                    padding: 3px 10px;
+                    border-radius: 2px;
+                    font-weight: bold;
+                    font-size: 14px;
+                }
+
+                .save-changes {
+                    flex-grow: 1;
+                    background-color: $website-white;
+                    border: thin solid $website-gray;
+                    color: $website-black;
+                    padding: 3px 0px;
+                    border-radius: 2px;
+                    font-weight: normal;
+                    font-size: 14px;
+                }
+
+                .disabled-save-changes {
+                    @extend .save-changes;
+                    pointer-events: none;
+                    color: $translucent;
+                    border: thin solid $website-light-gray;
+
+                    &:hover {
+                        cursor: not-allowed;
+                    }
+                }
+            }
+        }
+
+        .cart-products-section {
+            margin-top: 10px;
+            max-height: 40vh;
+            overflow-y: scroll;
+            @include flex-direction(column, unset, unset, 15px);
+
+            .cart-product {
+                background-color: $website-white;
+                padding: $mobile-container-padding;
+                @include flex-direction(column, space-between, unset, 0);
+
+                .product-details {
+                    @include flex-direction(row, unset, unset, 15px);
+                    height: auto;
+
+                    .left {
+
+                        .image-container {
+                            width: 100px;
+                            height: 125px;
+                            background-color: $website-light-gray;
+                            @include flex-direction(unset, center, center, 0);
+
+                            img {
+                                width: inherit;
+                                height: auto;
+                            }
+                        }
+                    }
+
+                    .right {
+                        @include flex-direction(column, unset, unset, 8px);
+
+                        .product-name {
+                            font-weight: bold;
+                        }
+
+                        .product-price {
+                            font-weight: normal;
+                        }
+
+                        .product-stock {
+                            font-size: 12px;
+                            color: $website-red;
+                        }
+                    }
+                }
+
+                .product-buttons {
+                    @include flex-direction(row, space-between, center, 0);
+                    margin-top: 15px;
+
+                    .edit-quantity-section {
+                        display: grid;
+                        grid-template-columns: 0.75fr 1.5fr 0.75fr;
+                        max-width: 100px;
+                        height: 25px;
+                        border: thin solid $website-light-gray;
+
+                        button {
+                            border: none;
+                            width: 25px;
+                            font-weight: bolder;
+                            font-size: 14px;
+                            height: 100%;
+                            text-align: center;
+                        }
+
+                        .subtract {
+                            border-right: thin solid $website-light-gray;
+                        }
+
+                        .add {
+                            border-left: thin solid $website-light-gray;
+                        }
+
+                        .quantity {
+                            font-size: 14px;
+                            width: min-content;
+                            text-align: center;
+                            width: 48px;
+                            border: none;
+                            outline: none;
+                        }
+                    }
+
+                    .remove-button {
+                        @include default-button-css();
+                        @include flex-direction(unset, center, center, 0);
+                        border-radius: 2px;
+                        background-color: $website-white;
+                        border: thin solid $website-light-gray;
+                        width: 20px;
+                        height: 20px;
+                        padding: 14px;
+
+                        img {
+                            width: 20px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

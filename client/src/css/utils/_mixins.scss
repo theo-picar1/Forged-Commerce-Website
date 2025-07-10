@@ -1,0 +1,284 @@
+// Control div's flex
+@mixin flex-direction($direction, $justify, $align, $gap) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+    gap: $gap;
+}
+
+// Default icon size
+@mixin default-icon-size() {
+    width: 28px;
+    height: auto;
+}
+
+// Default <input type="text"/> appearance
+@mixin default-text-input() {
+    appearance: none;
+    outline: none;
+    border: none;
+    background-color: $invisible;
+    width: 100%;
+    height: 35px;
+    padding: 15px 8px;
+
+    &::placeholder {
+        color: $placeholder-color;
+    }
+}
+
+// CSS for a div with an image that is slightly blackened with text in the center
+@mixin picture-with-text() {
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+
+    div {
+        width: 100%;
+        height: 100%;
+        background-color: $translucent;
+        color: $website-white;
+        font-weight: 800;
+        text-align: center;
+        @include flex-direction(unset, center, center, 0);
+    }
+}
+
+// Template by ChatGPt
+@mixin checkbox-switch-css() {
+    @include flex-direction(row, unset, center, 10px);
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0;
+
+    input {
+        display: none;
+    }
+
+    .slider {
+        width: 40px;
+        height: 20px;
+        background-color: $website-light-gray;
+        border-radius: 20px;
+        position: relative;
+        transition: background-color 0.2s;
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: $website-white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+    }
+
+    input:checked+.slider {
+        background-color: $website-blue;
+
+        &::before {
+            transform: translateX(20px);
+        }
+    }
+
+    p {
+        margin: 0;
+    }
+}
+
+@mixin default-button-css() {
+    appearance: none;
+    background-color: $website-red;
+    border-radius: 5px;
+    padding: 5px 0;
+    color: $website-white;
+    font-weight: bold;
+    border: none;
+    outline: none;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+// Template by ChatGPT. Slider with two adjustable thumbs at ends
+@mixin double-thumb-slider-css() {
+    width: 100%;
+    position: relative;
+    margin-top: 10px;
+
+    .slider {
+        position: relative;
+        height: 10px;
+        outline: none;
+
+        .thumb {
+            position: absolute;
+            width: 100%;
+            height: 0;
+            pointer-events: none;
+            -webkit-appearance: none;
+            appearance: none;
+            top: 2px;
+            z-index: 5;
+
+            &::-webkit-slider-thumb {
+                pointer-events: all;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background-color: $website-white;
+                border: 2px solid $website-blue;
+                cursor: pointer;
+                -webkit-appearance: none;
+            }
+        }
+
+        .slider-track {
+            position: absolute;
+            height: 5px;
+            width: 100%;
+            top: 0;
+            background: $website-light-gray;
+            border-radius: 3px;
+        }
+
+        .slider-range {
+            position: absolute;
+            height: 5px;
+            top: 0;
+            background: $website-blue;
+            border-radius: 3px;
+        }
+    }
+}
+
+// Default appearance for scroll container with product cards
+@mixin default-product-hr-scroll-css() {
+    @include flex-direction(row, unset, unset, 10px);
+    width: 100%;
+    overflow-x: scroll;
+    scrollbar-width: none;
+    margin-top: 5px;
+
+    .product {
+
+        .product-image-container {
+            background-color: $website-light-gray;
+            width: 125px;
+            height: 125px;
+            @include flex-direction(unset, center, center, 0);
+            border-radius: 5px;
+
+            img {
+                width: 100%;
+                max-height: inherit;
+            }
+        }
+
+        .product-details {
+            margin-top: 5px;
+
+            .product-name-container {
+                max-height: 50px;
+                line-height: 0.95;
+
+                .product-name {
+                    font-size: 14px;
+                    color: $website-black;
+                    text-decoration: none;
+                }
+            }
+
+            .discounted-price-container {
+                @include flex-direction(row, unset, flex-end, 10px);
+                margin-top: 2px;
+            }
+
+            .product-price {
+                color: $website-red;
+                font-weight: bold;
+                margin-top: 2px;
+            }
+
+            .original-price {
+                font-size: 12px;
+                color: $website-gray;
+                text-decoration: line-through;
+            }
+        }
+    }
+}
+
+// CSS for checkboxes in ProductFilters.tsx modal
+@mixin advanced-filters-checkbox-css() {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    background-color: $website-light-gray;
+
+    &:checked {
+        background-color: $website-red;
+    }
+}
+
+// CSS for the small buttons (like a close / remove button)
+@mixin small-round-button($-width, $-height, $-imgw, $-imgh, $-bkgd-color, $-hover-color) {
+    @include flex-direction(unset, center, center, 0);
+    width: $-width;
+    height: $-height;
+    border-radius: 50%;
+    background-color: $-bkgd-color;
+
+    img {
+        width: $-imgw;
+        height: $-imgh;
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: $-hover-color;
+    }
+}
+
+// Modal that slides in and out. Direction is controlled by whatever uses this
+@mixin slide-in-transition() {
+    position: fixed;
+    background-color: $translucent;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    z-index: $slide-in-modal;
+}
+
+// Modal that pops up from small to big quickly, like a delete notice
+@mixin pop-up-transition() {
+    pointer-events: none;
+    position: fixed;
+    background-color: $translucent;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    transform: scale(0);
+    transform-origin: center center;
+    opacity: 0;
+
+    &.active {
+        pointer-events: auto;
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@mixin link-css($-color) {
+    text-decoration: none;
+    color: $-color;
+
+    &:hover {
+        text-decoration: none;
+    }
+}

@@ -1,0 +1,150 @@
+@media screen AND (min-width: 0) {
+    .authentication-page-container {
+        @include flex-direction(column, center, center, 10px);
+        padding: $mobile-padding;
+        height: 100vh;
+        width: 100vw;
+
+        .title {
+            @include flex-direction(row, unset, center, 8px);
+            text-decoration: none;
+
+            img {
+                width: 52px;
+            }
+
+            h1 {
+                color: $website-white;
+                font-weight: bold;
+                font-size: 28px;
+            }
+        }
+
+        .authentication-content {
+            background-color: $main-content-color;
+            padding: $mobile-container-padding;
+            width: 100%;
+            @include flex-direction(column, unset, unset, 15px);
+            border-radius: 6px;
+            box-shadow: 0 4px 10px $translucent;
+
+            .top-section {
+                @include flex-direction(row, space-between, center, 0);
+
+                h3 {
+                    font-weight: bold;
+                    font-size: 24px;
+                }
+
+                .link {
+                    @include link-css($link-color);
+                    font-size: 14px;
+                }
+            }
+
+            .inputs-container {
+                @include flex-direction(column, unset, unset, 8px);
+
+                .input-row-section {
+                    @include flex-direction(row, space-between, unset, 5px);
+                }
+
+                .input-section {
+
+                    p {
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+
+                    div {
+                        input {
+                            width: 100%;
+                            @include default-text-input();
+                            border: thin solid $website-gray;
+                            height: 30px;
+                            border-radius: 5px;
+                            background-color: $website-white;
+                            font-size: 13px;
+                        }
+
+                        .error-message {
+                            font-size: 10px;
+                            margin-top: 1px;
+                            color: $website-red;
+                            font-weight: normal;
+                        }
+                    }
+
+                    .forgot-password {
+                        @include flex-direction(row, space-between, unset, 0);
+
+                        .prompt {
+                            font-size: 13px;
+                            text-decoration: none;
+                            color: $link-color;
+                        }
+                    }
+                }
+
+                .submit-button {
+                    margin-top: 5px;
+                    @include default-button-css();
+                }
+
+                .link-button {
+                    text-align: center;
+                    text-decoration: none;
+                }
+            }
+
+            .bottom-section {
+                margin-top: 15px;
+                @include flex-direction(column, unset, center, 10px);
+                width: inherit;
+
+                .message {
+                    @include flex-direction(row, center, center, 10px);
+                    width: inherit;
+                    overflow: hidden;
+
+                    p {
+                        font-size: 14px;
+                        color: $website-gray;
+                        white-space: nowrap;
+                    }
+
+                    hr {
+                        width: 500px;
+                        margin: 0;
+                        display: flex;
+                        background-color: $website-gray;
+                        height: 1px;
+                        border: none;
+                    }
+                }
+
+                .create-account-button {
+                    @include default-button-css();
+                    background-color: $website-blue;
+                    text-decoration: none;
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+
+            .forgot-password-message {
+                font-size: 12px;
+            }
+        }
+    }
+}
+
+@media screen AND (min-width: 375px) {
+    .authentication-page-container {
+
+        .authentication-content {
+            max-width: 375px;
+            padding: $laptop-container-padding;
+        }
+    }
+}
