@@ -1,5 +1,5 @@
 import React, { useState, useEffect, JSX } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useLocation, Navigate, useParams } from "react-router-dom"
 
 // axios
 import axios from "axios"
@@ -73,6 +73,21 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
         catch {
             alert("Failed to add product to favourites")
         }
+    }
+
+    const location = useLocation()
+    const accessLevel = parseInt(localStorage.accessLevel)
+
+    const isAdmin = accessLevel === ACCESS_LEVEL_ADMIN
+    const { pathname } = location
+
+    // Logic for is either user or admin tries to go into the other's UI via the URL 
+    if (isAdmin && pathname.startsWith('/product')) {
+        return <Navigate to={`/admin`} replace />
+    }
+
+    if (!isAdmin && pathname.startsWith('/admin')) {
+        return <Navigate to={`/`} replace />
     }
 
     return product ? (

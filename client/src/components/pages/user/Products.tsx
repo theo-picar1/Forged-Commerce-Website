@@ -66,6 +66,9 @@ const Products: React.FC<ProductsProps> = ({
         setFiltered(products)
     }
 
+    // To change link to ViewProduct component based on ACCESS_LEVEL
+    const viewProductLink = parseInt(localStorage.accessLevel) === ACCESS_LEVEL_ADMIN ? '/admin/product' : '/product'
+
     return (
         <div className="products-page-container">
             {loading ? (
@@ -110,18 +113,6 @@ const Products: React.FC<ProductsProps> = ({
                             <select>
                                 <option>Newest Products</option>
                             </select>
-
-                            {/* {currentView === "grid" && (
-                        <img src="/images/list-icon.png" alt="Change to list view icon" onClick={() => {
-                            switchProductViewImage("list")
-                        }} />
-                    )}
-
-                    {currentView === "list" && (
-                        <img src="/images/grid-icon.png" alt="Change to grid view icon" onClick={() => {
-                            switchProductViewImage("grid")
-                        }} />
-                    )} */}
                         </div>
                     </div>
 
@@ -129,7 +120,7 @@ const Products: React.FC<ProductsProps> = ({
                         <div id="products-section">
                             {filteredProducts.map(product => (
                                 <div className="product" key={product._id}>
-                                    <Link to={`/product/${product._id}`} className="product-image-container">
+                                    <Link to={`${viewProductLink}/${product._id}`} className="product-image-container">
                                         {product.product_images && product.product_images.length > 0 ? (
                                             <img
                                                 id="product-image"

@@ -1,4 +1,5 @@
 import React from "react"
+import { Navigate } from "react-router-dom"
 
 // functions 
 import { formatDate } from "../../../utils/string-utils.ts"
@@ -6,9 +7,20 @@ import { formatDate } from "../../../utils/string-utils.ts"
 // hooks
 import { useFetchHistory } from "../../../hooks/history/useFetchHistory.tsx"
 
+// global constants
+import { ACCESS_LEVEL_ADMIN } from "../../../config/global_constants.ts"
+
 const PurchaseHistory: React.FC = () => {
     // Hook variables
     const { purchases, loading, error } = useFetchHistory(localStorage.id)
+
+    // Admins cannot access PurchaseHistory component
+    const accessLevel = parseInt(localStorage.accessLevel)
+    const isAdmin = accessLevel === ACCESS_LEVEL_ADMIN
+
+    if (isAdmin) {
+        return <Navigate to="/admin" replace />
+    }
 
     return (
         <div className="purchase-history-page">

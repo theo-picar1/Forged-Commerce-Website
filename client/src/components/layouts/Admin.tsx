@@ -4,15 +4,26 @@ import { Outlet } from "react-router-dom"
 
 // components
 import Menu from "../modals/Menu"
-import AdminHeader from "./AdminHeader"
 import SideMenu from "../pages/admin/SideMenu"
+import Header from "./Header"
 
-const Admin: React.FC = () => {
+// types
+import { Product } from "../../types/Product"
+
+interface AdminProps {
+    products: Product[]
+}
+
+const Admin: React.FC<AdminProps> = ({
+    products
+}) => {
     return (
         <div className="admin-page">
             <Menu />
 
-            <AdminHeader />
+            <Header 
+                products={products}
+            />
 
             <main>
                 <SideMenu />

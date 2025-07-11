@@ -5,16 +5,16 @@ import axios from 'axios'
 import { SERVER_HOST } from '../../config/global_constants'
 
 // types
-import { Purchases } from '../../types/Purchases'
+import { Cart } from '../../types/Cart'
 
 // For fetching user's cart data
-export const useFetchCart = (userId: string) => {
-    const [cart, setCart] = useState<Purchases[]>([])
+export const useFetchCart = (userId: string, isAdmin: boolean) => {
+    const [cart, setCart] = useState<Cart>()
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
 
     const fetchCart = useCallback(async (): Promise<void> => {
-        if(!userId) return // User is not signed in
+        if(!userId || isAdmin) return // User is not signed in or an admin is signed in
         
         setLoading(true)
         setError(null)
@@ -26,7 +26,7 @@ export const useFetchCart = (userId: string) => {
                 return
             }
             else {
-                setCart(res.data.products)
+                setCart(res.data)
             }
 
             return
@@ -50,5 +50,5 @@ export const useFetchCart = (userId: string) => {
         fetchCart()
     }, [fetchCart])
 
-    return { cart, loading, error }
+    return { cart, loading, error, fetchCart }
 }

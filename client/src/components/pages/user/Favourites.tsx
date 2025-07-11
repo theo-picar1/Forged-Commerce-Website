@@ -1,9 +1,12 @@
-import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React from "react"
+import { useNavigate, Navigate } from "react-router-dom"
 
 // hooks
 import { useFetchFavourites } from "../../../hooks/favourites/useFetchFavourites"
 import { useRemoveFavourite } from "../../../hooks/favourites/useRemoveFavourite"
+
+// global constants 
+import { ACCESS_LEVEL_ADMIN } from "../../../config/global_constants"
 
 const Favourites: React.FC = () => {
     // Navigation
@@ -23,6 +26,15 @@ const Favourites: React.FC = () => {
         catch {
             alert("Failed to delete product")
         }
+    }
+
+    // Users cannot access Favourites component
+    const accessLevel = parseInt(localStorage.accessLevel)
+    const isAdmin = accessLevel === ACCESS_LEVEL_ADMIN
+
+    // Admins cannot see this page
+    if(isAdmin) {
+        return <Navigate to="/admin" replace />
     }
 
     return (

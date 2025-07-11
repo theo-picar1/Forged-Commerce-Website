@@ -8,12 +8,12 @@ interface CartProduct {
 
 export interface ICart extends mongoose.Document {
     user: mongoose.Types.ObjectId
-    products: CartProduct[]
+    savedProducts: CartProduct[]
 }
 
 const cartSchema = new Schema<ICart>({
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    products: [
+    savedProducts: [
         {
             product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
             quantity: { type: Number, default: 1, min: 1 }

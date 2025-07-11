@@ -189,7 +189,7 @@ router.delete('/products/:id', async (req: Request, res: Response) => {
 			// Delete that product in everyone's cart
 			await cartModel.updateMany(
 				{}, // All carts
-				{ $pull: { products: { product: id } } }
+				{ $pull: { savedProducts: { product: id } } }
 			)
 
 			// Fetch updated list of products after deletion

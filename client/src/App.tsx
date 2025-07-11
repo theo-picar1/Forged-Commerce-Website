@@ -48,12 +48,14 @@ if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.acces
 }
 
 const AppContent: React.FC = () => {
-    // For navigation purposes
+    // Variables
     const navigate = useNavigate()
+    const accessLevel = parseInt(localStorage.accessLevel)
+    const isAdmin = accessLevel === ACCESS_LEVEL_ADMIN
 
     // Hook state variables
     const { products, loading, error } = useFetchProducts()
-    const { cart } = useFetchCart(localStorage.id)
+    const { cart } = useFetchCart(localStorage.id, isAdmin)
 
     // State variables
     const [categories, setCategories] = useState<string[]>([])
@@ -73,9 +75,11 @@ const AppContent: React.FC = () => {
     }, [loading, products])
 
     // Update cart length whenever user id changes or the cart does
-    useEffect(() => (
-        setCartLength(cart.length)
-    ), [localStorage.id, cart]) // Update if either cart or user changes
+    useEffect(() => {
+        if (cart && !isAdmin && cart.savedProducts != undefined) {
+            setCartLength(cart.savedProducts.length)
+        }
+    }, [localStorage.id, cart]) // Update if either cart or user changes
 
     const handleRequestedQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const quantity = Number(e.target.value)
@@ -141,9 +145,9 @@ const AppContent: React.FC = () => {
                 />
             }>
                 <Route index element={
-                    <HomeProducts 
-                        products={products} 
-                    />} 
+                    <HomeProducts
+                        products={products}
+                    />}
                 />
 
                 <Route path="cart" element={
@@ -160,15 +164,6 @@ const AppContent: React.FC = () => {
                     />
                 } />
 
-                <Route path="product/:id" element={
-                    <ViewProduct
-                        products={products}
-                        addProductToCart={addProductToCart}
-                        handleRequestedQuantityChange={handleRequestedQuantityChange}
-                        quantityToAdd={quantityToAdd}
-                    />
-                } />
-
                 <Route path="purchase-history" element={
                     <PurchaseHistory />
                 } />
@@ -180,17 +175,28 @@ const AppContent: React.FC = () => {
 
             {/* Admin Pages */}
             <Route path="/admin" element={
-                <Admin />
+                <Admin 
+                    products={products}
+                />
             } >
                 <Route index element={
                     <Users />
                 } />
-                
+
                 <Route path="products/:prefix?" element={
                     <Products
                         categories={categories}
                         counterMap={counterMap}
                         addProductToCart={addProductToCart}
+                    />
+                } />
+
+                <Route path="product/:id" element={
+                    <ViewProduct
+                        products={products}
+                        addProductToCart={addProductToCart}
+                        handleRequestedQuantityChange={handleRequestedQuantityChange}
+                        quantityToAdd={quantityToAdd}
                     />
                 } />
 

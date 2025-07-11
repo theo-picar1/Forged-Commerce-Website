@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import React, { useState, useEffect } from "react"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 
 // axios || constants
 import { ACCESS_LEVEL_ADMIN } from "../../config/global_constants"
@@ -13,19 +13,37 @@ import { findProductsWithPrefix } from "../../utils/product-utils"
 
 interface HeaderProps {
     products: Product[]
-    cartLength: number
+    cartLength?: number
 }
 
 const Header: React.FC<HeaderProps> = ({
     products,
-    cartLength
+    cartLength = 0
 }) => {
     // State variables
     const [matchedProducts, setMatchedProducts] = useState<any[]>([])
     const [searchQuery, setSearchQuery] = useState<string>("")
+    const [placeholder, setPlaceholder] = useState<string>("")
 
-    // Navigation
+    // React router variables
     const navigate = useNavigate()
+    const location = useLocation()
+
+    // Logic to just conditionally change the searchbar placeholder depending on URL
+    useEffect(() => {
+        const path = location.pathname
+        
+        switch(path) {
+            // Users
+            case "/admin":
+                setPlaceholder("Search for users")
+                break
+            case "/admin/products":
+            case "/products":
+                setPlaceholder("Search for products")
+                break
+        }
+    }, [location.pathname])
 
     return (
         <React.Fragment>
@@ -57,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({
                         <input
                             id="product-searchbar"
                             type="text"
-                            placeholder="Search for products"
+                            placeholder={placeholder}
                             autoComplete="off"
                             value={searchQuery}
                             onChange={(e) => {

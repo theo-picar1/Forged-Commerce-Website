@@ -1,7 +1,7 @@
 @media screen AND (min-width: 0) {
     .admin-header {
         @include flex-direction(row, space-between, center, 0);
-        padding: $mobile-container-padding;
+        padding: 10px;
 
         .left {
             @include flex-direction(row, unset, center, 15px);

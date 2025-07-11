@@ -8,7 +8,5 @@ export interface CartProducts {
 export interface Cart {
   _id: string
   user: string
-  products: CartProducts[]
-  total_price: number
-  purchased_at: string | null
+  savedProducts: CartProducts[]
 }

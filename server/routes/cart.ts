@@ -8,14 +8,14 @@ router.get('/cart/:userId', async (req: Request, res: Response): Promise<void> =
     try {
         const userId = req.params.userId
 
-        let cart = await cartModel.findOne({ user: userId }).populate('products.product')
+        let cart = await cartModel.findOne({ user: userId }).populate('savedProducts.product')
 
         // Create new cart if none exists
         if (!cart) {
-            cart = await cartModel.create({ user: userId, products: [] })
+            cart = await cartModel.create({ user: userId, savedProducts: [] })
 
             // Populate product refs (even if empty)
-            cart = await cartModel.findById(cart._id).populate('products.product')
+            cart = await cartModel.findById(cart._id).populate('savedProducts.product')
         }
 
         res.status(200).json(cart)
@@ -39,7 +39,7 @@ router.post('/cart/:userId', async (req: Request, res: Response): Promise<void> 
 
         if (matchedCart) {
             // Logic for incrementing a product's quantity when adding it again (i.e already in the user's cart)
-            const existingProduct = matchedCart.products.find(p => p.product.equals(productId))
+            const existingProduct = matchedCart.savedProducts.find(p => p.product.equals(productId))
 
             // If it exists, just make the quantity = the passed in quantity
             if (existingProduct) {
@@ -47,7 +47,7 @@ router.post('/cart/:userId', async (req: Request, res: Response): Promise<void> 
             }
             // Otherwise push it first and then give the quanitty a value
             else {
-                matchedCart.products.push({ product: productId, quantity: quantity })
+                matchedCart.savedProducts.push({ product: productId, quantity: quantity })
             }
 
             await matchedCart.save()
@@ -55,7 +55,7 @@ router.post('/cart/:userId', async (req: Request, res: Response): Promise<void> 
             // Send back a success message and also the updated cart length
             res.status(200).json({
                 message: 'Product added to existing cart',
-                updatedLength: matchedCart.products.length
+                updatedLength: matchedCart.savedProducts.length
             })
 
             return
@@ -82,7 +82,7 @@ router.put('/cart/:userId', async (req: Request, res: Response): Promise<void> =
         const matchedCart = await cartModel.findOne({ user: userId })
 
         if (matchedCart) {
-            matchedCart.products = products
+            matchedCart.savedProducts = products
 
             await matchedCart.save()
 
@@ -113,12 +113,12 @@ router.delete('/cart/:userId/:productId', async (req: Request, res: Response): P
 
         if (matchedCart) {
             // This is to see if the product was deleted or not
-            const initialLength = matchedCart.products.length
+            const initialLength = matchedCart.savedProducts.length
 
-            matchedCart.products = matchedCart.products.filter(cartProduct => !cartProduct.product.equals(productId))
+            matchedCart.savedProducts = matchedCart.savedProducts.filter(p => !p.product.equals(productId))
 
             // If the lenghts are the same then the product was not delete
-            if (initialLength === matchedCart.products.length) {
+            if (initialLength === matchedCart.savedProducts.length) {
                 res.status(404).json({ errorMessage: 'Unable to delete product from cart!' })
                 return
             }
@@ -128,7 +128,7 @@ router.delete('/cart/:userId/:productId', async (req: Request, res: Response): P
 
             res.status(200).json({
                 message: 'Product deleted from cart!',
-                updatedLength: matchedCart.products.length
+                updatedLength: matchedCart.savedProducts.length
             })
 
             return
@@ -153,7 +153,7 @@ router.delete('/cart/:userId', async (req: Request, res: Response): Promise<void
     const matchedCart = await cartModel.findOne({ user: userId })
 
     if (matchedCart) {
-        matchedCart.products = [] 
+        matchedCart.savedProducts = [] 
         
         await matchedCart.save()
 

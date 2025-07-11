@@ -28,13 +28,12 @@ router.get('/purchases/:userId', async (req: Request, res: Response): Promise<vo
 })
 
 // Post the user's cart and add it to the purchase history. Pretty much just checking out
-router.post('/purchases/:userId', async (req: Request, res: Response): Promise<void> => {
+router.post('/purchases/:userId/:cartId/:totalPrice', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { cartId, totalPrice } = req.body
-        const userId = req.params.userId
+        const { userId, cartId, totalPrice } = req.params
 
         // Find the cart being posted to purchase history for reference
-        const cart = await cartModel.findById(cartId).populate('products.product')  
+        const cart = await cartModel.findById(cartId).populate('savedProducts.product')  
 
         if (!cart) {
             res.status(404).json({ errorMessage: 'Cart not found' })
@@ -42,7 +41,7 @@ router.post('/purchases/:userId', async (req: Request, res: Response): Promise<v
         }
 
         // Then I make a copy of all of the cart's items as I am going to delete them if checkout is successfull
-        const items = cart.products.map((item: any) => ({
+        const items = cart.savedProducts.map((item: any) => ({
             product_images: item.product.product_images,
             product_name: item.product.product_name,
             quantity: item.quantity,

@@ -1,11 +1,14 @@
 import React from "react"
-import { Link } from "react-router-dom"
 
 // types
 import { Product } from "../../../types/Product"
 
 // functions
 import { createProductCard } from "../../../utils/product-utils"
+
+// global constants
+import { ACCESS_LEVEL_ADMIN } from "../../../config/global_constants"
+import { Navigate } from "react-router-dom"
 
 // Interface is mainly for props apparently 
 interface HomeProductsProps {
@@ -15,6 +18,14 @@ interface HomeProductsProps {
 const HomeProducts: React.FC<HomeProductsProps> = ({
     products
 }) => {
+    const accessLevel = parseInt(localStorage.accessLevel)
+    const isAdmin = accessLevel === ACCESS_LEVEL_ADMIN
+
+    // Admins cannot see this page
+    if(isAdmin) {
+        return <Navigate to="/admin" replace />
+    }
+
     return (
         <div className="home-products-container">
             <div className="best-sellers-section product-section">
