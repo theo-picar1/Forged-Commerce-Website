@@ -1,5 +1,5 @@
 import React from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 
 // axios
 import { ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../../../config/global_constants"
@@ -18,8 +18,12 @@ import { useDeleteUser } from "../../../hooks/users/useDeleteUser"
 const Users: React.FC = () => {
     // Variables
     const isAdmin = parseInt(localStorage.accessLevel) === ACCESS_LEVEL_ADMIN
+
     const { prefix } = useParams<{ prefix?: string }>()
     const searchPrefix = prefix?.trim() || "" 
+
+    const navigate = useNavigate()
+
 
     const { users, fetchUsersWithPrefix } = useFetchUsersWithPrefix(searchPrefix)
     const { loading: loadingAdd, addUser } = useAddUser()
@@ -102,7 +106,7 @@ const Users: React.FC = () => {
                                 </div>
 
                                 <div className="action-buttons">
-                                    <div className="button">
+                                    <div className="button" onClick={() => navigate(`/purchase-history/${user._id}`)}>
                                         <img src="/images/visibility-icon.png" />
 
                                         <p>View</p>

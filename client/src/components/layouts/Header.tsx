@@ -96,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({
 
                                     // Redirection for whatever searchbar is set to
                                     if (placeholder === "Search for products") {
-                                        navigate(`/products/${searchQuery}`)
+                                        navigate(`products/${searchQuery}`)
                                     }
                                     else if (placeholder === "Search for users") {
                                         navigate(`users/${searchQuery}`)

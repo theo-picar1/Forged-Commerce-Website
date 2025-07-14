@@ -149,7 +149,7 @@ const AppContent: React.FC = () => {
                     />
                 } />
 
-                <Route path="purchase-history" element={
+                <Route path="purchase-history/:userId?" element={
                     <PurchaseHistory />
                 } />
 

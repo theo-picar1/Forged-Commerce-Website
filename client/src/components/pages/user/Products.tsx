@@ -162,7 +162,7 @@ const Products: React.FC<ProductsProps> = ({
                                                 </div>
                                             ) : (
                                                 <div className="admin-tools">
-                                                    <Link to={`/edit-product/${product._id}`} className="button">
+                                                    <Link to={`/admin/edit-product/${product._id}`} className="button">
                                                         <img src="/images/edit-icon.png" className="edit-icon" />
                                                     </Link>
 
