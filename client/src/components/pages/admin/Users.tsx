@@ -106,7 +106,7 @@ const Users: React.FC = () => {
                                 </div>
 
                                 <div className="action-buttons">
-                                    <div className="button" onClick={() => navigate(`/purchase-history/${user._id}`)}>
+                                    <div className="button" onClick={() => navigate(`/admin/purchase-history/${user._id}`)}>
                                         <img src="/images/visibility-icon.png" />
 
                                         <p>View</p>

@@ -76,7 +76,18 @@ const Header: React.FC<HeaderProps> = ({
                         </Link>
                     </div>
 
-
+                    {!isAdmin && (
+                        <div className="right">
+                            <Link to="cart" className="link">
+                                <div className="shopping-cart">
+                                    <img src="/images/shopping-cart.png" alt="Shopping cart button" />
+                                    <div>
+                                        <p>{cartLength}</p>
+                                    </div>
+                                </div>
+                            </Link>
+                        </div>
+                    )}
                 </div>
 
                 <div className="middle theos-row">
@@ -137,19 +148,6 @@ const Header: React.FC<HeaderProps> = ({
                                     </div>
                                 )
                             )}
-                        </div>
-                    )}
-
-                    {!isAdmin && (
-                        <div className="right">
-                            <Link to="cart" className="link">
-                                <div className="shopping-cart">
-                                    <img src="/images/shopping-cart.png" alt="Shopping cart button" />
-                                    <div>
-                                        <p>{cartLength}</p>
-                                    </div>
-                                </div>
-                            </Link>
                         </div>
                     )}
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useLocation, Navigate, redirect } from "react-router-dom"
 
 // types
 import { Product } from "../../../types/Product.ts"
@@ -30,7 +30,7 @@ const Products: React.FC<ProductsProps> = ({
     counterMap,
     addProductAndUpdateCart
 }) => {
-    // URL Params
+    // Variables
     const { prefix } = useParams<{ prefix?: string }>()
     const searchPrefix = prefix?.trim() || "" // Fallback for if prefix is undefined
 

@@ -3,8 +3,6 @@ import { BrowserRouter, Routes, Route, useNavigate, Navigate } from "react-route
 
 // axios
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_GUEST } from "./config/global_constants.ts"
-import axios from "axios"
-import { SERVER_HOST } from "./config/global_constants.ts"
 
 // bootstrap
 import "bootstrap/dist/css/bootstrap.css"
@@ -26,15 +24,14 @@ import ViewProduct from "./components/pages/user/ViewProduct"
 import PurchaseHistory from "./components/pages/user/PurchaseHistory.tsx"
 import Favourites from "./components/pages/user/Favourites.tsx"
 import AdminLogin from "./components/pages/authentication/AdminLogin.tsx"
-import EditProduct from "./components/pages/admin/EditProduct.tsx"
-import Users from "./components/pages/admin/Users.tsx"
 
 // All pages / views for Admin component
 import AddProduct from "./components/pages/admin/AddProduct.tsx"
+import EditProduct from "./components/pages/admin/EditProduct.tsx"
+import Users from "./components/pages/admin/Users.tsx"
 
-// Types
-import { Product } from "./types/Product.ts"
-
+// Other components 
+import ProtectedRoute from "./components/ProtectedRoute.tsx"
 // Functions 
 import { countCategoriesAndConditions, getCategories } from "./utils/product-utils.tsx"
 
@@ -93,7 +90,7 @@ const AppContent: React.FC = () => {
 
     // Add a product to the user's cart, updating cart length
     const addProductAndUpdateCart = async (productId: string): Promise<void> => {
-        if(!cart) return
+        if (!cart) return
 
         try {
             await addProductToCart(productId, quantityToAdd)
@@ -130,31 +127,50 @@ const AppContent: React.FC = () => {
                 />
             }>
                 <Route index element={
-                    <HomeProducts
-                        products={products}
-                    />}
-                />
+                    <ProtectedRoute isAdmin={isAdmin}>
+                        <HomeProducts
+                            products={products}
+                        />
+                    </ProtectedRoute>
+                } />
 
                 <Route path="cart" element={
-                    <ShoppingCart
-                        updateCartLength={updateCartLength}
-                    />
+                    <ProtectedRoute isAdmin={isAdmin}>
+                        <ShoppingCart
+                            updateCartLength={updateCartLength}
+                        />
+                    </ProtectedRoute>
                 } />
 
                 <Route path="products/:prefix?" element={
-                    <Products
-                        categories={categories}
-                        counterMap={counterMap}
+                    <ProtectedRoute isAdmin={isAdmin}>
+                        <Products
+                            categories={categories}
+                            counterMap={counterMap}
+                            addProductAndUpdateCart={addProductAndUpdateCart}
+                        />
+                    </ProtectedRoute>
+                } />
+
+                <Route path="product/:id" element={
+                    <ViewProduct
+                        products={products}
                         addProductAndUpdateCart={addProductAndUpdateCart}
+                        handleRequestedQuantityChange={handleRequestedQuantityChange}
+                        quantityToAdd={quantityToAdd}
                     />
                 } />
 
-                <Route path="purchase-history/:userId?" element={
-                    <PurchaseHistory />
+                <Route path="purchase-history" element={
+                    <ProtectedRoute isAdmin={isAdmin}>
+                        <PurchaseHistory />
+                    </ProtectedRoute>
                 } />
 
                 <Route path="favourites" element={
-                    <Favourites />
+                    <ProtectedRoute isAdmin={isAdmin}>
+                        <Favourites />
+                    </ProtectedRoute>
                 } />
             </Route>
 
@@ -168,15 +184,19 @@ const AppContent: React.FC = () => {
                 <Route index element={<Navigate to="users" replace />} />
 
                 <Route path="users/:prefix?" element={
-                    <Users />
+                    <ProtectedRoute isAdmin={isAdmin}>
+                        <Users />
+                    </ProtectedRoute>
                 } />
 
                 <Route path="products/:prefix?" element={
-                    <Products
-                        categories={categories}
-                        counterMap={counterMap}
-                        addProductAndUpdateCart={addProductAndUpdateCart}
-                    />
+                    <ProtectedRoute isAdmin={isAdmin}>
+                        <Products
+                            categories={categories}
+                            counterMap={counterMap}
+                            addProductAndUpdateCart={addProductAndUpdateCart}
+                        />
+                    </ProtectedRoute>
                 } />
 
                 <Route path="product/:id" element={
@@ -186,6 +206,12 @@ const AppContent: React.FC = () => {
                         handleRequestedQuantityChange={handleRequestedQuantityChange}
                         quantityToAdd={quantityToAdd}
                     />
+                } />
+
+                <Route path="purchase-history/:userId?" element={
+                    <ProtectedRoute isAdmin={isAdmin}>
+                        <PurchaseHistory />
+                    </ProtectedRoute>
                 } />
 
                 <Route path="add-product" element={
