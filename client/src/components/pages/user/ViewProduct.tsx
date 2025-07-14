@@ -1,5 +1,5 @@
-import React, { useState, useEffect, JSX } from "react"
-import { Link, useLocation, Navigate, useParams } from "react-router-dom"
+import React, { useState, useEffect } from "react"
+import { Link, useParams } from "react-router-dom"
 
 // axios
 import axios from "axios"
@@ -19,14 +19,14 @@ import { useFetchOneProduct } from "../../../hooks/products/useFetchOneProduct"
 
 interface ViewProductsProps {
     products: Product[]
-    addProductToCart: (product: Product) => void
+    addProductAndUpdateCart: (productId: string) => void
     handleRequestedQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     quantityToAdd: number
 }
 
 const ViewProduct: React.FC<ViewProductsProps> = ({
     products,
-    addProductToCart,
+    addProductAndUpdateCart,
     handleRequestedQuantityChange,
     quantityToAdd
 }) => {
@@ -73,21 +73,6 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
         catch {
             alert("Failed to add product to favourites")
         }
-    }
-
-    const location = useLocation()
-    const accessLevel = parseInt(localStorage.accessLevel)
-
-    const isAdmin = accessLevel === ACCESS_LEVEL_ADMIN
-    const { pathname } = location
-
-    // Logic for is either user or admin tries to go into the other's UI via the URL 
-    if (isAdmin && pathname.startsWith('/product')) {
-        return <Navigate to={`/admin`} replace />
-    }
-
-    if (!isAdmin && pathname.startsWith('/admin')) {
-        return <Navigate to={`/`} replace />
     }
 
     return product ? (
@@ -146,7 +131,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                         Buy now
                     </button>
 
-                    <button id="add-to-basket" className="button" onClick={() => addProductToCart(product)}>
+                    <button id="add-to-basket" className="button" onClick={() => addProductAndUpdateCart(product._id)}>
                         Add to basket
                     </button>
 

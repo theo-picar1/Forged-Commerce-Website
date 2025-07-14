@@ -1,5 +1,5 @@
-import React from "react"
-import { Link } from "react-router-dom"
+import React, { useState } from "react"
+import { Link, Navigate } from "react-router-dom"
 
 // axios
 import axios from "axios"
@@ -15,7 +15,9 @@ interface MenuProps {
 const Menu: React.FC<MenuProps> = ({
     categories
 }) => {
-    // WHen user logs out, it removes clears the access level and user id in localStorage
+    const [isLoggedOut, setIsLoggedOut] = useState<boolean>(false)
+
+    // When user logs out, it removes clears the access level and user id in localStorage
     const logout = async (): Promise<void> => {
         try {
             const res = await axios.post(`${SERVER_HOST}/users/logout`)
@@ -24,10 +26,10 @@ const Menu: React.FC<MenuProps> = ({
                 console.log(res.data.errorMessage)
             }
             else if (res.data) {
-                console.log("User succcessfully logged in!")
+                console.log("User succcessfully logged out!")
 
                 localStorage.clear()
-                window.location.reload()
+                setIsLoggedOut(true)
             }
             else {
                 console.log("Registration failed")
@@ -37,6 +39,8 @@ const Menu: React.FC<MenuProps> = ({
             console.log("Failed to log out")
         }
     }
+
+    if(isLoggedOut) return <Navigate to="/login" replace />
 
     return (
         <div className="slide-in-modal" id="menu-modal">

@@ -20,7 +20,7 @@ const Home: React.FC<HomeProps> = ({
     categories,
     cartLength
 }) => {
-    // --------------------------------------------------------
+
     return (
         <React.Fragment>
             <Menu

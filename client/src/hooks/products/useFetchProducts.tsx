@@ -1,3 +1,11 @@
+/* 
+    IMPORTANT 
+    You want to configure the hook itself 
+        -> Pass as parameters to the hook function (export const useXyz = (...) =>)
+    You want to pass event data like an ID when invoking a returned function
+        -> Pass to the returned function inside the hook
+*/
+
 import { useCallback, useEffect, useState } from 'react'
 
 // axios

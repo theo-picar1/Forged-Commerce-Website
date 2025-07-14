@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useLocation, Navigate, redirect } from "react-router-dom"
 
 // types
 import { Product } from "../../../types/Product.ts"
@@ -17,21 +17,20 @@ import ProductFilters from "../../modals/ProductFilters.tsx"
 // hooks
 import { useFetchProductsWithPrefix } from "../../../hooks/products/useFetchProductsWithPrefix.tsx"
 import { useDeleteProduct } from "../../../hooks/products/useDeleteProduct.tsx"
-import { useAddProduct } from "../../../hooks/products/useAddProduct.tsx"
 
 // Interface is for the props being passed to this component
 interface ProductsProps {
     categories: string[]
     counterMap: Map<string, number>
-    addProductToCart: (product: Product) => void
+    addProductAndUpdateCart: (productId: string) => void
 }
 
 const Products: React.FC<ProductsProps> = ({
     categories,
     counterMap,
-    addProductToCart
+    addProductAndUpdateCart
 }) => {
-    // URL Params
+    // Variables
     const { prefix } = useParams<{ prefix?: string }>()
     const searchPrefix = prefix?.trim() || "" // Fallback for if prefix is undefined
 
@@ -45,7 +44,7 @@ const Products: React.FC<ProductsProps> = ({
     // Keep copy of original products every time it changes
     useEffect(() => {
         setFiltered(products)
-    }, [loading, products])
+    }, [products])
 
     // Delete product by id with hook and refetch upadated DB
     const deleteAndUpdateProducts = async (id: string) => {
@@ -157,13 +156,13 @@ const Products: React.FC<ProductsProps> = ({
                                             {localStorage.accessLevel < ACCESS_LEVEL_ADMIN ? (
                                                 <div
                                                     className="add-to-shopping-cart-button"
-                                                    onClick={() => addProductToCart(product)}
+                                                    onClick={() => addProductAndUpdateCart(product._id)}
                                                 >
                                                     <img src="/images/shopping-cart.png" alt="Add to shopping cart button" />
                                                 </div>
                                             ) : (
                                                 <div className="admin-tools">
-                                                    <Link to={`/edit-product/${product._id}`} className="button">
+                                                    <Link to={`/admin/edit-product/${product._id}`} className="button">
                                                         <img src="/images/edit-icon.png" className="edit-icon" />
                                                     </Link>
 

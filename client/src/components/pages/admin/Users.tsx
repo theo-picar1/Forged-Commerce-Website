@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
+import { useParams, useNavigate } from "react-router-dom"
 
 // axios
-import axios from "axios"
-import { SERVER_HOST } from "../../../config/global_constants"
-
-// types
-import { User } from "../../../types/User"
+import { ACCESS_LEVEL_ADMIN, SERVER_HOST } from "../../../config/global_constants"
 
 // components
 import AddUser from "./AddUser"
@@ -14,22 +11,45 @@ import AddUser from "./AddUser"
 import { openSlideInModal } from "../../../utils/dom-utils"
 
 // hooks
-import { useFetchUsers } from "../../../hooks/users/useFetchUsers"
+import { useFetchUsersWithPrefix } from "../../../hooks/users/useFetchUsersWithPrefix"
 import { useAddUser } from "../../../hooks/users/useAddUser"
+import { useDeleteUser } from "../../../hooks/users/useDeleteUser"
 
 const Users: React.FC = () => {
-    const { users, loading, error, fetchUsers } = useFetchUsers()
+    // Variables
+    const isAdmin = parseInt(localStorage.accessLevel) === ACCESS_LEVEL_ADMIN
+
+    const { prefix } = useParams<{ prefix?: string }>()
+    const searchPrefix = prefix?.trim() || "" 
+
+    const navigate = useNavigate()
+
+
+    const { users, fetchUsersWithPrefix } = useFetchUsersWithPrefix(searchPrefix)
     const { loading: loadingAdd, addUser } = useAddUser()
+    const { deleteUser } = useDeleteUser(isAdmin)
 
     // To update users when a new user is added in AddUser component
     const addAndUpdateUsers = async (formData: FormData): Promise<void> => {
         try {
             await addUser(formData)
 
-            await fetchUsers()
+            await fetchUsersWithPrefix()
         }
         catch {
             console.log("Failed to fetch users")
+        }
+    }
+
+    // Delete a user by id and refetch all users
+    const deleteAndUpdateUsers = async (userId: string): Promise<void> => {
+        try {
+            await deleteUser(userId)
+
+            await fetchUsersWithPrefix()
+        }
+        catch {
+            console.log("Failed to delete product")
         }
     }
 
@@ -86,13 +106,13 @@ const Users: React.FC = () => {
                                 </div>
 
                                 <div className="action-buttons">
-                                    <div className="button">
+                                    <div className="button" onClick={() => navigate(`/admin/purchase-history/${user._id}`)}>
                                         <img src="/images/visibility-icon.png" />
 
                                         <p>View</p>
                                     </div>
 
-                                    <div className="button">
+                                    <div className="button" onClick={() => deleteAndUpdateUsers(user._id)}>
                                         <img src="/images/bin-icon.png" />
 
                                         <p>Delete</p>
