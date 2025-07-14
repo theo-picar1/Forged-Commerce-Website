@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, useNavigate, Navigate } from "react-router-dom"
 
 // axios
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_GUEST } from "./config/global_constants.ts"
@@ -41,6 +41,8 @@ import { countCategoriesAndConditions, getCategories } from "./utils/product-uti
 // hooks 
 import { useFetchProducts } from "./hooks/products/useFetchProducts.tsx"
 import { useFetchCart } from "./hooks/cart/useFetchCart.tsx"
+import { useFetchUsers } from "./hooks/users/useFetchUsers.tsx"
+import { useAddProductToCart } from "./hooks/cart/useAddProductToCart.tsx"
 
 // To prevent errors relating to checking user's access level
 if (typeof localStorage.accessLevel === "undefined" || typeof localStorage.accessLevel === undefined) {
@@ -52,10 +54,13 @@ const AppContent: React.FC = () => {
     const navigate = useNavigate()
     const accessLevel = parseInt(localStorage.accessLevel)
     const isAdmin = accessLevel === ACCESS_LEVEL_ADMIN
+    const isGuest = accessLevel === ACCESS_LEVEL_GUEST
 
     // Hook state variables
     const { products, loading, error } = useFetchProducts()
-    const { cart } = useFetchCart(localStorage.id, isAdmin)
+    const { cart, fetchCart } = useFetchCart(localStorage.id, isAdmin)
+    const { users } = useFetchUsers(isAdmin)
+    const { addProductToCart } = useAddProductToCart(isAdmin, isGuest)
 
     // State variables
     const [categories, setCategories] = useState<string[]>([])
@@ -72,54 +77,34 @@ const AppContent: React.FC = () => {
             setCategories([...new Set(categories)])
             setCounterMap(map)
         }
-    }, [loading, products])
+    }, [])
 
     // Update cart length whenever user id changes or the cart does
     useEffect(() => {
         if (cart && !isAdmin && cart.savedProducts != undefined) {
             setCartLength(cart.savedProducts.length)
         }
-    }, [localStorage.id, cart]) // Update if either cart or user changes
+    }, [localStorage.id]) // Update if either cart or user changes
 
     const handleRequestedQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const quantity = Number(e.target.value)
         setQuantityToAdd(quantity)
     }
 
-    const addProductToCart = async (product: Product): Promise<void> => {
-        // If user is not logged in, redirect them to login page
-        if (localStorage.accessLevel < ACCESS_LEVEL_GUEST) {
-            navigate("/login")
-            return
-        }
-        // If they're an admin, let them know they are not authorised to use this feature
-        else if (localStorage.accessLevel >= ACCESS_LEVEL_ADMIN) {
-            alert("You are not authorised to use this feature!")
-            return
-        }
+    // Add a product to the user's cart, updating cart length
+    const addProductAndUpdateCart = async (productId: string): Promise<void> => {
+        if(!cart) return
 
-        // Object to send via axios
-        const productToAdd = {
-            productId: product._id,
-            quantity: quantityToAdd
-        }
-
-        // Axios call for adding the product to user's specified cart
         try {
-            const res = await axios.post(`${SERVER_HOST}/cart/${localStorage.id}`, productToAdd)
+            await addProductToCart(productId, quantityToAdd)
 
-            if (res) {
-                alert(res.data.message)
+            await fetchCart()
 
-                setQuantityToAdd(1) // Reset the quantity number to add to basket back to its default value 1
-                setCartLength(res.data.updatedLength) // Update cart length for header
-            }
-            else {
-                alert("product was not added")
-            }
+            setQuantityToAdd(1) // Reset the quantity number to add to basket back to its default value 1
+            setCartLength(cart.savedProducts.length) // Update cart length for header
         }
-        catch (error: any) {
-            console.error("Add product to cart error: ", error)
+        catch {
+            console.log("Failed to add cart to the product")
         }
     }
 
@@ -160,7 +145,7 @@ const AppContent: React.FC = () => {
                     <Products
                         categories={categories}
                         counterMap={counterMap}
-                        addProductToCart={addProductToCart}
+                        addProductAndUpdateCart={addProductAndUpdateCart}
                     />
                 } />
 
@@ -175,11 +160,14 @@ const AppContent: React.FC = () => {
 
             {/* Admin Pages */}
             <Route path="/admin" element={
-                <Admin 
+                <Admin
                     products={products}
+                    users={users}
                 />
             } >
-                <Route index element={
+                <Route index element={<Navigate to="users" replace />} />
+
+                <Route path="users/:prefix?" element={
                     <Users />
                 } />
 
@@ -187,14 +175,14 @@ const AppContent: React.FC = () => {
                     <Products
                         categories={categories}
                         counterMap={counterMap}
-                        addProductToCart={addProductToCart}
+                        addProductAndUpdateCart={addProductAndUpdateCart}
                     />
                 } />
 
                 <Route path="product/:id" element={
                     <ViewProduct
                         products={products}
-                        addProductToCart={addProductToCart}
+                        addProductAndUpdateCart={addProductAndUpdateCart}
                         handleRequestedQuantityChange={handleRequestedQuantityChange}
                         quantityToAdd={quantityToAdd}
                     />

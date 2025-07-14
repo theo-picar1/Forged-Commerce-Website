@@ -19,14 +19,14 @@ import { useFetchOneProduct } from "../../../hooks/products/useFetchOneProduct"
 
 interface ViewProductsProps {
     products: Product[]
-    addProductToCart: (product: Product) => void
+    addProductAndUpdateCart: (productId: string) => void
     handleRequestedQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     quantityToAdd: number
 }
 
 const ViewProduct: React.FC<ViewProductsProps> = ({
     products,
-    addProductToCart,
+    addProductAndUpdateCart,
     handleRequestedQuantityChange,
     quantityToAdd
 }) => {
@@ -146,7 +146,7 @@ const ViewProduct: React.FC<ViewProductsProps> = ({
                         Buy now
                     </button>
 
-                    <button id="add-to-basket" className="button" onClick={() => addProductToCart(product)}>
+                    <button id="add-to-basket" className="button" onClick={() => addProductAndUpdateCart(product._id)}>
                         Add to basket
                     </button>
 

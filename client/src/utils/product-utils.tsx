@@ -99,7 +99,7 @@ export function discountedPrice(price: number, discount: number): number {
     return Number((originalPrice - price * convertedDiscount).toFixed(2))
 }
 
-// Find images starting with passed in prefix
+// Find products starting with passed in prefix for the searchbar autocomplete modal
 export function findProductsWithPrefix(prefix: string, products: Product[]): Product[] {
     let matched: Product[] = []
 

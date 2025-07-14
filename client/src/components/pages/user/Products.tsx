@@ -17,19 +17,18 @@ import ProductFilters from "../../modals/ProductFilters.tsx"
 // hooks
 import { useFetchProductsWithPrefix } from "../../../hooks/products/useFetchProductsWithPrefix.tsx"
 import { useDeleteProduct } from "../../../hooks/products/useDeleteProduct.tsx"
-import { useAddProduct } from "../../../hooks/products/useAddProduct.tsx"
 
 // Interface is for the props being passed to this component
 interface ProductsProps {
     categories: string[]
     counterMap: Map<string, number>
-    addProductToCart: (product: Product) => void
+    addProductAndUpdateCart: (productId: string) => void
 }
 
 const Products: React.FC<ProductsProps> = ({
     categories,
     counterMap,
-    addProductToCart
+    addProductAndUpdateCart
 }) => {
     // URL Params
     const { prefix } = useParams<{ prefix?: string }>()
@@ -45,7 +44,7 @@ const Products: React.FC<ProductsProps> = ({
     // Keep copy of original products every time it changes
     useEffect(() => {
         setFiltered(products)
-    }, [loading, products])
+    }, [products])
 
     // Delete product by id with hook and refetch upadated DB
     const deleteAndUpdateProducts = async (id: string) => {
@@ -157,7 +156,7 @@ const Products: React.FC<ProductsProps> = ({
                                             {localStorage.accessLevel < ACCESS_LEVEL_ADMIN ? (
                                                 <div
                                                     className="add-to-shopping-cart-button"
-                                                    onClick={() => addProductToCart(product)}
+                                                    onClick={() => addProductAndUpdateCart(product._id)}
                                                 >
                                                     <img src="/images/shopping-cart.png" alt="Add to shopping cart button" />
                                                 </div>

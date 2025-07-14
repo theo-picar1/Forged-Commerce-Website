@@ -89,6 +89,7 @@
 
                 input {
                     @include default-text-input();
+                    padding: 10px 15px;
                 }
 
                 div {
@@ -99,7 +100,7 @@
                 }
             }
 
-            #product-autocomplete-modal {
+            #search-autocomplete-modal {
                 position: absolute; // Fixed position won't take the parent's padding into account
                 background-color: $website-white;
                 width: inherit;

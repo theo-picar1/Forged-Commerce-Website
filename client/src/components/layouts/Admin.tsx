@@ -9,13 +9,16 @@ import Header from "./Header"
 
 // types
 import { Product } from "../../types/Product"
+import { User } from "../../types/User"
 
 interface AdminProps {
     products: Product[]
+    users: User[]
 }
 
 const Admin: React.FC<AdminProps> = ({
-    products
+    products,
+    users
 }) => {
     return (
         <div className="admin-page">
@@ -23,6 +26,7 @@ const Admin: React.FC<AdminProps> = ({
 
             <Header 
                 products={products}
+                users={users}
             />
 
             <main>

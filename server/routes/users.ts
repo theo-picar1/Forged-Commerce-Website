@@ -26,12 +26,12 @@ const loginFields: string[] = ['email', 'password']
 
 // For being able to upload files to a folder for later access
 const userStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/users/')
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname)
-  }
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/users/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname)
+    }
 })
 
 const upload = multer({ storage: userStorage })
@@ -185,6 +185,46 @@ router.post(`/users/logout`, (req: Request, res: Response) => {
     }
 })
 
+// Get all users that match prefix
+router.get('/users/search/:prefix?', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { prefix } = req.params
+
+        let users
+        if (prefix === "" || prefix === undefined) {
+            users = await usersModel.find() // Return all
+        }
+        else {
+            // $options: 'i' means ignore cases
+            users = await usersModel.find({
+                // ChatGPT: concatenate firstName and lastName fields then do a regex upon that
+                $expr: {
+                    $regexMatch: {
+                        input: { $concat: ['$firstName', ' ', '$lastName'] },
+                        regex: `^${prefix}`,
+                        options: 'i'
+                    }
+                }
+            })
+        }
+
+        // Send even if there are no matching users
+        if (users && users.length > 0) {
+            res.status(200).json({ users, message: "Successfully retrieved users" })
+        }
+        else {
+            res.status(200).json({ users: [], message: "No matching users found with prefix" })
+        }
+
+        return
+    }
+    catch (error) {
+        res.status(500).json({ errorMessage: "Search users error: ", error })
+        console.log(error)
+        return
+    }
+})
+
 // To get all users
 router.get('/users', async (req: Request, res: Response) => {
     try {
@@ -250,9 +290,9 @@ router.post('/users/add', upload.single('profile_picture'), validateFields(regis
             res.status(404).json({ errorMessage: "Failed to add new user!" })
         }
         else {
-            res.status(200).json({ 
+            res.status(200).json({
                 newUser,
-                message: "Successfully added new user!" 
+                message: "Successfully added new user!"
             })
         }
 
@@ -273,7 +313,7 @@ router.delete('/users/:id', async (req: Request, res: Response) => {
 
         const deletedUser = await usersModel.findByIdAndDelete(id)
 
-        if(!deletedUser) {
+        if (!deletedUser) {
             res.status(404).json({ errorMessage: "Failed to delete the user!" })
         }
         else {
@@ -282,8 +322,8 @@ router.delete('/users/:id', async (req: Request, res: Response) => {
 
         return
     }
-    catch(error) {
-        res.status(500).json({ errorMessage: "Delete user error: ", error})
+    catch (error) {
+        res.status(500).json({ errorMessage: "Delete user error: ", error })
         console.error("Delete user error: ", error)
 
         return

@@ -153,6 +153,7 @@
     width: 100%;
     height: 35px;
     padding: 15px 8px;
+    padding: 10px 15px;
   }
   .website-header .middle .searchbar-container input::-moz-placeholder {
     color: #bbbbbb;
@@ -170,7 +171,7 @@
     border-radius: 0 12px 12px 0;
     width: 50px;
   }
-  .website-header .middle #product-autocomplete-modal {
+  .website-header .middle #search-autocomplete-modal {
     position: absolute;
     background-color: #FFFFFF;
     width: inherit;
@@ -182,7 +183,7 @@
     overflow: hidden;
     box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.5215686275);
   }
-  .website-header .middle #product-autocomplete-modal div {
+  .website-header .middle #search-autocomplete-modal div {
     display: flex;
     flex-direction: row;
     justify-content: unset;
@@ -190,53 +191,12 @@
     gap: 15px;
     padding: 6px 10px;
   }
-  .website-header .middle #product-autocomplete-modal div:hover {
+  .website-header .middle #search-autocomplete-modal div:hover {
     cursor: pointer;
     background-color: #D9D9D9;
   }
-  .website-header .middle #product-autocomplete-modal div img {
+  .website-header .middle #search-autocomplete-modal div img {
     filter: brightness(0);
-  }
-}
-@media screen and (min-width: 0) {
-  .admin-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0;
-    padding: 10px;
-  }
-  .admin-header .left {
-    display: flex;
-    flex-direction: row;
-    justify-content: unset;
-    align-items: center;
-    gap: 15px;
-    width: inherit;
-  }
-  .admin-header .left .menu-icon {
-    width: 30px;
-  }
-  .admin-header .left .website-title {
-    display: flex;
-    flex-direction: row;
-    justify-content: unset;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    color: #FFFFFF;
-  }
-  .admin-header .left .website-title:hover {
-    text-decoration: none;
-  }
-  .admin-header .left .website-title p {
-    font-weight: bold;
-    font-size: 24px;
-  }
-  .admin-header .left .website-title img {
-    width: 44px;
-    height: auto;
   }
 }
 @media screen and (min-width: 0) {
